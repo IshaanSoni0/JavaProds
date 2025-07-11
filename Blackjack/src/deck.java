@@ -1,24 +1,24 @@
 import java.util.ArrayList; // import the ArrayList class
 
 public class deck {
-    ArrayList<String> deck = new ArrayList<String>();    
-    public void make(){
-        for(int i = 1; i<=4; i++){
-            for(int j = 2; i<=10; i++){
-            String card = Integer.toString(j);
-                switch (i) {
-                case 1:card += "♥️";
-                break;
-                case 2:card += "♦️";
-                break;
-                case 3:card += "♠️";
-                break;
-                case 4:card += "♣️";
-                break;
-                } 
+    ArrayList<card> deck = new ArrayList<card>();    
+    public deck(){
+        for(int s = 0; s<4; s++){
+            for(int v = 1; v<14;v++){
+                card card = new card(s,v);
                 deck.add(card);
-            } 
+            }
         }
+    }
+
+    public int getlength(){
+        return deck.size();
+    }
+    public card getRandCard(){
+        int rand = (int)(Math.random() * deck.size());
+        card c = deck.get(rand);
+        deck.remove(rand);
+        return c;
     }
 }
 //♦️♥️♠️♣️
