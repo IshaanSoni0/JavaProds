@@ -52,7 +52,7 @@ public class player {
     }
 
  
-    public int getCombinedHandValue(ArrayList<card> riverCards) {
+    public int findHandValue(ArrayList<card> riverCards) {
     //sees what the highest hand the player has based on the cards in their hand and the dealers hand
     // possible hands: high card, pair, two pair, three of a kind, straight, flush, full house, four of a kind, straight flush, royal flush
     //hand value is the hand the player has based on the cards in their hand and the river
@@ -98,14 +98,12 @@ public class player {
 
     // Check for straight
     boolean isStraight = false;
-    int straightHigh = 0;
     int consecutive = 0;
     for (int i = 1; i <= 14; i++) {
         if (valueCount[i] > 0) {
             consecutive++;
             if (consecutive >= 5) {
                 isStraight = true;
-                straightHigh = i;
             }
         } else {
             consecutive = 0;
@@ -178,5 +176,27 @@ public class player {
 
     // High card
     return 1;
-}
+    }
+    public void setHandValue(ArrayList<card> riverCards) {
+        handValue = findHandValue(riverCards);
+    }
+    public int getHandValue() {
+        return handValue;
+    }
+    public void findBet(int bet) {
+        /*bet logic:
+        first look at hand value
+        the higher the hand value the more the bias is to bet high
+        if the hand value is low, the bias is to bet low
+        have a chance to bluff, so the player can bet high even if they have a low hand value
+        
+
+
+
+
+
+        */
+
+    }
+
 }
