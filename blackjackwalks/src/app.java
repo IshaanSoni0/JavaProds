@@ -189,6 +189,9 @@ public class app {
 
                 switch (action) {
                     case "HIT":
+
+                    if(player2.deck.getlength() == 0) {player2.resetDeck(); player2.resetTrueCount();} // Reset deck if empty
+
                         card newCard = player2.deck.getRandCard();
                         currentHand.add(newCard);
                         player2.updateTrueCount(newCard);
@@ -200,6 +203,7 @@ public class app {
                         handStand = true;
                         break;
                     case "DOUBLE":
+                    if(player2.deck.getlength() == 0) {player2.resetDeck(); player2.resetTrueCount();} // Reset deck if empty
                         // For simulation simplicity, double is one card and then stand
                         card doubleCard = player2.deck.getRandCard();
                         currentHand.add(doubleCard);
@@ -238,8 +242,8 @@ public class app {
             }
 
             // Set bet based on true count
-            if (player2.getTrueCount() >= 3) player2.setBet(30);
-            else if (player2.getTrueCount() >= 2) player2.setBet(20);
+            if (player2.getTrueCount() >= 3) player2.setBet((int)(0.10 * player2.getMoney()));
+            else if (player2.getTrueCount() >= 2) player2.setBet((int)(0.05 * player2.getMoney()));
             else player2.setBet(5);
 
             // Deal initial cards + update count
@@ -301,11 +305,13 @@ public class app {
                     // Create two new hands
                     List<card> hand1 = new ArrayList<>();
                     hand1.add(playerHand.get(0));
+                            if(player2.deck.getlength() == 0) {player2.resetDeck(); player2.resetTrueCount();} // Reset deck if empty
                     hand1.add(player2.deck.getRandCard());
                     player2.updateTrueCount(hand1.get(1));
 
                     List<card> hand2 = new ArrayList<>();
                     hand2.add(playerHand.get(1));
+                            if(player2.deck.getlength() == 0) {player2.resetDeck(); player2.resetTrueCount();} // Reset deck if empty
                     hand2.add(player2.deck.getRandCard());
                     player2.updateTrueCount(hand2.get(1));
 
@@ -401,5 +407,5 @@ public class app {
 }
 
 
-// use: javac -cp "lib/xchart-3.8.8.jar;." -d bin src/*.java    // to compile with XChart
+// use: javac -cp "lib/xchart-3.8.8.jar;." -d bin (Get-ChildItem src\*.java)    // to compile with XChart
 // use: java -cp "lib/xchart-3.8.8.jar;bin" app    // to run the app
