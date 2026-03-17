@@ -405,3 +405,6 @@ public class Coach {
         scanner.close();
     }
 }
+
+//for chromebook: cd /workspaces/JavaProds/blackjackwalks && javac -cp lib/xchart-3.8.8.jar -d bin src/*.java 2>&1
+//                cd /workspaces/JavaProds/blackjackwalks && java -cp bin:lib/xchart-3.8.8.jar Coach
