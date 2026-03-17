@@ -1,4 +1,7 @@
 import org.knowm.xchart.*;
+import org.knowm.xchart.BitmapEncoder;
+import org.knowm.xchart.BitmapEncoder.BitmapFormat;
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.List;
 import java.util.ArrayList;
@@ -90,7 +93,12 @@ public class app {
         chart.addSeries("Bot3", steps, b3);
         chart.addSeries("Bot4", steps, b4);
         chart.addSeries("Bot5", steps, b5);
-        new SwingWrapper<>(chart).displayChart();
+        try {
+            BitmapEncoder.saveBitmap(chart, "blackjack_chart", BitmapFormat.PNG);
+            System.out.println("Chart saved to blackjack_chart.png");
+        } catch (IOException e) {
+            System.out.println("Failed to save chart: " + e.getMessage());
+        }
 
         scanner.close();
     }
