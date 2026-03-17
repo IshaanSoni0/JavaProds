@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class Coach {
 
-    // Small helper to parse space-separated ranks using 2-11 convention (2-10 numeric, 11 = Ace)
-    // Maps input to internal card ranks where Ace is 1 and face cards/10 map to value 10 via card.getValue().
+    // Small helper to go through ranks using 2-11 convention (2-10 numeric, 11 = Ace)
+    // Maps input to card ranks where Ace is 1 and face cards/10 map to value 10 with card.getValue().
     private static List<card> parseRanks(String line) {
         List<card> hand = new ArrayList<>();
         line = line.trim();
@@ -14,7 +14,7 @@ public class Coach {
         for (String p : parts) {
             try {
                 int r = Integer.parseInt(p);
-                // Accept 2..11, where 11 is Ace
+                // Accept 2-11, where 11 is Ace
                 if (r == 11) {
                     hand.add(new card(0, 1)); // map 11 -> Ace (internal rank 1)
                 } else if (r >= 2 && r <= 10) {
