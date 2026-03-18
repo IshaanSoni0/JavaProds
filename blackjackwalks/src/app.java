@@ -1,6 +1,7 @@
 import org.knowm.xchart.*;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.BitmapEncoder.BitmapFormat;
+import org.knowm.xchart.style.markers.SeriesMarkers;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.List;
@@ -20,79 +21,137 @@ public class app {
                 .yAxisTitle("Money")
                 .build();
 
-        double[] steps = new double[totalSteps];
+        double[] steps        = new double[totalSteps];
         double[] player1money = new double[totalSteps];
-        double[] player2money = new double[totalSteps];
 
         playBlackjack player1 = new playBlackjack();
-        playBlackjack player2 = new playBlackjack();
-
-        player1.setMoney(1000);
-        player2.setMoney(1000);
+        player1.setMoney(5000);
 
         // --- PLAYER 1: Basic bot (stand on 17, hit below 17) ---
         for (int i = 0; i < totalSteps; i++) {
-            if (player1.getMoney() > 0) {
-                player1.setBet(10);
-                player1.resetgame();
-                if (player1.deck.getlength() < 10) {
-                    player1.resetDeck();
-                }
+            steps[i] = i + 1;
 
-                // Deal initial cards
-                player1.dealPlayer();
-                player1.dealDealer();
-                player1.dealPlayer();
-                player1.dealDealer();
+            if (player1.getMoney() <= 0) {
+                player1money[i] = player1.getMoney();
+                continue;
+            }
 
-                // Player hits < 17
+            // Scaling bet: 1% of bankroll, minimum 1
+            int bet = Math.max(1, (int)(0.01 * player1.getMoney()));
+            player1.setBet(bet);
+
+            player1.resetgame();
+            if (player1.deck.getlength() < 10) {
+                player1.resetDeck();
+            }
+
+            player1.dealPlayer();
+            player1.dealDealer();
+            player1.dealPlayer();
+            player1.dealDealer();
+
+            // Blackjack check
+            boolean playerBJ = isBlackjack(player1.getPlayerHand());
+            boolean dealerBJ = isBlackjack(player1.getDealerHand());
+
+            if (playerBJ && dealerBJ) {
+                // push
+            } else if (playerBJ) {
+                player1.setMoney(player1.getMoney() + (bet + bet / 2)); // 3:2
+            } else if (dealerBJ) {
+                player1.setMoney(player1.getMoney() - bet);
+            } else {
+                // Normal play
                 while (!player1.playerBusted() && player1.getPlayerTotal() < 17) {
                     player1.hitPlayer();
                 }
-
-                // Dealer hits < 17
                 while (!player1.dealerBusted() && player1.getDealerTotal() < 17) {
                     player1.hitDealer();
                 }
 
-                // Determine winner
-                boolean player1Win = false;
-                if (player1.playerBusted()) player1Win = false;
-                else if (player1.dealerBusted()) player1Win = true;
-                else if (player1.getPlayerTotal() > player1.getDealerTotal()) player1Win = true;
-                else if (player1.getPlayerTotal() == player1.getDealerTotal()) {
-                    // Push, no money change
-                } else player1Win = false;
+                if (player1.playerBusted()) {
+                    player1.setMoney(player1.getMoney() - bet);
+                } else if (player1.dealerBusted()) {
+                    player1.setMoney(player1.getMoney() + bet);
+                } else if (player1.getPlayerTotal() > player1.getDealerTotal()) {
+                    player1.setMoney(player1.getMoney() + bet);
+                } else if (player1.getPlayerTotal() == player1.getDealerTotal()) {
+                    // push — no change
+                } else {
+                    player1.setMoney(player1.getMoney() - bet);
+                }
+            }
 
-                player1.loseWin(player1Win);
+            player1money[i] = player1.getMoney();
+        }
 
-                steps[i] = i + 1;
-                player1money[i] = player1.getMoney();
-            } else {
-                steps[i] = i + 1;
-                player1money[i] = player1.getMoney();
+        // --- Card counter bots (select which to simulate) ---
+        System.out.println("Available bots:");
+        System.out.println("1: Bot1 (Balanced)");
+        System.out.println("2: Bot2 (Aggressive)");
+        System.out.println("3: Bot3 (Conservative)");
+        System.out.println("4: Bot4 (Flat)");
+        System.out.println("5: Bot5 (Risky)");
+        System.out.println("6: Bot6 (Percent)");
+        System.out.println("7: Bot7 (Risky Percent)");
+        System.out.println("8: Bot8 (Conservative Percent)");
+        System.out.println("9: Bot9 (Kelly Criterion)");
+        System.out.println("Enter bot numbers to simulate (comma-separated), or 'all' for all bots:");
+        scanner.nextLine(); // consume leftover newline
+        String selectionLine = scanner.nextLine().trim();
+
+        boolean[] simulateBot = new boolean[10]; // index 1..9 for bots, 0 reserved for basic bot
+        boolean anySelected = false;
+        if (selectionLine.equalsIgnoreCase("all") || selectionLine.isEmpty()) {
+            for (int i = 1; i <= 9; i++) simulateBot[i] = true;
+            anySelected = true;
+        } else {
+            String[] toks = selectionLine.split("[,\\s]+");
+            for (String t : toks) {
+                try {
+                    int idx = Integer.parseInt(t);
+                    if (idx >= 1 && idx <= 9) {
+                        simulateBot[idx] = true;
+                        anySelected = true;
+                    }
+                } catch (NumberFormatException e) {
+                    // ignore invalid tokens
+                }
+            }
+        }
+        if (!anySelected) {
+            System.out.println("No valid bots selected — defaulting to all.");
+            for (int i = 1; i <= 9; i++) simulateBot[i] = true;
+        }
+
+        // Always add the Basic Bot series
+        XYSeries s0 = chart.addSeries("Basic Bot", steps, player1money);
+        s0.setMarker(SeriesMarkers.NONE);
+        s0.setLineWidth(1.5f);
+
+        // Helper to add a bot series by index
+        for (int i = 1; i <= 9; i++) {
+            if (!simulateBot[i]) continue;
+            double[] data = null;
+            String label = "";
+            switch (i) {
+                case 1: { Bot1 b = new Bot1(); data = b.simulate(totalSteps); label = "Bot1 (Balanced)"; break; }
+                case 2: { Bot2 b = new Bot2(); data = b.simulate(totalSteps); label = "Bot2 (Aggressive)"; break; }
+                case 3: { Bot3 b = new Bot3(); data = b.simulate(totalSteps); label = "Bot3 (Conservative)"; break; }
+                case 4: { Bot4 b = new Bot4(); data = b.simulate(totalSteps); label = "Bot4 (Flat)"; break; }
+                case 5: { Bot5 b = new Bot5(); data = b.simulate(totalSteps); label = "Bot5 (Risky)"; break; }
+                case 6: { percentBot b = new percentBot(); data = b.simulate(totalSteps); label = "Bot6 (Percent)"; break; }
+                case 7: { bot7 b = new bot7(); data = b.simulate(totalSteps); label = "Bot7 (Risky Percent)"; break; }
+                case 8: { bot8 b = new bot8(); data = b.simulate(totalSteps); label = "Bot8 (Conservative Percent)"; break; }
+                case 9: { kellybot b = new kellybot(); data = b.simulate(totalSteps); label = "Bot9 (Kelly Criterion)"; break; }
+            }
+            if (data != null) {
+                XYSeries s = chart.addSeries(label, steps, data);
+                s.setMarker(SeriesMarkers.NONE);
+                s.setLineWidth(1.5f);
             }
         }
 
-        // --- PLAYER 2: Card counter bots (Bot1..Bot5) ---
-        Bot1 bot = new Bot1();
-        Bot2 bot2 = new Bot2();
-        Bot3 bot3 = new Bot3();
-        Bot4 bot4 = new Bot4();
-        Bot5 bot5 = new Bot5();
-
-        double[] b1 = bot.simulate(totalSteps);
-        double[] b2 = bot2.simulate(totalSteps);
-        double[] b3 = bot3.simulate(totalSteps);
-        double[] b4 = bot4.simulate(totalSteps);
-        double[] b5 = bot5.simulate(totalSteps);
-
-        chart.addSeries("Basic Bot", steps, player1money);
-        chart.addSeries("Bot1", steps, b1);
-        chart.addSeries("Bot2", steps, b2);
-        chart.addSeries("Bot3", steps, b3);
-        chart.addSeries("Bot4", steps, b4);
-        chart.addSeries("Bot5", steps, b5);
         try {
             BitmapEncoder.saveBitmap(chart, "blackjack_chart", BitmapFormat.PNG);
             System.out.println("Chart saved to blackjack_chart.png");
@@ -103,9 +162,15 @@ public class app {
         scanner.close();
     }
 
-    // Helper to calculate hand total with soft Ace logic
+    public static boolean isBlackjack(List<card> hand) {
+        if (hand.size() != 2) return false;
+        int v0 = hand.get(0).getValue();
+        int v1 = hand.get(1).getValue();
+        return (v0 == 1 && v1 == 10) || (v0 == 10 && v1 == 1);
+    }
+
     public static int calcHandTotal(List<card> hand) {
-        int total = 0;
+        int total    = 0;
         int aceCount = 0;
         for (card c : hand) {
             total += c.getValue();
@@ -118,9 +183,8 @@ public class app {
         return total;
     }
 
-    // Helper to detect soft hand (Ace counted as 11)
     public static boolean isSoftHand(List<card> hand) {
-        int total = 0;
+        int total    = 0;
         int aceCount = 0;
         for (card c : hand) {
             total += c.getValue();
@@ -129,12 +193,11 @@ public class app {
         return aceCount > 0 && (total + 10) <= 21;
     }
 
-    // Helper to detect pair (two cards same rank)
     public static boolean isPairHand(List<card> hand) {
-        return hand.size() == 2 && hand.get(0).getRank() == hand.get(1).getRank();
+        return hand.size() == 2
+                && hand.get(0).getRank() == hand.get(1).getRank();
     }
 }
 
-
-// use: javac -cp "lib/xchart-3.8.8.jar;." -d bin (Get-ChildItem src\*.java)    // to compile with XChart
-// use: java -cp "lib/xchart-3.8.8.jar;bin" app    // to run the app
+// use: javac -cp "lib/xchart-3.8.8.jar;." -d bin (Get-ChildItem src\*.java)
+// use: java -cp "lib/xchart-3.8.8.jar;bin" app

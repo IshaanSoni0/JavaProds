@@ -12,43 +12,38 @@ public class Coach {
         for (String p : parts) {
             try {
                 int r = Integer.parseInt(p);
-                if (r == 11) {
-                    hand.add(new card(0, 1)); // Ace = internal rank 1
-                } else if (r >= 2 && r <= 10) {
-                    hand.add(new card(0, r));
-                }
-            } catch (NumberFormatException e) {
-                // ignore
-            }
+                if      (r == 11)           hand.add(new card(0, 1)); // Ace = internal rank 1
+                else if (r >= 2 && r <= 10) hand.add(new card(0, r));
+            } catch (NumberFormatException e) { /* ignore */ }
         }
         return hand;
     }
 
     /**
      * rc = raw running count from getTrueCount(), same as Bot1 uses directly.
-     * Bot1 is single-deck so running count == true count for it.
-     * We pass raw running count here so deviations and betting match Bot1 exactly.
+     * DOUBLE actions are only valid on 2-card hands — caller must enforce this.
      */
     public static String decideAction(List<card> currentHand, card dealerUpCard, int rc) {
-        int playerTotal = app.calcHandTotal(currentHand);
-        int dealerValue = dealerUpCard.getValue() == 1 ? 11 : dealerUpCard.getValue();
-        boolean isSoft = app.isSoftHand(currentHand);
-        boolean isPair = app.isPairHand(currentHand);
+        int     playerTotal = app.calcHandTotal(currentHand);
+        int     dealerValue = dealerUpCard.getValue() == 1 ? 11 : dealerUpCard.getValue();
+        boolean isSoft      = app.isSoftHand(currentHand);
+        boolean isPair      = app.isPairHand(currentHand);
+        boolean canDouble   = currentHand.size() == 2; // FIX: double only on 2-card hands
 
         String action = "HIT";
 
+        // ---- BASIC STRATEGY ----
         if (isPair) {
             int rank = currentHand.get(0).getRank();
             switch (rank) {
-                case 1:  action = "SPLIT"; break;
-                case 8:  action = "SPLIT"; break;
-                case 9:  action = ((dealerValue >= 2 && dealerValue <= 6) || dealerValue == 8 || dealerValue == 9) ? "SPLIT" : "STAND"; break;
-                case 7:  action = (dealerValue >= 2 && dealerValue <= 7) ? "SPLIT" : "HIT"; break;
-                case 6:  action = (dealerValue >= 2 && dealerValue <= 6) ? "SPLIT" : "HIT"; break;
-                case 4:  action = (dealerValue == 5 || dealerValue == 6) ? "SPLIT" : "HIT"; break;
-                case 3:  action = (dealerValue >= 4 && dealerValue <= 7) ? "SPLIT" : "HIT"; break;
-                case 2:  action = (dealerValue >= 4 && dealerValue <= 7) ? "SPLIT" : "HIT"; break;
-                default: action = "STAND";
+                case 1: case 8: action = "SPLIT"; break;
+                case 9: action = ((dealerValue >= 2 && dealerValue <= 6) || dealerValue == 8 || dealerValue == 9) ? "SPLIT" : "STAND"; break;
+                case 7: action = (dealerValue >= 2 && dealerValue <= 7) ? "SPLIT" : "HIT"; break;
+                case 6: action = (dealerValue >= 2 && dealerValue <= 6) ? "SPLIT" : "HIT"; break;
+                case 4: action = (dealerValue == 5 || dealerValue == 6)  ? "SPLIT" : "HIT"; break;
+                case 3: action = (dealerValue >= 4 && dealerValue <= 7)  ? "SPLIT" : "HIT"; break;
+                case 2: action = (dealerValue >= 4 && dealerValue <= 7)  ? "SPLIT" : "HIT"; break;
+                default: action = "STAND"; break;
             }
         } else if (isSoft) {
             switch (playerTotal) {
@@ -64,19 +59,21 @@ public class Coach {
                 case 15: action = (dealerValue >= 4 && dealerValue <= 6) ? "DOUBLE" : "HIT"; break;
                 case 14:
                 case 13: action = (dealerValue >= 5 && dealerValue <= 6) ? "DOUBLE" : "HIT"; break;
-                default: action = "HIT";
+                default: action = "HIT"; break;
             }
+            if (action.equals("DOUBLE") && !canDouble) action = "HIT";
         } else {
-            if      (playerTotal >= 17)                     action = "STAND";
+            if      (playerTotal >= 17)                      action = "STAND";
             else if (playerTotal >= 13 && playerTotal <= 16) action = (dealerValue >= 2 && dealerValue <= 6) ? "STAND" : "HIT";
             else if (playerTotal == 12)                      action = (dealerValue >= 4 && dealerValue <= 6) ? "STAND" : "HIT";
             else if (playerTotal == 11)                      action = "DOUBLE";
             else if (playerTotal == 10)                      action = (dealerValue <= 9) ? "DOUBLE" : "HIT";
             else if (playerTotal == 9)                       action = (dealerValue >= 3 && dealerValue <= 6) ? "DOUBLE" : "HIT";
             else                                             action = "HIT";
+            if (action.equals("DOUBLE") && !canDouble) action = "HIT";
         }
 
-        // Hi-Lo deviations — rc is raw running count, identical to Bot1's rc
+        // ---- HI-LO DEVIATIONS (raw running count) ----
         if (!isSoft && !isPair) {
             if (playerTotal == 16 && dealerValue == 9  && rc >= 5)  action = "STAND";
             if (playerTotal == 16 && dealerValue == 10 && rc >= 0)  action = "STAND";
@@ -99,6 +96,7 @@ public class Coach {
             if (playerTotal == 9  && dealerValue == 7  && rc >= 3)  action = "DOUBLE";
             if (playerTotal == 8  && dealerValue == 5  && rc >= 3)  action = "DOUBLE";
             if (playerTotal == 8  && dealerValue == 6  && rc >= 2)  action = "DOUBLE";
+            if (action.equals("DOUBLE") && !canDouble) action = "HIT";
         }
         if (isSoft && !isPair) {
             if (playerTotal == 19 && dealerValue == 6  && rc >= 1)  action = "DOUBLE";
@@ -111,6 +109,7 @@ public class Coach {
             if (playerTotal == 15 && dealerValue == 4  && rc >= 0)  action = "DOUBLE";
             if (playerTotal == 14 && dealerValue == 4  && rc >= 1)  action = "DOUBLE";
             if (playerTotal == 13 && dealerValue == 5  && rc >= 0)  action = "DOUBLE";
+            if (action.equals("DOUBLE") && !canDouble) action = "HIT";
         }
         if (isPair) {
             if (playerTotal == 20 && dealerValue == 5  && rc >= 5)  action = "SPLIT";
@@ -136,8 +135,7 @@ public class Coach {
         int points = 1000;
         try { points = Integer.parseInt(scanner.nextLine().trim()); } catch (Exception e) { points = 1000; }
 
-        // Raw running count — same as Bot1's internal trueCount variable
-        int rc = 0;
+        int rc = 0; // raw running count
 
         System.out.println("Coach started. Enter 'q' at any prompt to quit.");
 
@@ -145,34 +143,55 @@ public class Coach {
         while (true) {
             System.out.println("\n--- New Round ---");
 
-            // BETTING: raw rc directly, exactly matching Bot1's balanced profile
+            // Bet sizing: 12:1 spread matching Bot1 BALANCED and SimulationCoach exactly
+            // rc >= 3 -> 6%, rc >= 2 -> 3%, rc >= 1 -> 1%, else -> 0.5%, minimum 1
             int suggestedBet;
-            if      (rc >= 3) suggestedBet = Math.max(1, (int)(0.10 * points));
-            else if (rc >= 2) suggestedBet = Math.max(1, (int)(0.05 * points));
-            else              suggestedBet = 5;
+            if      (rc >= 3) suggestedBet = (int)(0.06 * points);
+            else if (rc >= 2) suggestedBet = (int)(0.03 * points);
+            else if (rc >= 1) suggestedBet = (int)(0.01 * points);
+            else              suggestedBet = (int)(0.005 * points);
+            if (suggestedBet < 1) suggestedBet = 1;
 
-            double trueCount = (double) rc / Math.max(1, numDecks);
-            System.out.println("Running count (pre-deal): " + rc
-                    + ", True count: " + String.format("%.2f", trueCount)
-                    + ", Player money: " + points);
+            System.out.println("Running count: " + rc
+                    + "  True count: " + String.format("%.2f", (double) rc / Math.max(1, numDecks))
+                    + "  Money: " + points);
             System.out.println("Suggested bet: " + suggestedBet);
 
-            System.out.print("Enter dealer upcard rank (2-11, where 11=Ace), or 'q' to quit: ");
+            System.out.print("Dealer upcard (2-11, 11=Ace) or 'q': ");
             String dline = scanner.nextLine().trim();
             if (dline.equalsIgnoreCase("q")) break;
             List<card> dealer = parseRanks(dline);
-            if (dealer.isEmpty()) { System.out.println("No valid dealer upcard. Try again."); continue; }
+            if (dealer.isEmpty()) { System.out.println("Invalid. Try again."); continue; }
             card dealerUp = dealer.get(0);
 
-            System.out.print("Enter your hand ranks (space-separated, e.g. '10 7' or '11 8'): ");
+            System.out.print("Your hand (space-separated, e.g. '10 7' or '11 6'): ");
             String pline = scanner.nextLine().trim();
             if (pline.equalsIgnoreCase("q")) break;
             List<card> playerHand = parseRanks(pline);
-            if (playerHand.isEmpty()) { System.out.println("No valid player cards. Try again."); continue; }
+            if (playerHand.isEmpty()) { System.out.println("Invalid. Try again."); continue; }
 
-            // Count visible cards: player cards + dealer upcard
+            // Count visible cards: both player cards + dealer upcard
             for (card c : playerHand) rc += c.hiLowValue(c);
             rc += dealerUp.hiLowValue(dealerUp);
+
+            // FIX: check for player blackjack on initial 2-card hand
+            if (app.isBlackjack(playerHand)) {
+                System.out.println("Blackjack! Pays 3:2.");
+                System.out.print("Did dealer also have blackjack? (y/n): ");
+                String dBJ = scanner.nextLine().trim();
+                if (dBJ.equalsIgnoreCase("q")) break;
+                if (dBJ.equalsIgnoreCase("y")) {
+                    System.out.println("Both blackjack -> push. +0");
+                } else {
+                    int bjPay = (int)(suggestedBet * 1.5);
+                    points += bjPay;
+                    System.out.println("Player blackjack wins -> +" + bjPay);
+                }
+                System.out.println("Money: " + points);
+                System.out.print("Continue? (y/n): ");
+                if (!scanner.nextLine().trim().equalsIgnoreCase("y")) break;
+                continue;
+            }
 
             boolean playerDone        = false;
             boolean didSplitThisRound = false;
@@ -185,13 +204,13 @@ public class Coach {
             while (!playerDone) {
                 String recommended = decideAction(playerHand, dealerUp, rc);
                 System.out.println("\nCoach recommends: " + recommended);
-                System.out.print("Do you follow the coach? (y/n): ");
+                System.out.print("Follow? (y/n): ");
                 String follow = scanner.nextLine().trim();
                 if (follow.equalsIgnoreCase("q")) break roundLoop;
 
                 String action = recommended;
                 if (!follow.equalsIgnoreCase("y")) {
-                    System.out.print("What did you do instead? (HIT/STAND/DOUBLE/SPLIT): ");
+                    System.out.print("Your action (HIT/STAND/DOUBLE/SPLIT): ");
                     String alt = scanner.nextLine().trim();
                     if (alt.equalsIgnoreCase("q")) break roundLoop;
                     action = (alt.equalsIgnoreCase("HIT") || alt.equalsIgnoreCase("STAND")
@@ -200,40 +219,43 @@ public class Coach {
                 }
 
                 if (action.equals("HIT")) {
-                    System.out.print("Rank of card received (2-11): ");
+                    System.out.print("Card received (2-11): ");
                     String r = scanner.nextLine().trim();
                     if (r.equalsIgnoreCase("q")) break roundLoop;
                     List<card> drawn = parseRanks(r);
-                    if (drawn.isEmpty()) { System.out.println("No valid card entered."); continue; }
-                    card newC = drawn.get(0);
-                    playerHand.add(newC);
-                    rc += newC.hiLowValue(newC);
+                    if (drawn.isEmpty()) { System.out.println("Invalid."); continue; }
+                    card nc = drawn.get(0);
+                    playerHand.add(nc);
+                    rc += nc.hiLowValue(nc);
                     if (app.calcHandTotal(playerHand) > 21) {
-                        System.out.println("You busted with total " + app.calcHandTotal(playerHand));
+                        System.out.println("Busted! Total: " + app.calcHandTotal(playerHand));
                         playerBustedFlag = true;
                         playerDone = true;
                     }
 
                 } else if (action.equals("DOUBLE")) {
-                    System.out.print("Rank of card received on double (2-11): ");
+                    System.out.print("Card received on double (2-11): ");
                     String r = scanner.nextLine().trim();
                     if (r.equalsIgnoreCase("q")) break roundLoop;
                     List<card> drawn = parseRanks(r);
                     if (!drawn.isEmpty()) {
-                        card newC = drawn.get(0);
-                        playerHand.add(newC);
-                        rc += newC.hiLowValue(newC);
+                        card nc = drawn.get(0);
+                        playerHand.add(nc);
+                        rc += nc.hiLowValue(nc);
+                        if (app.calcHandTotal(playerHand) > 21) {
+                            System.out.println("Busted on double! Total: " + app.calcHandTotal(playerHand));
+                            playerBustedFlag = true;
+                        }
                     }
                     betThisRound *= 2;
                     playerDone = true;
 
                 } else if (action.equals("SPLIT")) {
                     didSplitThisRound = true;
-                    System.out.println("Split. Enter card for each new hand.");
-                    System.out.print("Card for first split hand (2-11): ");
+                    System.out.print("Card for hand 1 (2-11): ");
                     String r1 = scanner.nextLine().trim();
                     if (r1.equalsIgnoreCase("q")) break roundLoop;
-                    System.out.print("Card for second split hand (2-11): ");
+                    System.out.print("Card for hand 2 (2-11): ");
                     String r2 = scanner.nextLine().trim();
                     if (r2.equalsIgnoreCase("q")) break roundLoop;
 
@@ -246,133 +268,186 @@ public class Coach {
                     if (hand1.size() > 1) rc += hand1.get(1).hiLowValue(hand1.get(1));
                     if (hand2.size() > 1) rc += hand2.get(1).hiLowValue(hand2.get(1));
 
-                    System.out.println("Playing first split hand:");
+                    // FIX: track each split hand's bet independently
+                    int bet1 = suggestedBet;
+                    int bet2 = suggestedBet;
+
+                    System.out.println("--- Hand 1 ---");
                     while (true) {
                         String a1rec = decideAction(hand1, dealerUp, rc);
-                        System.out.println("Coach recommends for hand1: " + a1rec);
-                        System.out.print("Follow for hand1? (y/n): ");
+                        System.out.println("Coach recommends for hand 1: " + a1rec);
+                        System.out.print("Follow? (y/n): ");
                         String f1 = scanner.nextLine().trim();
                         if (f1.equalsIgnoreCase("q")) break roundLoop;
                         String a1 = f1.equalsIgnoreCase("y") ? a1rec : "STAND";
                         if (!f1.equalsIgnoreCase("y")) {
-                            System.out.print("Action for hand1? (HIT/STAND): ");
+                            System.out.print("Your action (HIT/STAND/DOUBLE): ");
                             String alt1 = scanner.nextLine().trim();
                             if (alt1.equalsIgnoreCase("q")) break roundLoop;
                             a1 = alt1.toUpperCase();
                         }
                         if (a1.equals("HIT")) {
-                            System.out.print("Card for hand1 (2-11): ");
+                            System.out.print("Card for hand 1 (2-11): ");
                             String rr = scanner.nextLine().trim();
                             if (rr.equalsIgnoreCase("q")) break roundLoop;
                             List<card> d = parseRanks(rr);
                             if (!d.isEmpty()) { hand1.add(d.get(0)); rc += d.get(0).hiLowValue(d.get(0)); }
-                            if (app.calcHandTotal(hand1) > 21) { System.out.println("Hand1 busted."); break; }
+                            if (app.calcHandTotal(hand1) > 21) { System.out.println("Hand 1 busted."); break; }
+                        } else if (a1.equals("DOUBLE")) {
+                            System.out.print("Card for hand 1 double (2-11): ");
+                            String rr = scanner.nextLine().trim();
+                            if (rr.equalsIgnoreCase("q")) break roundLoop;
+                            List<card> d = parseRanks(rr);
+                            if (!d.isEmpty()) { hand1.add(d.get(0)); rc += d.get(0).hiLowValue(d.get(0)); }
+                            bet1 *= 2; // FIX: only hand1's bet doubles
+                            if (app.calcHandTotal(hand1) > 21) System.out.println("Hand 1 busted on double.");
+                            break;
                         } else break;
                     }
 
-                    System.out.println("Playing second split hand:");
+                    System.out.println("--- Hand 2 ---");
                     while (true) {
                         String a2rec = decideAction(hand2, dealerUp, rc);
-                        System.out.println("Coach recommends for hand2: " + a2rec);
-                        System.out.print("Follow for hand2? (y/n): ");
+                        System.out.println("Coach recommends for hand 2: " + a2rec);
+                        System.out.print("Follow? (y/n): ");
                         String f2 = scanner.nextLine().trim();
                         if (f2.equalsIgnoreCase("q")) break roundLoop;
                         String a2 = f2.equalsIgnoreCase("y") ? a2rec : "STAND";
                         if (!f2.equalsIgnoreCase("y")) {
-                            System.out.print("Action for hand2? (HIT/STAND): ");
+                            System.out.print("Your action (HIT/STAND/DOUBLE): ");
                             String alt2 = scanner.nextLine().trim();
                             if (alt2.equalsIgnoreCase("q")) break roundLoop;
                             a2 = alt2.toUpperCase();
                         }
                         if (a2.equals("HIT")) {
-                            System.out.print("Card for hand2 (2-11): ");
+                            System.out.print("Card for hand 2 (2-11): ");
                             String rr = scanner.nextLine().trim();
                             if (rr.equalsIgnoreCase("q")) break roundLoop;
                             List<card> d = parseRanks(rr);
                             if (!d.isEmpty()) { hand2.add(d.get(0)); rc += d.get(0).hiLowValue(d.get(0)); }
-                            if (app.calcHandTotal(hand2) > 21) { System.out.println("Hand2 busted."); break; }
+                            if (app.calcHandTotal(hand2) > 21) { System.out.println("Hand 2 busted."); break; }
+                        } else if (a2.equals("DOUBLE")) {
+                            System.out.print("Card for hand 2 double (2-11): ");
+                            String rr = scanner.nextLine().trim();
+                            if (rr.equalsIgnoreCase("q")) break roundLoop;
+                            List<card> d = parseRanks(rr);
+                            if (!d.isEmpty()) { hand2.add(d.get(0)); rc += d.get(0).hiLowValue(d.get(0)); }
+                            bet2 *= 2; // FIX: only hand2's bet doubles
+                            if (app.calcHandTotal(hand2) > 21) System.out.println("Hand 2 busted on double.");
+                            break;
                         } else break;
                     }
 
                     finalPlayerTotalHand1 = app.calcHandTotal(hand1);
                     finalPlayerTotalHand2 = app.calcHandTotal(hand2);
-                    playerDone = true;
+
+                    // Dealer: get hole card, count it, draw until >= 17
+                    List<card> dealerHand = new ArrayList<>();
+                    dealerHand.add(dealerUp);
+                    System.out.print("Dealer hole card (2-11) or 'n': ");
+                    String holeInput = scanner.nextLine().trim();
+                    if (holeInput.equalsIgnoreCase("q")) break roundLoop;
+                    if (!holeInput.equalsIgnoreCase("n") && !holeInput.isEmpty()) {
+                        List<card> hole = parseRanks(holeInput);
+                        if (!hole.isEmpty()) { dealerHand.add(hole.get(0)); rc += hole.get(0).hiLowValue(hole.get(0)); }
+                    }
+                    System.out.println("Enter dealer draws one at a time. 's' when dealer stands.");
+                    while (true) {
+                        System.out.print("Dealer card (2-11) or 's': ");
+                        String dr = scanner.nextLine().trim();
+                        if (dr.equalsIgnoreCase("q")) break roundLoop;
+                        if (dr.equalsIgnoreCase("s")) break;
+                        List<card> ddraw = parseRanks(dr);
+                        if (!ddraw.isEmpty()) {
+                            card dc = ddraw.get(0);
+                            dealerHand.add(dc);
+                            rc += dc.hiLowValue(dc);
+                            if (app.calcHandTotal(dealerHand) > 21) { System.out.println("Dealer busted!"); break; }
+                        }
+                    }
+                    int dealerTotal = app.calcHandTotal(dealerHand);
+
+                    // FIX: each hand resolved with its own bet, push = push
+                    System.out.println("Dealer total: " + dealerTotal);
+                    int d1 = resolveHand(finalPlayerTotalHand1, dealerTotal, bet1);
+                    System.out.println("Hand 1 (" + finalPlayerTotalHand1 + "): " + formatResult(d1));
+                    points += d1;
+                    int d2 = resolveHand(finalPlayerTotalHand2, dealerTotal, bet2);
+                    System.out.println("Hand 2 (" + finalPlayerTotalHand2 + "): " + formatResult(d2));
+                    points += d2;
+
+                    System.out.println("Running count: " + rc
+                            + "  True count: " + String.format("%.2f", (double) rc / Math.max(1, numDecks))
+                            + "  Money: " + points);
+                    System.out.print("Continue? (y/n): ");
+                    if (!scanner.nextLine().trim().equalsIgnoreCase("y")) break roundLoop;
+                    continue roundLoop;
 
                 } else { // STAND
                     playerDone = true;
                 }
             }
 
-            if (!didSplitThisRound) {
-                finalPlayerTotal = app.calcHandTotal(playerHand);
-            }
+            if (didSplitThisRound) continue; // already handled above
 
-            // Count dealer hole card after player actions (matching Bot1 ordering)
+            finalPlayerTotal = app.calcHandTotal(playerHand);
+
+            // Dealer: get hole card, count it, draw until >= 17
             List<card> dealerHand = new ArrayList<>();
             dealerHand.add(dealerUp);
-            System.out.print("Enter dealer hole card rank (2-11) or 'n' if unknown: ");
+            System.out.print("Dealer hole card (2-11) or 'n': ");
             String holeInput = scanner.nextLine().trim();
             if (holeInput.equalsIgnoreCase("q")) break;
             if (!holeInput.equalsIgnoreCase("n") && !holeInput.isEmpty()) {
-                List<card> holeCards = parseRanks(holeInput);
-                if (!holeCards.isEmpty()) {
-                    dealerHand.add(holeCards.get(0));
-                    rc += holeCards.get(0).hiLowValue(holeCards.get(0));
-                }
+                List<card> hole = parseRanks(holeInput);
+                if (!hole.isEmpty()) { dealerHand.add(hole.get(0)); rc += hole.get(0).hiLowValue(hole.get(0)); }
             }
-
-            System.out.println("Enter additional dealer draws one at a time. Enter 's' when dealer stands.");
+            System.out.println("Enter dealer draws one at a time. 's' when dealer stands.");
             while (true) {
-                System.out.print("Dealer next card (2-11) or 's': ");
+                System.out.print("Dealer card (2-11) or 's': ");
                 String dr = scanner.nextLine().trim();
                 if (dr.equalsIgnoreCase("q")) break roundLoop;
                 if (dr.equalsIgnoreCase("s")) break;
                 List<card> ddraw = parseRanks(dr);
                 if (!ddraw.isEmpty()) {
-                    dealerHand.add(ddraw.get(0));
-                    rc += ddraw.get(0).hiLowValue(ddraw.get(0));
-                    if (app.calcHandTotal(dealerHand) > 21) {
-                        System.out.println("Dealer busted with " + app.calcHandTotal(dealerHand));
-                        break;
-                    }
+                    card dc = ddraw.get(0);
+                    dealerHand.add(dc);
+                    rc += dc.hiLowValue(dc);
+                    if (app.calcHandTotal(dealerHand) > 21) { System.out.println("Dealer busted!"); break; }
                 }
             }
-
             int dealerTotal = app.calcHandTotal(dealerHand);
 
-            // Resolve bets
-            if (didSplitThisRound) {
-                int handBet = suggestedBet;
-                System.out.println("Resolving split hands vs dealer total " + dealerTotal + ":");
-                System.out.println(" Hand1 total: " + finalPlayerTotalHand1);
-                if      (finalPlayerTotalHand1 > 21)                              { System.out.println("  Hand1 busted -> -" + handBet); points -= handBet; }
-                else if (dealerTotal > 21 || finalPlayerTotalHand1 > dealerTotal) { System.out.println("  Hand1 wins -> +"   + handBet); points += handBet; }
-                else if (finalPlayerTotalHand1 == dealerTotal)                    { System.out.println("  Hand1 push -> +0"); }
-                else                                                              { System.out.println("  Hand1 loses -> -"  + handBet); points -= handBet; }
-                System.out.println(" Hand2 total: " + finalPlayerTotalHand2);
-                if      (finalPlayerTotalHand2 > 21)                              { System.out.println("  Hand2 busted -> -" + handBet); points -= handBet; }
-                else if (dealerTotal > 21 || finalPlayerTotalHand2 > dealerTotal) { System.out.println("  Hand2 wins -> +"   + handBet); points += handBet; }
-                else if (finalPlayerTotalHand2 == dealerTotal)                    { System.out.println("  Hand2 push -> +0"); }
-                else                                                              { System.out.println("  Hand2 loses -> -"  + handBet); points -= handBet; }
-            } else {
-                System.out.println("Resolving hand vs dealer total " + dealerTotal + ": Player total " + finalPlayerTotal);
-                if      (playerBustedFlag)                                        { System.out.println(" Player busted -> -" + betThisRound); points -= betThisRound; }
-                else if (dealerTotal > 21 || finalPlayerTotal > dealerTotal)      { System.out.println(" Player wins -> +"   + betThisRound); points += betThisRound; }
-                else if (finalPlayerTotal == dealerTotal)                         { System.out.println(" Push -> +0"); }
-                else                                                              { System.out.println(" Player loses -> -"  + betThisRound); points -= betThisRound; }
-            }
+            // FIX: resolve after full dealer hand, push = push
+            int delta = playerBustedFlag ? -betThisRound : resolveHand(finalPlayerTotal, dealerTotal, betThisRound);
+            System.out.println("Dealer: " + dealerTotal + "  You: " + finalPlayerTotal
+                    + "  " + formatResult(delta));
+            points += delta;
 
-            System.out.println("End of round. Running count: " + rc
-                    + ", True count: " + String.format("%.2f", (double) rc / Math.max(1, numDecks))
-                    + ", Player money: " + points);
+            System.out.println("Running count: " + rc
+                    + "  True count: " + String.format("%.2f", (double) rc / Math.max(1, numDecks))
+                    + "  Money: " + points);
 
-            System.out.print("Continue to next round? (y/n): ");
-            String cont = scanner.nextLine().trim();
-            if (!cont.equalsIgnoreCase("y")) break;
+            System.out.print("Continue? (y/n): ");
+            if (!scanner.nextLine().trim().equalsIgnoreCase("y")) break;
         }
 
-        System.out.println("Coach exiting. Final running count: " + rc + ", Player money: " + points);
+        System.out.println("Coach done. Final money: " + points);
         scanner.close();
+    }
+
+    private static int resolveHand(int playerTotal, int dealerTotal, int bet) {
+        if (playerTotal > 21)           return -bet;
+        if (dealerTotal > 21)           return +bet;
+        if (playerTotal > dealerTotal)  return +bet;
+        if (playerTotal == dealerTotal) return 0;
+        return -bet;
+    }
+
+    private static String formatResult(int delta) {
+        if (delta > 0) return "WIN  +" + delta;
+        if (delta < 0) return "LOSE " + delta;
+        return "PUSH  0";
     }
 }
 
