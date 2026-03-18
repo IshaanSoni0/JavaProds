@@ -91,11 +91,48 @@ public class Bot1 {
                     break;
 
                 case BetProfile.KELLY:
-                    int cappedRc = Math.min(rc, 4);
-                    double edge = (cappedRc - 1) * 0.003;
-                    double variance = 1.2;
-                    if (edge > 0) {
-                        baseBet = (int)((edge / variance) * game.getMoney());
+                    // Edge values measured empirically via MeasureEdge (1M hands)
+                    double edgeKelly;
+                    if      (rc >= 5) edgeKelly = 0.05449;
+                    else if (rc >= 4) edgeKelly = 0.05046;
+                    else if (rc >= 3) edgeKelly = 0.03780;
+                    else if (rc >= 2) edgeKelly = 0.02361;
+                    else if (rc >= 1) edgeKelly = 0.01044;
+                    else              edgeKelly = 0.0;
+                    if (edgeKelly > 0) {
+                        baseBet = (int)((edgeKelly / 1.3) * game.getMoney());
+                    } else {
+                        baseBet = MIN_BET;
+                    }
+                    if (baseBet < MIN_BET) baseBet = MIN_BET;
+                    break;
+
+                case BetProfile.KELLY_HALF:
+                    double edgeKellyHalf;
+                    if      (rc >= 5) edgeKellyHalf = 0.05449;
+                    else if (rc >= 4) edgeKellyHalf = 0.05046;
+                    else if (rc >= 3) edgeKellyHalf = 0.03780;
+                    else if (rc >= 2) edgeKellyHalf = 0.02361;
+                    else if (rc >= 1) edgeKellyHalf = 0.01044;
+                    else              edgeKellyHalf = 0.0;
+                    if (edgeKellyHalf > 0) {
+                        baseBet = (int)((edgeKellyHalf / 1.3) * 0.5 * game.getMoney());
+                    } else {
+                        baseBet = MIN_BET;
+                    }
+                    if (baseBet < MIN_BET) baseBet = MIN_BET;
+                    break;
+
+                case BetProfile.KELLY_QUARTER:
+                    double edgeKellyQuarter;
+                    if      (rc >= 5) edgeKellyQuarter = 0.05449;
+                    else if (rc >= 4) edgeKellyQuarter = 0.05046;
+                    else if (rc >= 3) edgeKellyQuarter = 0.03780;
+                    else if (rc >= 2) edgeKellyQuarter = 0.02361;
+                    else if (rc >= 1) edgeKellyQuarter = 0.01044;
+                    else              edgeKellyQuarter = 0.0;
+                    if (edgeKellyQuarter > 0) {
+                        baseBet = (int)((edgeKellyQuarter / 1.3) * 0.25 * game.getMoney());
                     } else {
                         baseBet = MIN_BET;
                     }
@@ -131,9 +168,17 @@ public class Bot1 {
             game.updateTrueCount(game.getDealerHand().get(1));
 
             if (playerBJ || dealerBJ) {
-                if      (playerBJ && dealerBJ) { /* push */ }
-                else if (playerBJ)             game.setMoney(game.getMoney() + (baseBet + baseBet / 2));
-                else                           game.setMoney(game.getMoney() - baseBet);
+                int rcIdx = Math.max(0, Math.min(rc + 2, 7));
+                handsAtRc[rcIdx]++;
+                if (playerBJ && dealerBJ) {
+                    /* push — 0 return */
+                } else if (playerBJ) {
+                    game.setMoney(game.getMoney() + (baseBet + baseBet / 2));
+                    totalReturnAtRc[rcIdx] += 1.5; // 3:2 payout = +1.5 per initial bet
+                } else {
+                    game.setMoney(game.getMoney() - baseBet);
+                    totalReturnAtRc[rcIdx] -= 1.0;
+                }
                 player2money[i] = game.getMoney();
                 continue;
             }
@@ -195,8 +240,8 @@ public class Bot1 {
                     // Track edge measurement for split hands
                     int rcIdx = Math.max(0, Math.min(rc + 2, 7));
                     handsAtRc[rcIdx]      += 2;
-                    totalReturnAtRc[rcIdx] += (double) result1 / bet1;
-                    totalReturnAtRc[rcIdx] += (double) result2 / bet2;
+                    totalReturnAtRc[rcIdx] += (double) result1 / baseBet;
+                    totalReturnAtRc[rcIdx] += (double) result2 / baseBet;
                 }
             }
 
@@ -218,13 +263,41 @@ public class Bot1 {
                 // Track edge measurement
                 int rcIdx = Math.max(0, Math.min(rc + 2, 7));
                 handsAtRc[rcIdx]++;
-                totalReturnAtRc[rcIdx] += (double) result / finalBet;
+                totalReturnAtRc[rcIdx] += (double) result / baseBet;
             }
 
             player2money[i] = game.getMoney();
         }
 
-        
+        // ---- PRINT MEASURED EDGE PER COUNT LEVEL ----
+        // Only print when running BALANCED so it doesn't spam for every bot
+        if (betProfile == BetProfile.BALANCED) {
+            System.out.println("\n=== Measured edge per count level (Bot1 BALANCED) ===");
+            System.out.printf("%-10s %-10s %-12s %-12s%n", "rc level", "hands", "avg return", "edge %");
+            System.out.println("--------------------------------------------------");
+            String[] labels = {"rc<=-2", "rc=-1", "rc=0", "rc=1", "rc=2", "rc=3", "rc=4", "rc>=5"};
+            for (int j = 0; j < 8; j++) {
+                if (handsAtRc[j] > 0) {
+                    double avgReturn = totalReturnAtRc[j] / handsAtRc[j];
+                    System.out.printf("%-10s %-10d %-12.4f %-12s%n",
+                        labels[j], handsAtRc[j],
+                        avgReturn,
+                        String.format("%.3f%%", avgReturn * 100));
+                }
+            }
+            System.out.println();
+            System.out.println("Kelly bet fractions derived from measured edges (edge / 1.2):");
+            for (int j = 0; j < 8; j++) {
+                if (handsAtRc[j] > 0) {
+                    double avgReturn = totalReturnAtRc[j] / handsAtRc[j];
+                    if (avgReturn > 0) {
+                        System.out.printf("  %-10s  edge=%.3f%%  ->  bet %.4f%% of bankroll%n",
+                            labels[j], avgReturn * 100, (avgReturn / 1.2) * 100);
+                    }
+                }
+            }
+            System.out.println();
+        }
 
         return player2money;
     }
@@ -257,17 +330,17 @@ public class Bot1 {
             } else if (isSoft) {
                 switch (playerTotal) {
                     case 20: action = "STAND"; break;
-                    case 19: action = (dealerValue == 6) ? "DOUBLE" : "STAND"; break;
+                    case 19: action = (dealerValue >= 4 && dealerValue <= 6) ? "DOUBLE" : "STAND"; break; // single deck: double vs 4,5 also
                     case 18:
                         if      (dealerValue >= 2 && dealerValue <= 6) action = "DOUBLE";
                         else if (dealerValue == 7 || dealerValue == 8)  action = "STAND";
                         else                                             action = "HIT";
                         break;
-                    case 17: action = (dealerValue >= 3 && dealerValue <= 6) ? "DOUBLE" : "HIT"; break;
+                    case 17: action = (dealerValue >= 2 && dealerValue <= 6) ? "DOUBLE" : "HIT"; break; // single deck: double vs 2 also
                     case 16:
-                    case 15: action = (dealerValue >= 4 && dealerValue <= 6) ? "DOUBLE" : "HIT"; break;
+                    case 15: action = (dealerValue >= 3 && dealerValue <= 6) ? "DOUBLE" : "HIT"; break; // single deck: A,4/A,5 double vs 3-6
                     case 14:
-                    case 13: action = (dealerValue >= 5 && dealerValue <= 6) ? "DOUBLE" : "HIT"; break;
+                    case 13: action = (dealerValue >= 4 && dealerValue <= 6) ? "DOUBLE" : "HIT"; break; // single deck: A,2/A,3 double vs 4-6
                     default: action = "HIT"; break;
                 }
                 if (action.equals("DOUBLE") && !canDouble) action = "HIT";
@@ -277,14 +350,15 @@ public class Bot1 {
                 else if (playerTotal == 12)                      action = (dealerValue >= 4 && dealerValue <= 6) ? "STAND" : "HIT";
                 else if (playerTotal == 11)                      action = "DOUBLE";
                 else if (playerTotal == 10)                      action = (dealerValue <= 9) ? "DOUBLE" : "HIT";
-                else if (playerTotal == 9)                       action = (dealerValue >= 3 && dealerValue <= 6) ? "DOUBLE" : "HIT";
+                else if (playerTotal == 9)                       action = (dealerValue >= 2 && dealerValue <= 6) ? "DOUBLE" : "HIT"; // single deck: double vs 2 also
+                else if (playerTotal == 8)                       action = (dealerValue == 5 || dealerValue == 6) ? "DOUBLE" : "HIT"; // single deck: double 8 vs 5,6
                 else                                             action = "HIT";
                 if (action.equals("DOUBLE") && !canDouble) action = "HIT";
             }
 
             if (!isSoft && !isPair) {
                 if (playerTotal == 16 && dealerValue == 9  && rc >= 5)  action = "STAND";
-                if (playerTotal == 16 && dealerValue == 10 && rc >= 4) action = "STAND";
+                if (playerTotal == 16 && dealerValue == 10 && rc >= 4)  action = "STAND";
                 if (playerTotal == 16 && dealerValue == 11 && rc >= 3)  action = "STAND";
                 if (playerTotal == 15 && dealerValue == 10 && rc >= 4)  action = "STAND";
                 if (playerTotal == 15 && dealerValue == 9  && rc >= 5)  action = "STAND";
@@ -300,7 +374,7 @@ public class Bot1 {
                 if (playerTotal == 11 && dealerValue == 11 && rc >= 1)  action = "DOUBLE";
                 if (playerTotal == 10 && dealerValue == 10 && rc >= 4)  action = "DOUBLE";
                 if (playerTotal == 10 && dealerValue == 11 && rc >= 4)  action = "DOUBLE";
-                if (playerTotal == 9  && dealerValue == 2  && rc >= 1)  action = "DOUBLE";
+                // 9 vs 2: now in basic strategy (single deck), deviation removed
                 if (playerTotal == 9  && dealerValue == 7  && rc >= 3)  action = "DOUBLE";
                 if (playerTotal == 8  && dealerValue == 5  && rc >= 3)  action = "DOUBLE";
                 if (playerTotal == 8  && dealerValue == 6  && rc >= 2)  action = "DOUBLE";

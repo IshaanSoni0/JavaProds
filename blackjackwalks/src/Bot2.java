@@ -20,5 +20,7 @@ class BetProfile {
     static final int PERCENT = 6;
     static final int RISKY_PERCENT = 7;
     static final int CONSERVATIVE_PERCENT = 8;
-    static final int KELLY = 9;
+    static final int KELLY                = 9;
+    static final int KELLY_HALF           = 10;
+    static final int KELLY_QUARTER        = 11;
 }

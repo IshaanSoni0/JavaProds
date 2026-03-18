@@ -96,21 +96,23 @@ public class app {
         System.out.println("7: Bot7 (Risky Percent)");
         System.out.println("8: Bot8 (Conservative Percent)");
         System.out.println("9: Bot9 (Kelly Criterion)");
+        System.out.println("10: Bot10 (Half Kelly)");
+        System.out.println("11: Bot11 (Quarter Kelly)");
         System.out.println("Enter bot numbers to simulate (comma-separated), or 'all' for all bots:");
         scanner.nextLine(); // consume leftover newline
         String selectionLine = scanner.nextLine().trim();
 
-        boolean[] simulateBot = new boolean[10]; // index 1..9 for bots, 0 reserved for basic bot
+        boolean[] simulateBot = new boolean[12]; // index 1..11 for bots
         boolean anySelected = false;
         if (selectionLine.equalsIgnoreCase("all") || selectionLine.isEmpty()) {
-            for (int i = 1; i <= 9; i++) simulateBot[i] = true;
+            for (int i = 1; i <= 11; i++) simulateBot[i] = true;
             anySelected = true;
         } else {
             String[] toks = selectionLine.split("[,\\s]+");
             for (String t : toks) {
                 try {
                     int idx = Integer.parseInt(t);
-                    if (idx >= 1 && idx <= 9) {
+                    if (idx >= 1 && idx <= 11) {
                         simulateBot[idx] = true;
                         anySelected = true;
                     }
@@ -121,34 +123,36 @@ public class app {
         }
         if (!anySelected) {
             System.out.println("No valid bots selected — defaulting to all.");
-            for (int i = 1; i <= 9; i++) simulateBot[i] = true;
+            for (int i = 1; i <= 11; i++) simulateBot[i] = true;
         }
 
         // Always add the Basic Bot series
         XYSeries s0 = chart.addSeries("Basic Bot", steps, player1money);
         s0.setMarker(SeriesMarkers.NONE);
-        s0.setLineWidth(1.5f);
+        s0.setLineWidth(0.5f);
 
         // Helper to add a bot series by index
-        for (int i = 1; i <= 9; i++) {
+        for (int i = 1; i <= 11; i++) {
             if (!simulateBot[i]) continue;
             double[] data = null;
             String label = "";
             switch (i) {
-                case 1: { Bot1 b = new Bot1(); data = b.simulate(totalSteps); label = "Bot1 (Balanced)"; break; }
-                case 2: { Bot2 b = new Bot2(); data = b.simulate(totalSteps); label = "Bot2 (Aggressive)"; break; }
-                case 3: { Bot3 b = new Bot3(); data = b.simulate(totalSteps); label = "Bot3 (Conservative)"; break; }
-                case 4: { Bot4 b = new Bot4(); data = b.simulate(totalSteps); label = "Bot4 (Flat)"; break; }
-                case 5: { Bot5 b = new Bot5(); data = b.simulate(totalSteps); label = "Bot5 (Risky)"; break; }
-                case 6: { percentBot b = new percentBot(); data = b.simulate(totalSteps); label = "Bot6 (Percent)"; break; }
-                case 7: { bot7 b = new bot7(); data = b.simulate(totalSteps); label = "Bot7 (Risky Percent)"; break; }
-                case 8: { bot8 b = new bot8(); data = b.simulate(totalSteps); label = "Bot8 (Conservative Percent)"; break; }
-                case 9: { kellybot b = new kellybot(); data = b.simulate(totalSteps); label = "Bot9 (Kelly Criterion)"; break; }
+                case 1:  { Bot1 b = new Bot1(); data = b.simulate(totalSteps); label = "Bot1 (Balanced)"; break; }
+                case 2:  { Bot2 b = new Bot2(); data = b.simulate(totalSteps); label = "Bot2 (Aggressive)"; break; }
+                case 3:  { Bot3 b = new Bot3(); data = b.simulate(totalSteps); label = "Bot3 (Conservative)"; break; }
+                case 4:  { Bot4 b = new Bot4(); data = b.simulate(totalSteps); label = "Bot4 (Flat)"; break; }
+                case 5:  { Bot5 b = new Bot5(); data = b.simulate(totalSteps); label = "Bot5 (Risky)"; break; }
+                case 6:  { percentBot b = new percentBot(); data = b.simulate(totalSteps); label = "Bot6 (Percent)"; break; }
+                case 7:  { bot7 b = new bot7(); data = b.simulate(totalSteps); label = "Bot7 (Risky Percent)"; break; }
+                case 8:  { bot8 b = new bot8(); data = b.simulate(totalSteps); label = "Bot8 (Conservative Percent)"; break; }
+                case 9:  { kellybot b = new kellybot(); data = b.simulate(totalSteps); label = "Bot9 (Full Kelly)"; break; }
+                case 10: { bot10 b = new bot10(); data = b.simulate(totalSteps); label = "Bot10 (Half Kelly)"; break; }
+                case 11: { bot11 b = new bot11(); data = b.simulate(totalSteps); label = "Bot11 (Quarter Kelly)"; break; }
             }
             if (data != null) {
                 XYSeries s = chart.addSeries(label, steps, data);
                 s.setMarker(SeriesMarkers.NONE);
-                s.setLineWidth(1.5f);
+                s.setLineWidth(0.5f);
             }
         }
 
@@ -201,3 +205,6 @@ public class app {
 
 // use: javac -cp "lib/xchart-3.8.8.jar;." -d bin (Get-ChildItem src\*.java)
 // use: java -cp "lib/xchart-3.8.8.jar;bin" app
+
+// chromebook: cd /workspaces/JavaProds/blackjackwalks && javac -d bin -cp "lib/*" src/*.java
+//             cd /workspaces/JavaProds/blackjackwalks && java -cp "bin:lib/*" app
