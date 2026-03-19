@@ -143,13 +143,20 @@ public class Coach {
         while (true) {
             System.out.println("\n--- New Round ---");
 
-            // Bet sizing: 12:1 spread matching Bot1 BALANCED and SimulationCoach exactly
-            // rc >= 3 -> 6%, rc >= 2 -> 3%, rc >= 1 -> 1%, else -> 0.5%, minimum 1
+            // Bet sizing: Kelly criterion, matches Bot1 KELLY and SimulationCoach
+            double edgeForBet;
+            if      (rc >= 5) edgeForBet = 0.05449;
+            else if (rc >= 4) edgeForBet = 0.05046;
+            else if (rc >= 3) edgeForBet = 0.03780;
+            else if (rc >= 2) edgeForBet = 0.02361;
+            else if (rc >= 1) edgeForBet = 0.01044;
+            else              edgeForBet = 0.0;
             int suggestedBet;
-            if      (rc >= 3) suggestedBet = (int)(0.06 * points);
-            else if (rc >= 2) suggestedBet = (int)(0.03 * points);
-            else if (rc >= 1) suggestedBet = (int)(0.01 * points);
-            else              suggestedBet = (int)(0.005 * points);
+            if (edgeForBet > 0) {
+                suggestedBet = (int)((edgeForBet / 1.2) * points);
+            } else {
+                suggestedBet = 1;
+            }
             if (suggestedBet < 1) suggestedBet = 1;
 
             System.out.println("Running count: " + rc

@@ -40,13 +40,21 @@ public class SimulationCoach {
                 game.resetTrueCount();
             }
 
-            // ---- BET SIZING: 12:1 spread, matches Coach suggestion ----
+            // ---- BET SIZING: Kelly criterion, matches Bot1 KELLY and Coach suggestion ----
             int rc = game.getTrueCount();
+            double edgeKelly;
+            if      (rc >= 5) edgeKelly = 0.05449;
+            else if (rc >= 4) edgeKelly = 0.05046;
+            else if (rc >= 3) edgeKelly = 0.03780;
+            else if (rc >= 2) edgeKelly = 0.02361;
+            else if (rc >= 1) edgeKelly = 0.01044;
+            else              edgeKelly = 0.0;
             int baseBet;
-            if      (rc >= 3) baseBet = (int)(0.06 * game.getMoney());
-            else if (rc >= 2) baseBet = (int)(0.03 * game.getMoney());
-            else if (rc >= 1) baseBet = (int)(0.01 * game.getMoney());
-            else              baseBet = (int)(0.005 * game.getMoney());
+            if (edgeKelly > 0) {
+                baseBet = (int)((edgeKelly / 1.2) * game.getMoney());
+            } else {
+                baseBet = 1;
+            }
             if (baseBet < 1) baseBet = 1;
             game.setBet(baseBet);
 
