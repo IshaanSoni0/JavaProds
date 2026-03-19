@@ -40,18 +40,20 @@ public class SimulationCoach {
                 game.resetTrueCount();
             }
 
-            // ---- BET SIZING: Kelly criterion, matches Bot1 KELLY and Coach suggestion ----
+            // ---- BET SIZING: Three-Quarter Kelly, thresholds in TRUE count units ----
+            // TC = RC / decks remaining; deck.getlength()/52 gives decks remaining directly.
             int rc = game.getTrueCount();
+            int tc = trueCt(rc, game);
             double edgeKelly;
-            if      (rc >= 5) edgeKelly = 0.05449;
-            else if (rc >= 4) edgeKelly = 0.05046;
-            else if (rc >= 3) edgeKelly = 0.03780;
-            else if (rc >= 2) edgeKelly = 0.02361;
-            else if (rc >= 1) edgeKelly = 0.01044;
+            if      (tc >= 5) edgeKelly = 0.05449;
+            else if (tc >= 4) edgeKelly = 0.05046;
+            else if (tc >= 3) edgeKelly = 0.03780;
+            else if (tc >= 2) edgeKelly = 0.02361;
+            else if (tc >= 1) edgeKelly = 0.01044;
             else              edgeKelly = 0.0;
             int baseBet;
             if (edgeKelly > 0) {
-                baseBet = (int)((edgeKelly / 1.2) * game.getMoney());
+                baseBet = (int)((edgeKelly / 1.3) * 0.75 * game.getMoney()); // 3/4 Kelly: f* = 0.75*(edge/variance)
             } else {
                 baseBet = 1;
             }
@@ -88,7 +90,7 @@ public class SimulationCoach {
             if (playerHand.size() == 2
                     && playerHand.get(0).getRank() == playerHand.get(1).getRank()) {
 
-                String coachSplit = Coach.decideAction(playerHand, dealerUpCard, game.getTrueCount());
+                String coachSplit = Coach.decideAction(playerHand, dealerUpCard, trueCt(game.getTrueCount(), game));
 
                 if (coachSplit.equals("SPLIT")) {
                     didSplit = true;
@@ -108,11 +110,11 @@ public class SimulationCoach {
                     game.updateTrueCount(s2);
 
                     game.setBet(baseBet);
-                    int total1 = playHandWithCoach(hand1, dealerUpCard, game);
+                    int total1 = playHandWithCoach(hand1, dealerUpCard, game, numDecks);
                     int bet1   = game.getBet();
 
                     game.setBet(baseBet);
-                    int total2 = playHandWithCoach(hand2, dealerUpCard, game);
+                    int total2 = playHandWithCoach(hand2, dealerUpCard, game, numDecks);
                     int bet2   = game.getBet();
 
                     while (game.getDealerTotal() < 17) {
@@ -129,7 +131,7 @@ public class SimulationCoach {
             // ---- NO SPLIT ----
             if (!didSplit) {
                 game.setBet(baseBet);
-                int playerTotal = playHandWithCoach(playerHand, dealerUpCard, game);
+                int playerTotal = playHandWithCoach(playerHand, dealerUpCard, game, numDecks);
                 int finalBet    = game.getBet();
 
                 while (game.getDealerTotal() < 17) {
@@ -155,11 +157,16 @@ public class SimulationCoach {
         scanner.close();
     }
 
-    private static int playHandWithCoach(List<card> hand, card dealerUpCard, playBlackjack game) {
+    private static int trueCt(int rc, playBlackjack game) {
+        // TC = RC / decks remaining; deck.getlength()/52.0 = decks remaining right now
+        return (int) Math.round((double) rc / Math.max(0.5, game.deck.getlength() / 52.0));
+    }
+
+    private static int playHandWithCoach(List<card> hand, card dealerUpCard, playBlackjack game, int numDecks) {
         List<card> current = new ArrayList<>(hand);
 
         while (true) {
-            String action = Coach.decideAction(current, dealerUpCard, game.getTrueCount());
+            String action = Coach.decideAction(current, dealerUpCard, trueCt(game.getTrueCount(), game));
 
             if (action.equals("STAND") || action.equals("SPLIT")) {
                 break;

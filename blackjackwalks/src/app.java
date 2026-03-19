@@ -98,21 +98,22 @@ public class app {
         System.out.println("9: Bot9 (Kelly Criterion)");
         System.out.println("10: Bot10 (Half Kelly)");
         System.out.println("11: Bot11 (Quarter Kelly)");
+        System.out.println("12: Bot12 (Three-Quarter Kelly)");
         System.out.println("Enter bot numbers to simulate (comma-separated), or 'all' for all bots:");
         scanner.nextLine(); // consume leftover newline
         String selectionLine = scanner.nextLine().trim();
 
-        boolean[] simulateBot = new boolean[12]; // index 1..11 for bots
+        boolean[] simulateBot = new boolean[13]; // index 1..12 for bots
         boolean anySelected = false;
         if (selectionLine.equalsIgnoreCase("all") || selectionLine.isEmpty()) {
-            for (int i = 1; i <= 11; i++) simulateBot[i] = true;
+            for (int i = 1; i <= 12; i++) simulateBot[i] = true;
             anySelected = true;
         } else {
             String[] toks = selectionLine.split("[,\\s]+");
             for (String t : toks) {
                 try {
                     int idx = Integer.parseInt(t);
-                    if (idx >= 1 && idx <= 11) {
+                    if (idx >= 1 && idx <= 12) {
                         simulateBot[idx] = true;
                         anySelected = true;
                     }
@@ -123,7 +124,7 @@ public class app {
         }
         if (!anySelected) {
             System.out.println("No valid bots selected — defaulting to all.");
-            for (int i = 1; i <= 11; i++) simulateBot[i] = true;
+            for (int i = 1; i <= 12; i++) simulateBot[i] = true;
         }
 
         // Always add the Basic Bot series
@@ -132,7 +133,7 @@ public class app {
         s0.setLineWidth(0.5f);
 
         // Helper to add a bot series by index
-        for (int i = 1; i <= 11; i++) {
+        for (int i = 1; i <= 12; i++) {
             if (!simulateBot[i]) continue;
             double[] data = null;
             String label = "";
@@ -148,6 +149,7 @@ public class app {
                 case 9:  { kellybot b = new kellybot(); data = b.simulate(totalSteps); label = "Bot9 (Full Kelly)"; break; }
                 case 10: { bot10 b = new bot10(); data = b.simulate(totalSteps); label = "Bot10 (Half Kelly)"; break; }
                 case 11: { bot11 b = new bot11(); data = b.simulate(totalSteps); label = "Bot11 (Quarter Kelly)"; break; }
+                case 12: { bot12 b = new bot12(); data = b.simulate(totalSteps); label = "Bot12 (Three-Quarter Kelly)"; break; }
             }
             if (data != null) {
                 XYSeries s = chart.addSeries(label, steps, data);

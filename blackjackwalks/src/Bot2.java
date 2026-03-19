@@ -23,4 +23,5 @@ class BetProfile {
     static final int KELLY                = 9;
     static final int KELLY_HALF           = 10;
     static final int KELLY_QUARTER        = 11;
+    static final int KELLY_THREE_QUARTER  = 12;
 }

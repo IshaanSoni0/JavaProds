@@ -20,7 +20,8 @@ public class Coach {
     }
 
     /**
-     * rc = raw running count from getTrueCount(), same as Bot1 uses directly.
+     * rc = true count (running count / decks remaining), rounded to nearest integer.
+     *      For single-deck, true count == running count. Caller must pre-compute TC.
      * DOUBLE actions are only valid on 2-card hands — caller must enforce this.
      */
     public static String decideAction(List<card> currentHand, card dealerUpCard, int rc) {
@@ -76,7 +77,7 @@ public class Coach {
         // ---- HI-LO DEVIATIONS (raw running count) ----
         if (!isSoft && !isPair) {
             if (playerTotal == 16 && dealerValue == 9  && rc >= 5)  action = "STAND";
-            if (playerTotal == 16 && dealerValue == 10 && rc >= 0)  action = "STAND";
+            if (playerTotal == 16 && dealerValue == 10 && rc >= 4)  action = "STAND";
             if (playerTotal == 16 && dealerValue == 11 && rc >= 3)  action = "STAND";
             if (playerTotal == 15 && dealerValue == 10 && rc >= 4)  action = "STAND";
             if (playerTotal == 15 && dealerValue == 9  && rc >= 5)  action = "STAND";
@@ -115,7 +116,6 @@ public class Coach {
             if (playerTotal == 20 && dealerValue == 5  && rc >= 5)  action = "SPLIT";
             if (playerTotal == 20 && dealerValue == 6  && rc >= 4)  action = "SPLIT";
             if (playerTotal == 18 && dealerValue == 7  && rc >= 3)  action = "SPLIT";
-            if (playerTotal == 16 && dealerValue == 10 && rc >= 0)  action = "STAND";
             if (playerTotal == 8  && dealerValue == 4  && rc >= 5)  action = "SPLIT";
             if (playerTotal == 8  && dealerValue == 5  && rc >= 0)  action = "SPLIT";
             if (playerTotal == 8  && dealerValue == 6  && rc >= -1) action = "SPLIT";
@@ -135,7 +135,8 @@ public class Coach {
         int points = 1000;
         try { points = Integer.parseInt(scanner.nextLine().trim()); } catch (Exception e) { points = 1000; }
 
-        int rc = 0; // raw running count
+        int rc        = 0; // raw running count
+        int cardsSeen = 0; // total cards seen since shoe start (for true count denominator)
 
         System.out.println("Coach started. Enter 'q' at any prompt to quit.");
 
@@ -143,24 +144,27 @@ public class Coach {
         while (true) {
             System.out.println("\n--- New Round ---");
 
-            // Bet sizing: Kelly criterion, matches Bot1 KELLY and SimulationCoach
+            // Bet sizing: Three-Quarter Kelly — 75% of Kelly fraction.
+            // Retains ~94% of Full Kelly growth rate at roughly half the variance.
+            // Edge values are deck-count-agnostic: TC normalises RC across shoe depths.
+            int tc = trueCt(rc, cardsSeen, numDecks);
             double edgeForBet;
-            if      (rc >= 5) edgeForBet = 0.05449;
-            else if (rc >= 4) edgeForBet = 0.05046;
-            else if (rc >= 3) edgeForBet = 0.03780;
-            else if (rc >= 2) edgeForBet = 0.02361;
-            else if (rc >= 1) edgeForBet = 0.01044;
+            if      (tc >= 5) edgeForBet = 0.05449;
+            else if (tc >= 4) edgeForBet = 0.05046;
+            else if (tc >= 3) edgeForBet = 0.03780;
+            else if (tc >= 2) edgeForBet = 0.02361;
+            else if (tc >= 1) edgeForBet = 0.01044;
             else              edgeForBet = 0.0;
             int suggestedBet;
             if (edgeForBet > 0) {
-                suggestedBet = (int)((edgeForBet / 1.2) * points);
+                suggestedBet = (int)((edgeForBet / 1.3) * 0.75 * points); // 3/4 Kelly: f* = 0.75 * (edge/variance)
             } else {
                 suggestedBet = 1;
             }
             if (suggestedBet < 1) suggestedBet = 1;
 
             System.out.println("Running count: " + rc
-                    + "  True count: " + String.format("%.2f", (double) rc / Math.max(1, numDecks))
+                    + "  True count: " + String.format("%.2f", (double) rc / Math.max(0.5, numDecks - (double) cardsSeen / 52))
                     + "  Money: " + points);
             System.out.println("Suggested bet: " + suggestedBet);
 
@@ -179,16 +183,30 @@ public class Coach {
 
             // Count visible cards: both player cards + dealer upcard
             for (card c : playerHand) rc += c.hiLowValue(c);
+            cardsSeen += playerHand.size();
             rc += dealerUp.hiLowValue(dealerUp);
+            cardsSeen++;
 
             // FIX: check for player blackjack on initial 2-card hand
             if (app.isBlackjack(playerHand)) {
                 System.out.println("Blackjack! Pays 3:2.");
-                System.out.print("Did dealer also have blackjack? (y/n): ");
-                String dBJ = scanner.nextLine().trim();
-                if (dBJ.equalsIgnoreCase("q")) break;
-                if (dBJ.equalsIgnoreCase("y")) {
-                    System.out.println("Both blackjack -> push. +0");
+                System.out.print("Dealer hole card (2-11): ");
+                String holeStr = scanner.nextLine().trim();
+                if (holeStr.equalsIgnoreCase("q")) break;
+                List<card> holeCards = parseRanks(holeStr);
+                if (!holeCards.isEmpty()) {
+                    rc += holeCards.get(0).hiLowValue(holeCards.get(0));
+                    cardsSeen++;
+                    List<card> dealerFull = new ArrayList<>();
+                    dealerFull.add(dealerUp);
+                    dealerFull.add(holeCards.get(0));
+                    if (app.isBlackjack(dealerFull)) {
+                        System.out.println("Both blackjack -> push. +0");
+                    } else {
+                        int bjPay = (int)(suggestedBet * 1.5);
+                        points += bjPay;
+                        System.out.println("Player blackjack wins -> +" + bjPay);
+                    }
                 } else {
                     int bjPay = (int)(suggestedBet * 1.5);
                     points += bjPay;
@@ -209,7 +227,7 @@ public class Coach {
             int betThisRound          = suggestedBet;
 
             while (!playerDone) {
-                String recommended = decideAction(playerHand, dealerUp, rc);
+                String recommended = decideAction(playerHand, dealerUp, trueCt(rc, cardsSeen, numDecks));
                 System.out.println("\nCoach recommends: " + recommended);
                 System.out.print("Follow? (y/n): ");
                 String follow = scanner.nextLine().trim();
@@ -234,6 +252,7 @@ public class Coach {
                     card nc = drawn.get(0);
                     playerHand.add(nc);
                     rc += nc.hiLowValue(nc);
+                    cardsSeen++;
                     if (app.calcHandTotal(playerHand) > 21) {
                         System.out.println("Busted! Total: " + app.calcHandTotal(playerHand));
                         playerBustedFlag = true;
@@ -249,6 +268,7 @@ public class Coach {
                         card nc = drawn.get(0);
                         playerHand.add(nc);
                         rc += nc.hiLowValue(nc);
+                        cardsSeen++;
                         if (app.calcHandTotal(playerHand) > 21) {
                             System.out.println("Busted on double! Total: " + app.calcHandTotal(playerHand));
                             playerBustedFlag = true;
@@ -272,8 +292,8 @@ public class Coach {
                     List<card> hand2 = new ArrayList<>();
                     hand2.add(playerHand.get(1));
                     hand2.addAll(parseRanks(r2));
-                    if (hand1.size() > 1) rc += hand1.get(1).hiLowValue(hand1.get(1));
-                    if (hand2.size() > 1) rc += hand2.get(1).hiLowValue(hand2.get(1));
+                    if (hand1.size() > 1) { rc += hand1.get(1).hiLowValue(hand1.get(1)); cardsSeen++; }
+                    if (hand2.size() > 1) { rc += hand2.get(1).hiLowValue(hand2.get(1)); cardsSeen++; }
 
                     // FIX: track each split hand's bet independently
                     int bet1 = suggestedBet;
@@ -281,7 +301,7 @@ public class Coach {
 
                     System.out.println("--- Hand 1 ---");
                     while (true) {
-                        String a1rec = decideAction(hand1, dealerUp, rc);
+                        String a1rec = decideAction(hand1, dealerUp, trueCt(rc, cardsSeen, numDecks));
                         System.out.println("Coach recommends for hand 1: " + a1rec);
                         System.out.print("Follow? (y/n): ");
                         String f1 = scanner.nextLine().trim();
@@ -298,14 +318,14 @@ public class Coach {
                             String rr = scanner.nextLine().trim();
                             if (rr.equalsIgnoreCase("q")) break roundLoop;
                             List<card> d = parseRanks(rr);
-                            if (!d.isEmpty()) { hand1.add(d.get(0)); rc += d.get(0).hiLowValue(d.get(0)); }
+                            if (!d.isEmpty()) { hand1.add(d.get(0)); rc += d.get(0).hiLowValue(d.get(0)); cardsSeen++; }
                             if (app.calcHandTotal(hand1) > 21) { System.out.println("Hand 1 busted."); break; }
                         } else if (a1.equals("DOUBLE")) {
                             System.out.print("Card for hand 1 double (2-11): ");
                             String rr = scanner.nextLine().trim();
                             if (rr.equalsIgnoreCase("q")) break roundLoop;
                             List<card> d = parseRanks(rr);
-                            if (!d.isEmpty()) { hand1.add(d.get(0)); rc += d.get(0).hiLowValue(d.get(0)); }
+                            if (!d.isEmpty()) { hand1.add(d.get(0)); rc += d.get(0).hiLowValue(d.get(0)); cardsSeen++; }
                             bet1 *= 2; // FIX: only hand1's bet doubles
                             if (app.calcHandTotal(hand1) > 21) System.out.println("Hand 1 busted on double.");
                             break;
@@ -314,7 +334,7 @@ public class Coach {
 
                     System.out.println("--- Hand 2 ---");
                     while (true) {
-                        String a2rec = decideAction(hand2, dealerUp, rc);
+                        String a2rec = decideAction(hand2, dealerUp, trueCt(rc, cardsSeen, numDecks));
                         System.out.println("Coach recommends for hand 2: " + a2rec);
                         System.out.print("Follow? (y/n): ");
                         String f2 = scanner.nextLine().trim();
@@ -331,14 +351,14 @@ public class Coach {
                             String rr = scanner.nextLine().trim();
                             if (rr.equalsIgnoreCase("q")) break roundLoop;
                             List<card> d = parseRanks(rr);
-                            if (!d.isEmpty()) { hand2.add(d.get(0)); rc += d.get(0).hiLowValue(d.get(0)); }
+                            if (!d.isEmpty()) { hand2.add(d.get(0)); rc += d.get(0).hiLowValue(d.get(0)); cardsSeen++; }
                             if (app.calcHandTotal(hand2) > 21) { System.out.println("Hand 2 busted."); break; }
                         } else if (a2.equals("DOUBLE")) {
                             System.out.print("Card for hand 2 double (2-11): ");
                             String rr = scanner.nextLine().trim();
                             if (rr.equalsIgnoreCase("q")) break roundLoop;
                             List<card> d = parseRanks(rr);
-                            if (!d.isEmpty()) { hand2.add(d.get(0)); rc += d.get(0).hiLowValue(d.get(0)); }
+                            if (!d.isEmpty()) { hand2.add(d.get(0)); rc += d.get(0).hiLowValue(d.get(0)); cardsSeen++; }
                             bet2 *= 2; // FIX: only hand2's bet doubles
                             if (app.calcHandTotal(hand2) > 21) System.out.println("Hand 2 busted on double.");
                             break;
@@ -356,7 +376,7 @@ public class Coach {
                     if (holeInput.equalsIgnoreCase("q")) break roundLoop;
                     if (!holeInput.equalsIgnoreCase("n") && !holeInput.isEmpty()) {
                         List<card> hole = parseRanks(holeInput);
-                        if (!hole.isEmpty()) { dealerHand.add(hole.get(0)); rc += hole.get(0).hiLowValue(hole.get(0)); }
+                        if (!hole.isEmpty()) { dealerHand.add(hole.get(0)); rc += hole.get(0).hiLowValue(hole.get(0)); cardsSeen++; }
                     }
                     System.out.println("Enter dealer draws one at a time. 's' when dealer stands.");
                     while (true) {
@@ -369,6 +389,7 @@ public class Coach {
                             card dc = ddraw.get(0);
                             dealerHand.add(dc);
                             rc += dc.hiLowValue(dc);
+                            cardsSeen++;
                             if (app.calcHandTotal(dealerHand) > 21) { System.out.println("Dealer busted!"); break; }
                         }
                     }
@@ -384,7 +405,7 @@ public class Coach {
                     points += d2;
 
                     System.out.println("Running count: " + rc
-                            + "  True count: " + String.format("%.2f", (double) rc / Math.max(1, numDecks))
+                            + "  True count: " + String.format("%.2f", (double) rc / Math.max(0.5, numDecks - (double) cardsSeen / 52))
                             + "  Money: " + points);
                     System.out.print("Continue? (y/n): ");
                     if (!scanner.nextLine().trim().equalsIgnoreCase("y")) break roundLoop;
@@ -407,7 +428,7 @@ public class Coach {
             if (holeInput.equalsIgnoreCase("q")) break;
             if (!holeInput.equalsIgnoreCase("n") && !holeInput.isEmpty()) {
                 List<card> hole = parseRanks(holeInput);
-                if (!hole.isEmpty()) { dealerHand.add(hole.get(0)); rc += hole.get(0).hiLowValue(hole.get(0)); }
+                if (!hole.isEmpty()) { dealerHand.add(hole.get(0)); rc += hole.get(0).hiLowValue(hole.get(0)); cardsSeen++; }
             }
             System.out.println("Enter dealer draws one at a time. 's' when dealer stands.");
             while (true) {
@@ -420,6 +441,7 @@ public class Coach {
                     card dc = ddraw.get(0);
                     dealerHand.add(dc);
                     rc += dc.hiLowValue(dc);
+                    cardsSeen++;
                     if (app.calcHandTotal(dealerHand) > 21) { System.out.println("Dealer busted!"); break; }
                 }
             }
@@ -432,7 +454,7 @@ public class Coach {
             points += delta;
 
             System.out.println("Running count: " + rc
-                    + "  True count: " + String.format("%.2f", (double) rc / Math.max(1, numDecks))
+                    + "  True count: " + String.format("%.2f", (double) rc / Math.max(0.5, numDecks - (double) cardsSeen / 52))
                     + "  Money: " + points);
 
             System.out.print("Continue? (y/n): ");
@@ -441,6 +463,12 @@ public class Coach {
 
         System.out.println("Coach done. Final money: " + points);
         scanner.close();
+    }
+
+    private static int trueCt(int rc, int cardsSeen, int numDecks) {
+        // True count = running count / decks remaining
+        // decks remaining = numDecks - cards seen so far / 52, floored at 0.5 to avoid division issues
+        return (int) Math.round((double) rc / Math.max(0.5, numDecks - (double) cardsSeen / 52));
     }
 
     private static int resolveHand(int playerTotal, int dealerTotal, int bet) {

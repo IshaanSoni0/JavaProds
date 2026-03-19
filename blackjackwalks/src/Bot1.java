@@ -139,6 +139,22 @@ public class Bot1 {
                     if (baseBet < MIN_BET) baseBet = MIN_BET;
                     break;
 
+                case BetProfile.KELLY_THREE_QUARTER:
+                    double edgeKelly3Q;
+                    if      (rc >= 5) edgeKelly3Q = 0.05449;
+                    else if (rc >= 4) edgeKelly3Q = 0.05046;
+                    else if (rc >= 3) edgeKelly3Q = 0.03780;
+                    else if (rc >= 2) edgeKelly3Q = 0.02361;
+                    else if (rc >= 1) edgeKelly3Q = 0.01044;
+                    else              edgeKelly3Q = 0.0;
+                    if (edgeKelly3Q > 0) {
+                        baseBet = (int)((edgeKelly3Q / 1.3) * 0.75 * game.getMoney());
+                    } else {
+                        baseBet = MIN_BET;
+                    }
+                    if (baseBet < MIN_BET) baseBet = MIN_BET;
+                    break;
+
                 case BetProfile.BALANCED:
                 default:
                     if      (rc >= 4) baseBet = 25;
