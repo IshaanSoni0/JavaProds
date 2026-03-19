@@ -1,0 +1,8 @@
+# Ignore compiled Java classes and build output
+bin/
+**/bin/
+*.class
+
+# Common OS/editor files (optional)
+.DS_Store
+Thumbs.db
