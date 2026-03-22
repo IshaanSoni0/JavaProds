@@ -21,7 +21,7 @@ public class SimulationCoach {
 
         playBlackjack game = new playBlackjack();
         game.setMoney(startMoney);
-        game.resetTrueCount();
+        game.resetRunningCount();
 
         double[] steps       = new double[totalSteps];
         double[] moneySeries = new double[totalSteps];
@@ -37,12 +37,12 @@ public class SimulationCoach {
             game.resetgame();
             if (game.deck.getlength() < 10) {
                 game.resetDeck();
-                game.resetTrueCount();
+                game.resetRunningCount();
             }
 
             // ---- BET SIZING: Three-Quarter Kelly, thresholds in TRUE count units ----
             // TC = RC / decks remaining; deck.getlength()/52 gives decks remaining directly.
-            int rc = game.getTrueCount();
+            int rc = game.getRunningCount();
             int tc = trueCt(rc, game);
             double edgeKelly;
             if      (tc >= 5) edgeKelly = 0.05449;
@@ -62,11 +62,11 @@ public class SimulationCoach {
 
             // ---- DEAL ----
             game.dealPlayer();
-            game.updateTrueCount(game.getPlayerHand().get(game.getPlayerHand().size() - 1));
+            game.updateRunningCount(game.getPlayerHand().get(game.getPlayerHand().size() - 1));
             game.dealDealer();
-            game.updateTrueCount(game.getDealerHand().get(game.getDealerHand().size() - 1));
+            game.updateRunningCount(game.getDealerHand().get(game.getDealerHand().size() - 1));
             game.dealPlayer();
-            game.updateTrueCount(game.getPlayerHand().get(game.getPlayerHand().size() - 1));
+            game.updateRunningCount(game.getPlayerHand().get(game.getPlayerHand().size() - 1));
             game.dealDealer(); // hole card — not counted yet
 
             List<card> playerHand = new ArrayList<>(game.getPlayerHand());
@@ -75,7 +75,7 @@ public class SimulationCoach {
             // ---- BLACKJACK CHECK ----
             boolean playerBJ = app.isBlackjack(playerHand);
             boolean dealerBJ = app.isBlackjack(game.getDealerHand());
-            game.updateTrueCount(game.getDealerHand().get(1));
+            game.updateRunningCount(game.getDealerHand().get(1));
 
             if (playerBJ || dealerBJ) {
                 if      (playerBJ && dealerBJ) { /* push */ }
@@ -90,24 +90,24 @@ public class SimulationCoach {
             if (playerHand.size() == 2
                     && playerHand.get(0).getRank() == playerHand.get(1).getRank()) {
 
-                String coachSplit = Coach.decideAction(playerHand, dealerUpCard, trueCt(game.getTrueCount(), game));
+                String coachSplit = Coach.decideAction(playerHand, dealerUpCard, trueCt(game.getRunningCount(), game));
 
                 if (coachSplit.equals("SPLIT")) {
                     didSplit = true;
 
                     List<card> hand1 = new ArrayList<>();
                     hand1.add(playerHand.get(0));
-                    if (game.deck.getlength() == 0) { game.resetDeck(); game.resetTrueCount(); }
+                    if (game.deck.getlength() == 0) { game.resetDeck(); game.resetRunningCount(); }
                     card s1 = game.deck.getRandCard();
                     hand1.add(s1);
-                    game.updateTrueCount(s1);
+                    game.updateRunningCount(s1);
 
                     List<card> hand2 = new ArrayList<>();
                     hand2.add(playerHand.get(1));
-                    if (game.deck.getlength() == 0) { game.resetDeck(); game.resetTrueCount(); }
+                    if (game.deck.getlength() == 0) { game.resetDeck(); game.resetRunningCount(); }
                     card s2 = game.deck.getRandCard();
                     hand2.add(s2);
-                    game.updateTrueCount(s2);
+                    game.updateRunningCount(s2);
 
                     game.setBet(baseBet);
                     int total1 = playHandWithCoach(hand1, dealerUpCard, game, numDecks);
@@ -119,7 +119,7 @@ public class SimulationCoach {
 
                     while (game.getDealerTotal() < 17) {
                         game.hitDealer();
-                        game.updateTrueCount(game.getDealerHand().get(game.getDealerHand().size() - 1));
+                        game.updateRunningCount(game.getDealerHand().get(game.getDealerHand().size() - 1));
                     }
                     int dealerTotal = game.getDealerTotal();
 
@@ -136,7 +136,7 @@ public class SimulationCoach {
 
                 while (game.getDealerTotal() < 17) {
                     game.hitDealer();
-                    game.updateTrueCount(game.getDealerHand().get(game.getDealerHand().size() - 1));
+                    game.updateRunningCount(game.getDealerHand().get(game.getDealerHand().size() - 1));
                 }
                 int dealerTotal = game.getDealerTotal();
 
@@ -166,22 +166,22 @@ public class SimulationCoach {
         List<card> current = new ArrayList<>(hand);
 
         while (true) {
-            String action = Coach.decideAction(current, dealerUpCard, trueCt(game.getTrueCount(), game));
+            String action = Coach.decideAction(current, dealerUpCard, trueCt(game.getRunningCount(), game));
 
             if (action.equals("STAND") || action.equals("SPLIT")) {
                 break;
             } else if (action.equals("HIT")) {
-                if (game.deck.getlength() == 0) { game.resetDeck(); game.resetTrueCount(); }
+                if (game.deck.getlength() == 0) { game.resetDeck(); game.resetRunningCount(); }
                 card nc = game.deck.getRandCard();
                 current.add(nc);
-                game.updateTrueCount(nc);
+                game.updateRunningCount(nc);
                 if (app.calcHandTotal(current) > 21) break;
             } else if (action.equals("DOUBLE")) {
                 game.setBet(game.getBet() * 2);
-                if (game.deck.getlength() == 0) { game.resetDeck(); game.resetTrueCount(); }
+                if (game.deck.getlength() == 0) { game.resetDeck(); game.resetRunningCount(); }
                 card nc = game.deck.getRandCard();
                 current.add(nc);
-                game.updateTrueCount(nc);
+                game.updateRunningCount(nc);
                 break;
             }
         }

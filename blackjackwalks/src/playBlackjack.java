@@ -8,20 +8,20 @@ public class playBlackjack {
     boolean playerBusted = false;
     boolean dealerBusted = false;
     int playerBet;
-    int trueCount = 0; // Initialize true count for card counting
+    int runningCount = 0; // Initialize true count for card counting
 
-    public void resetTrueCount() {
-        this.trueCount = 0; // Reset true count
+    public void resetRunningCount() {
+        this.runningCount = 0; // Reset true count
     }
-    public int getTrueCount() {
-        return trueCount; // Getter for true count
+    public int getRunningCount() {
+        return runningCount; // Getter for running count
     }
-    public void updateTrueCount(card c) {
+    public void updateRunningCount(card c) {
         int value = c.hiLowValue(c);
         if (value == 1) {
-            trueCount++; // Increase true count for low cards
+            runningCount++; // Increase running count for low cards
         } else if (value == -1) {
-            trueCount--; // Decrease true count for high cards
+            runningCount--; // Decrease running count for high cards
         }
     }
     public void setBet(int bet){

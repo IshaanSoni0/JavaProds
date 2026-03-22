@@ -12,7 +12,7 @@ public class Bot1 {
 
         playBlackjack game = new playBlackjack();
         game.setMoney(5000);
-        game.resetTrueCount();
+        game.resetRunningCount();
 
         // ---- EDGE MEASUREMENT TRACKING ----
         int[]    handsAtRc  = new int[8];    // index = rc level (0=rc<0, 1=rc0, 2=rc1, etc)
@@ -29,12 +29,12 @@ public class Bot1 {
             game.resetgame();
             if (game.deck.getlength() < 10) {
                 game.resetDeck();
-                game.resetTrueCount();
+                game.resetRunningCount();
             }
 
             final int MIN_BET = 5;
 
-            int rc = game.getTrueCount();
+            int rc = game.getRunningCount();
             int baseBet;
 
             switch (betProfile) {
@@ -168,11 +168,11 @@ public class Bot1 {
 
             // ---- DEAL ----
             game.dealPlayer();
-            game.updateTrueCount(game.getPlayerHand().get(game.getPlayerHand().size() - 1));
+            game.updateRunningCount(game.getPlayerHand().get(game.getPlayerHand().size() - 1));
             game.dealDealer();
-            game.updateTrueCount(game.getDealerHand().get(game.getDealerHand().size() - 1));
+            game.updateRunningCount(game.getDealerHand().get(game.getDealerHand().size() - 1));
             game.dealPlayer();
-            game.updateTrueCount(game.getPlayerHand().get(game.getPlayerHand().size() - 1));
+            game.updateRunningCount(game.getPlayerHand().get(game.getPlayerHand().size() - 1));
             game.dealDealer(); // hole card — not counted yet
 
             List<card> playerHand = new ArrayList<>(game.getPlayerHand());
@@ -181,7 +181,7 @@ public class Bot1 {
             // ---- BLACKJACK CHECK ----
             boolean playerBJ = app.isBlackjack(playerHand);
             boolean dealerBJ = app.isBlackjack(game.getDealerHand());
-            game.updateTrueCount(game.getDealerHand().get(1));
+            game.updateRunningCount(game.getDealerHand().get(1));
 
             if (playerBJ || dealerBJ) {
                 int rcIdx = Math.max(0, Math.min(rc + 2, 7));
@@ -223,17 +223,17 @@ public class Bot1 {
 
                     List<card> hand1 = new ArrayList<>();
                     hand1.add(playerHand.get(0));
-                    if (game.deck.getlength() == 0) { game.resetDeck(); game.resetTrueCount(); }
+                    if (game.deck.getlength() == 0) { game.resetDeck(); game.resetRunningCount(); }
                     card s1 = game.deck.getRandCard();
                     hand1.add(s1);
-                    game.updateTrueCount(s1);
+                    game.updateRunningCount(s1);
 
                     List<card> hand2 = new ArrayList<>();
                     hand2.add(playerHand.get(1));
-                    if (game.deck.getlength() == 0) { game.resetDeck(); game.resetTrueCount(); }
+                    if (game.deck.getlength() == 0) { game.resetDeck(); game.resetRunningCount(); }
                     card s2 = game.deck.getRandCard();
                     hand2.add(s2);
-                    game.updateTrueCount(s2);
+                    game.updateRunningCount(s2);
 
                     game.setBet(baseBet);
                     int total1 = playHand(hand1, dealerUpCard, game);
@@ -245,7 +245,7 @@ public class Bot1 {
 
                     while (game.getDealerTotal() < 17) {
                         game.hitDealer();
-                        game.updateTrueCount(game.getDealerHand().get(game.getDealerHand().size() - 1));
+                        game.updateRunningCount(game.getDealerHand().get(game.getDealerHand().size() - 1));
                     }
                     int dealerTotal = game.getDealerTotal();
 
@@ -269,7 +269,7 @@ public class Bot1 {
 
                 while (game.getDealerTotal() < 17) {
                     game.hitDealer();
-                    game.updateTrueCount(game.getDealerHand().get(game.getDealerHand().size() - 1));
+                    game.updateRunningCount(game.getDealerHand().get(game.getDealerHand().size() - 1));
                 }
                 int dealerTotal = game.getDealerTotal();
 
@@ -327,7 +327,7 @@ public class Bot1 {
             boolean isSoft      = app.isSoftHand(current);
             boolean isPair      = app.isPairHand(current);
             boolean canDouble   = current.size() == 2;
-            int     rc          = game.getTrueCount();
+            int     rc          = game.getRunningCount();
 
             String action = "HIT";
 
@@ -421,17 +421,17 @@ public class Bot1 {
             if (action.equals("STAND") || action.equals("SPLIT")) {
                 break;
             } else if (action.equals("HIT")) {
-                if (game.deck.getlength() == 0) { game.resetDeck(); game.resetTrueCount(); }
+                if (game.deck.getlength() == 0) { game.resetDeck(); game.resetRunningCount(); }
                 card nc = game.deck.getRandCard();
                 current.add(nc);
-                game.updateTrueCount(nc);
+                game.updateRunningCount(nc);
                 if (app.calcHandTotal(current) > 21) break;
             } else if (action.equals("DOUBLE")) {
                 game.setBet(game.getBet() * 2);
-                if (game.deck.getlength() == 0) { game.resetDeck(); game.resetTrueCount(); }
+                if (game.deck.getlength() == 0) { game.resetDeck(); game.resetRunningCount(); }
                 card nc = game.deck.getRandCard();
                 current.add(nc);
-                game.updateTrueCount(nc);
+                game.updateRunningCount(nc);
                 break;
             }
         }

@@ -17,20 +17,20 @@ public class MeasureEdge {
         // Deal 1,000,000 hands with flat $5 bet, basic strategy only, measure win rate
         playBlackjack game = new playBlackjack();
         game.setMoney(100000);
-        game.resetTrueCount();
+        game.resetRunningCount();
 
         int wins = 0, losses = 0, pushes = 0, hands = 0;
         double totalReturn = 0;
 
         for (int i = 0; i < 10000000; i++) {
             game.resetgame();
-            if (game.deck.getlength() < 10) { game.resetDeck(); game.resetTrueCount(); }
+            if (game.deck.getlength() < 10) { game.resetDeck(); game.resetRunningCount(); }
 
-            game.dealPlayer(); game.updateTrueCount(game.getPlayerHand().get(game.getPlayerHand().size()-1));
-            game.dealDealer(); game.updateTrueCount(game.getDealerHand().get(game.getDealerHand().size()-1));
-            game.dealPlayer(); game.updateTrueCount(game.getPlayerHand().get(game.getPlayerHand().size()-1));
+            game.dealPlayer(); game.updateRunningCount(game.getPlayerHand().get(game.getPlayerHand().size()-1));
+            game.dealDealer(); game.updateRunningCount(game.getDealerHand().get(game.getDealerHand().size()-1));
+            game.dealPlayer(); game.updateRunningCount(game.getPlayerHand().get(game.getPlayerHand().size()-1));
             game.dealDealer();
-            game.updateTrueCount(game.getDealerHand().get(1));
+            game.updateRunningCount(game.getDealerHand().get(1));
 
             // Handle blackjacks (they must be included — player BJ pays 3:2)
             boolean pBJ = app.isBlackjack(game.getPlayerHand());
@@ -52,7 +52,7 @@ public class MeasureEdge {
 
             while (game.getDealerTotal() < 17) {
                 game.hitDealer();
-                game.updateTrueCount(game.getDealerHand().get(game.getDealerHand().size()-1));
+                game.updateRunningCount(game.getDealerHand().get(game.getDealerHand().size()-1));
             }
             int dealerTotal = game.getDealerTotal();
 
