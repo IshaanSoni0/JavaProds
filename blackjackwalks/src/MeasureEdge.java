@@ -32,7 +32,7 @@ public class MeasureEdge {
             game.dealDealer();
             game.updateRunningCount(game.getDealerHand().get(1));
 
-            // Handle blackjacks (they must be included — player BJ pays 3:2)
+            // Handle blackjacks
             boolean pBJ = app.isBlackjack(game.getPlayerHand());
             boolean dBJ = app.isBlackjack(game.getDealerHand());
             if (pBJ || dBJ) {
@@ -46,10 +46,10 @@ public class MeasureEdge {
             java.util.List<card> playerHand = new java.util.ArrayList<>(game.getPlayerHand());
             card dealerUp = game.getDealerCard(0);
 
-            game.setBet(5); // must set before playHand so doubles work (bet * 2)
+            game.setBet(5); // set before playHand so doubles work (bet*2)
             int playerTotal = Bot1.playHand(playerHand, dealerUp, game);
             int finalBet    = game.getBet(); // 5 normally, 10 if doubled
-
+            // dealer hit logic
             while (game.getDealerTotal() < 17) {
                 game.hitDealer();
                 game.updateRunningCount(game.getDealerHand().get(game.getDealerHand().size()-1));

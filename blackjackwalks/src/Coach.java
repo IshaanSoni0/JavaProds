@@ -63,7 +63,7 @@ public class Coach {
                 default: action = "HIT"; break;
             }
             if (action.equals("DOUBLE") && !canDouble) action = "HIT";
-        } else {
+        } else { //hard lookup table
             if      (playerTotal >= 17)                      action = "STAND";
             else if (playerTotal >= 13 && playerTotal <= 16) action = (dealerValue >= 2 && dealerValue <= 6) ? "STAND" : "HIT";
             else if (playerTotal == 12)                      action = (dealerValue >= 4 && dealerValue <= 6) ? "STAND" : "HIT";
@@ -74,7 +74,7 @@ public class Coach {
             if (action.equals("DOUBLE") && !canDouble) action = "HIT";
         }
 
-        // ---- HI-LO DEVIATIONS (raw running count) ----
+        // ---- HI-LO DEVIATIONS ---- (40+ deveiation rules)
         if (!isSoft && !isPair) {
             if (playerTotal == 16 && dealerValue == 9  && rc >= 5)  action = "STAND";
             if (playerTotal == 16 && dealerValue == 10 && rc >= 4)  action = "STAND";
@@ -467,7 +467,8 @@ public class Coach {
 
     private static int trueCt(int rc, int cardsSeen, int numDecks) {
         // True count = running count / decks remaining
-        // decks remaining = numDecks - cards seen so far / 52, floored at 0.5 to avoid division issues
+        // decks remaining = numDecks - cards seen so far / 52
+        // minimum value is 0.5 to avoid division by zero and extreme TC values
         return (int) Math.round((double) rc / Math.max(0.5, numDecks - (double) cardsSeen / 52));
     }
 
