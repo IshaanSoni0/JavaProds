@@ -1,0 +1,240 @@
+Criterion A
+Scenario:
+My client is a close friend who has recently developed an interest in blackjack after being introduced to the game socially. Unlike many card games, blackjack offers players a meaningful opportunity to reduce the house edge through informed decision-making; however, the client has no experience beyond the basic rules and no framework for evaluating how different strategies perform in practice. Upon an initial consultation (see Appendix A), the client expressed frustration at not knowing the correct action in many in-game situations and uncertainty about whether more sophisticated approaches, such as card counting, make a measurable difference over time. He further noted that existing resources, such as static basic strategy charts, do not meet his needs, as they provide no count-based guidance, no bet sizing advice, and no means of understanding the long-term impact of different strategies. Afterwards, I thought of different ways to allow him to analyse different strategies and ways to guide him in games.
+
+Rationale:
+	Following consultation with the client (see Appendix A), it was agreed that the best solution would consist of two programs. The first is a strategy comparison simulator that models tens of thousands of hands of blackjack across twelve betting strategies simultaneously, presenting results as a points over time chart so the client can visually compare how different approaches perform in the long run. The second is a real-time coaching tool the client could use at an actual table, which tracks the card count across the session and advises him on both the optimal action for each hand and an appropriate bet size based on his current points without requiring him to memorise basic strategy or manually maintain a count. Java was selected as the development language as it is well-suited to simulation-heavy applications, and the XChart library was found as a strong candidate for making and graphing charts that the simulator requires. Java’s object-oriented structure also works well for modeling multiple similar bots. Since no existing tool was found that visualises many different blackjack strategies, and no blackjack coaching tools online that suited the user were free, we decided that a custom product tailored to the client that accomplished these tasks would be the best choice.
+
+Success Criteria:
+Simulator accepts inputs for number of rounds without requiring code changes.
+Simulator runs any selection of the twelve betting strategies simultaneously in the simulation.
+Simulator outputs a clearly labelled chart visualising each selected strategy's points over time.
+The simulator correctly implements all blackjack rules, including 3:2 blackjack payouts, correct Ace valuation (1 or 11), dealer hit-on-soft-17, and correct split and double-down handling.
+Counting bots correctly maintain a Hi-Lo running count throughout the simulation.
+Coach accepts dealer upcard and player hand each round and recommends an optimal action (Hit, Stand, Double, or Split).
+Coach tracks the running count and true count across a session, updating on every visible card.
+Coach recommends a bet size each round based on current points and true count.
+Coach resets the count correctly when a shuffle is indicated.
+Coach displays the result, current points, running count, and true count after every round.
+
+Criterion b (all images basicly asside from the tests and task list)
+
+---CRITERION C---
+
+Imports and dependencies:
+The simulation tools in this program depend on one external library: XChart 3.8.8 (knowm.org), an open-source library for creating charts. XChart was chosen because it provides a simple API for generating 2D charts, which are needed to visualise each bot's points over time and are saved locally as PNGs after running the simulation. All other imports are from the standard Java library: java.util.ArrayList and java.util.List are used for handling card storage, java.util.Scanner for user input, and java.io.IOException for handling write errors when saving the chart.
+
+Techniques Used
+Object-oriented design with class composition (card → deck → playBlackjack)
+Dynamic data structures (ArrayList) for hand and deck management
+Third-party library integration (XChart 3.8.8) for chart generation
+Hi-Lo card counting algorithm with true count normalisation
+Kelly Criterion mathematical formula for optimal bet sizing
+Empirical edge measurement via Monte Carlo simulation (MeasureEdge)
+Delegation pattern with BetProfile constants to eliminate code duplication across 12 bots
+Multi-level decision tree with true count deviation overrides (decideAction)
+Nested control structures for blackjack game logic (hit/stand/double/split resolution)
+Static utility methods shared across classes (app.calcHandTotal, app.isBlackjack, etc.)
+
+
+Hi-Lo Card Counting and True Count Normalisation:
+The Hi-Lo system is the core algorithm that separates the counting bots from a basic strategy player. Each card dealt is evaluated by hiLowValue() in the card class: low cards (2–6) return +1, neutral cards (7–9) return 0, and high cards (10, J, Q, K, A) return -1. The running count (RC) is updated on every visible card throughout the simulation. All visible cards (Player cards, dealer upcards, and dealer draws) are counted. The logic behind this is that a shoe with more high cards remaining benefits the player: high cards increase the frequency of natural blackjacks (which pay 3:2) and make it more likely the dealer busts when forced to hit. A positive RC means more low cards have been removed from the shoe, so relatively more high cards remain — this is the favourable condition the counting bots bet into.
+
+    [CODE - playBlackjack.java: running count updated on each card]
+    public void updateRunningCount(card c) {
+        int value = c.hiLowValue(c);
+        if (value == 1)       runningCount++;
+        else if (value == -1) runningCount--;
+    }
+
+In the Coach and SimulationCoach, the RC is further normalised into a True Count (TC). This is necessary in multi-deck games: a RC of +6 means something very different with one deck left versus five decks left. Dividing by decks remaining scales the count so that the same TC value always represents the same strength of player advantage, regardless of how deep into the shoe the game is. The minimum divisor is capped at 0.5 decks to avoid extremely large TC values at the very end of a shoe.
+
+    [CODE - Coach.java: trueCt() helper]
+    private static int trueCt(int rc, int cardsSeen, int numDecks) {
+        double decksLeft = Math.max(0.5, numDecks - (double) cardsSeen / 52.0);
+        return (int) Math.round((double) rc / decksLeft);
+    }
+
+Kelly Criterion Bet Sizing and Empirical Edge Measurement:
+The Kelly Criterion is a mathematically proven formula for optimal bet sizing: f* = edge / variance, where f* is the fraction of bankroll to bet. Betting this exact fraction maximises the long-term growth rate of the bankroll. However, Full Kelly is highly volatile in practice — a long losing streak can wipe out a large portion of the bankroll before the edge reasserts itself. To address this, four fractional variants were implemented: Full, Half, Quarter, and Three-Quarter Kelly, each multiplying the optimal bet by the corresponding fraction. Three-Quarter Kelly was selected for Coach as the best balance: it bets only 75% of the mathematically optimal amount, which meaningfully reduces variance while still growing the bankroll faster than more conservative fractions. This trade-off was confirmed by running all four Kelly variants in the simulator and observing that Three-Quarter Kelly consistently produced the best results across 30,000-round simulations.
+
+    [CODE - Bot1.java: Three-Quarter Kelly bet sizing]
+    case BetProfile.KELLY_THREE_QUARTER:
+        if      (rc >= 5) edgeKelly3Q = 0.05449;
+        else if (rc >= 4) edgeKelly3Q = 0.05046;
+        else if (rc >= 3) edgeKelly3Q = 0.03780;
+        else if (rc >= 2) edgeKelly3Q = 0.02361;
+        else if (rc >= 1) edgeKelly3Q = 0.01044;
+        else              edgeKelly3Q = 0.0;
+        if (edgeKelly3Q > 0) {
+            baseBet = (int)((edgeKelly3Q / 1.3) * 0.75 * game.getMoney());
+        } else {
+            baseBet = MIN_BET;
+        }
+
+The edge values used in the formula were not taken from published tables but measured directly using MeasureEdge.java. Published edge values are calculated for idealised, generic rule sets and vary significantly between casinos — any rule difference such as deck count, resplit rules, or payout ratios shifts the true edge. MeasureEdge instead runs 10 million simulated hands of basic strategy against the exact same game logic the bots use, recording the average profit or loss per bet at each running count level. At 10 million hands, the law of large numbers ensures the computed average has converged: running the measurement again would produce a result within 0.01% of the previous one, well within any practical margin. This means the Kelly bet sizes are precisely calibrated to this simulator rather than an approximation brought in from outside.
+
+    [CODE - MeasureEdge.java: 10 million hand simulation for edge measurement]
+    for (int i = 0; i < 10000000; i++) {
+        game.resetgame();
+        ...
+        int playerTotal = Bot1.playHand(playerHand, dealerUp, game);
+        double result   = Bot1.resolveHand(playerTotal, dealerTotal, ...);
+        totalReturn += result;
+    }
+    System.out.println("Edge at RC " + rc + ": " + (totalReturn / hands));
+
+Delegation Pattern and BetProfile Abstraction:
+Twelve betting strategies are simulated, but they all share identical card counting and basic strategy logic. Only the bet sizing differs. Rather than duplicating the entire game loop twelve times, all bots delegate to a single method: Bot1.simulateWithBetProfile(totalSteps, BetProfile.X). The BetProfile class defines integer constants (1–12) for each strategy, and a switch statement inside simulateWithBetProfile selects the correct bet calculation for that profile. This means any bug fix or rule change only needs to be made in one place, and adding a new betting strategy requires writing fewer than ten lines of code.
+
+    [CODE - Bot2.java and kellybot.java: two bots, one line of difference]
+    // Bot2 (Aggressive):
+    public double[] simulate(int totalSteps) {
+        return new Bot1().simulateWithBetProfile(totalSteps, BetProfile.AGGRESSIVE);
+    }
+
+    // kellybot (Full Kelly):
+    public double[] simulate(int totalSteps) {
+        return new Bot1().simulateWithBetProfile(totalSteps, BetProfile.KELLY);
+    }
+
+    [CODE - Bot2.java: BetProfile constants]
+    class BetProfile {
+        static final int AGGRESSIVE          = 1;
+        static final int BALANCED            = 2;
+        static final int CONSERVATIVE        = 3;
+        static final int FLAT                = 4;
+        static final int KELLY               = 9;
+        static final int KELLY_THREE_QUARTER = 12;
+        // ... (12 constants total)
+    }
+
+Basic Strategy Decision Tree with True Count Deviation Overrides:
+The decideAction() method in Coach.java implements the complete multi-deck basic strategy decision tree. It works in two passes. The first pass determines a base action from the hand type: pairs are looked up in a pair table, soft hands (those containing an Ace counted as 11) in a soft table, and all other hands in a hard total table. The second pass then checks over 40 true-count deviation rules, which are specific situations in which the statistically correct action changes depending on how count-rich the remaining deck is. For example, basic strategy says hit 16 against a dealer 10, but at TC ≥ +4 the deviation rule overrides this to stand, because a count-rich deck makes it more likely the dealer will bust.
+
+    [CODE - Coach.java: two-pass structure of decideAction()]
+    // PASS 1: base strategy
+    if (isPair)       { action = lookupPairTable(rank, dealerVal); }
+    else if (isSoft)  { action = lookupSoftTable(total, dealerVal); }
+    else              { action = lookupHardTable(total, dealerVal); }
+
+    // PASS 2: true count deviations override base
+    if (total == 16 && dealerValue == 10 && rc >= 4) action = "STAND";
+    if (total == 9  && dealerValue == 2  && rc >= 1) action = "DOUBLE";
+    // ... (40+ deviation rules)
+
+Object-Oriented Design and Dynamic Data Structures:
+The program is built around three core data classes arranged in a composition chain: card, deck, and playBlackjack. A card object stores a suit and integer value; a deck owns an ArrayList of card objects and handles dealing and reshuffling; a playBlackjack object composes a deck with two ArrayLists for the player and dealer hands while storing round state such as bets, running count, and bust flags. Each class has a single, well-defined responsibility, and higher-level classes (Bot1, Coach, SimulationCoach) interact through playBlackjack's public interface without needing to know how the deck or cards work internally. This structure also makes the codebase extensible — as discussed in the delegation pattern section below, adding a new betting strategy requires only a new class and a new BetProfile constant.
+
+    [CODE - playBlackjack.java: composition of deck and ArrayLists]
+    public class playBlackjack {
+        deck deck = new deck();
+        ArrayList<card> playerHand;
+        ArrayList<card> dealerHand;
+        ...
+        public void resetgame() {
+            playerHand = new ArrayList<card>();
+            dealerHand = new ArrayList<card>();
+        }
+    }
+
+ArrayList was chosen over fixed arrays because the data changes size unpredictably at runtime: a hand grows by one card per hit and the deck shrinks by one card each deal (via getRandCard(), which removes the dealt card). A fixed array would have required a maximum size and manual index tracking, adding complexity for no benefit.
+
+    [CODE - deck.java: ArrayList shrinks as cards are dealt]
+    public card getRandCard() {
+        int rand = (int)(Math.random() * deck.size());
+        card c = deck.get(rand);
+        deck.remove(rand);  // card is removed from the list — shoe shrinks
+        return c;
+    }
+
+Nested Control Structures for Blackjack Game Logic:
+Resolving a round of blackjack requires several layers of nested conditionals. After the player's turn ends, the outcome depends on whether the player busted, then whether the dealer busted, then a comparison of totals. This was implemented as a nested if/else chain rather than separate checks, so that the first matched condition immediately determines the result without executing unnecessary comparisons that may produce the wrong answer if done out of order.
+
+    [CODE - Bot1.java: nested hand resolution]
+    if (playerBusted)       { money -= bet; }
+    else if (dealerBusted)  { money += bet; }
+    else if (playerTotal > dealerTotal) { money += bet; }
+    else if (playerTotal == dealerTotal){ /* push */ }
+    else                    { money -= bet; }
+
+XChart Third-Party Library:
+Visualising the results of the simulation required plotting up to thirteen line series on a single chart with labelled axes, and saving it as a PNG file. Using the open-source XChart 3.8.8 library (knowm.org) kept the output code minimal and allowed development effort to focus on the simulation logic rather than rendering. XChart provides a simple API where each bot's bankroll array is added as a named series with a single method call, and the entire chart is saved with one further call.
+
+    [CODE - app.java: adding a series and saving the chart]
+    XYSeries s = chart.addSeries(label, steps, data);
+    s.setMarker(SeriesMarkers.NONE);
+    s.setLineWidth(0.5f);
+    ...
+    BitmapEncoder.saveBitmap(chart, "blackjack_chart", BitmapFormat.PNG);
+
+Static Utility Methods:
+Four utility methods — isBlackjack(), calcHandTotal(), isSoftHand(), and isPairHand() — are defined as static methods in app.java and called by Bot1, Coach, SimulationCoach, and MeasureEdge. Placing them in one class avoids duplicating hand evaluation logic across every class that needs it. All four are pure functions that take a hand and return a value, making them straightforward to reuse and test.
+
+    [CODE - app.java: static utility methods]
+    public static boolean isBlackjack(List<card> hand) {
+        if (hand.size() != 2) return false;
+        int v0 = hand.get(0).getValue();
+        int v1 = hand.get(1).getValue();
+        return (v0 == 1 && v1 == 10) || (v0 == 10 && v1 == 1);
+    }
+    public static int calcHandTotal(List<card> hand) {
+        int total = 0, aceCount = 0;
+        for (card c : hand) { total += c.getValue(); if (c.getValue() == 1) aceCount++; }
+        while (aceCount > 0 && total + 10 <= 21) { total += 10; aceCount--; }
+        return total;
+    }
+
+Works Cited:
+"XChart." Knowm, knowm.org/open-source/xchart.
+"Kelly Criterion." Wikipedia, Wikimedia Foundation, en.wikipedia.org/wiki/Kelly_criterion.
+"Blackjack Basic Strategy." Wizard of Odds, wizardofodds.com/games/blackjack/strategy/calculator/.
+"Hi-Lo Card Counting System." Blackjack Apprenticeship, www.blackjackapprenticeship.com/blackjack-card-counting/.
+
+---CRITERION E---
+
+Evaluation Against Success Criteria:
+
+1. Simulator accepts inputs for number of rounds without requiring code changes.
+MET. The simulator prompts the user for the number of rounds at startup via a Scanner input, and this value is passed directly to each bot's simulate() call. No source code changes are required between runs. This is demonstrated in the video.
+
+2. Simulator runs any selection of the twelve betting strategies simultaneously in the simulation.
+MET. The user is also prompted to select which bots to include. Each selected bot runs its own simulation independently over the same number of rounds, and all results are collected before the chart is drawn. All twelve strategies were run simultaneously in the video demonstration.
+
+3. Simulator outputs a clearly labelled chart visualising each selected strategy's points over time.
+MET. The output chart is saved as blackjack_chart.png in the project directory. Each series is labelled with the strategy name, axes are titled, and the chart is generated by XChart with consistent formatting. The output file is shown in the video.
+
+4. The simulator correctly implements all blackjack rules, including 3:2 blackjack payouts, correct Ace valuation (1 or 11), dealer hit-on-soft-17, and correct split and double-down handling.
+MET. Each rule was verified individually in the test plan (see Criterion B). The 3:2 blackjack payout is applied in Bot1's resolution logic; Ace valuation is handled by calcHandTotal() which counts an Ace as 11 unless it would cause a bust; dealer hit-on-soft-17 is enforced in the dealer loop; split and double-down are both handled with separate code paths in Bot1 and Coach.
+
+5. Counting bots correctly maintain a Hi-Lo running count throughout the simulation.
+MET. The running count is updated on every visible card via updateRunningCount(), including player cards, the dealer upcard, and all dealer draws. The count resets to zero when the shoe is reshuffled. This was verified in testing by manually tracking the count through a short sequence of known cards and confirming the output matched.
+
+6. Coach accepts dealer upcard and player hand each round and recommends an optimal action (Hit, Stand, Double, or Split).
+MET. Each round, the Coach prompts for the dealer upcard and each card in the player's hand. The decideAction() method returns one of HIT, STAND, DOUBLE, or SPLIT, which is printed immediately. This is demonstrated throughout the Coach session in the video.
+
+7. Coach tracks the running count and true count across a session, updating on every visible card.
+MET. The running count is updated on all cards entered each round, including the player's hand, the dealer upcard, and all dealer draw cards entered at round end. The true count is computed from the running count and displayed at the end of each round.
+
+8. Coach recommends a bet size each round based on current points and true count.
+MET. At the start of each round, the Coach calculates a Three-Quarter Kelly bet based on the current true count and the player's current bankroll, and displays it before prompting for cards. At neutral or negative counts, the minimum bet is recommended.
+
+9. Coach resets the count correctly when a shuffle is indicated.
+MET. The user can enter a shuffle command at any point. This resets the running count to zero, resets the cards-seen counter, and prints a confirmation. This was tested and demonstrated in the video.
+
+10. Coach displays the result, current points, running count, and true count after every round.
+MET. After each round's cards are entered and the result is resolved, the Coach prints the round outcome, the updated bankroll, the current running count, and the current true count before prompting for the next round.
+
+Client Feedback:
+Following a demonstration of both tools to the client (see Appendix B), he reported that the simulator clearly answered his original question about whether card counting makes a long-run difference, noting that the visual separation between Kelly-based bots and flat-betting bots in the chart was immediately convincing. He found the Coach straightforward to use for action recommendations but noted that entering cards one at a time was slower than he expected at a real table, and suggested that being able to enter the full hand as a single line of input would be faster in practice.
+
+Recommendations for Future Development:
+1. Streamlined card entry for the Coach. As the client identified, entering cards one-by-one is slow under real table conditions. A future version could accept the full hand as a single input string (e.g. "A 7 3") parsed in one step, which would significantly reduce the number of prompts per round.
+
+2. Graphical user interface. The Coach is currently a command-line tool, which requires the user to keep a terminal open and type carefully during a live game. A minimal GUI with clickable card buttons would be faster and less error-prone, and would eliminate the risk of mistyping a card value.
+
+3. Configurable rule sets. The simulator currently uses a fixed rule set (six decks, dealer hits soft-17, 3:2 blackjack). Different casinos use different rules, each of which shifts the house edge slightly. Allowing the user to configure these parameters would make the simulator applicable to the specific casino the client plays at.
+
+4. Dedicated utility class. The four static utility methods (isBlackjack, calcHandTotal, isSoftHand, isPairHand) are currently defined in app.java, which couples the entry-point class to the bot logic. Moving these to a dedicated HandUtils class would eliminate this dependency and make the utilities independently testable.
+
+5. Persistent session state for the Coach. Currently the Coach session ends when the program is closed, and the count cannot be saved and resumed. Adding the ability to save and restore a session would allow the client to pause and return to a shoe mid-session.
