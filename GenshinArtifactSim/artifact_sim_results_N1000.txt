@@ -1,0 +1,2719 @@
+Results will be saved to: C:\Users\ishaa\OneDrive\Documents\JavaProds\GenshinArtifactSim\artifact_sim_results_N1000.txt
+Simulated 1,000 artifacts x 5 slots = 5,000 total.
+
+========================================================================
+  1. MAIN STAT COUNTS PER SLOT TYPE
+========================================================================
+
+  Flower of Life:
+    HP (flat)                        1000  (100.00%)
+
+  Plume of Death:
+    ATK (flat)                       1000  (100.00%)
+
+  Sands of Eon:
+    ATK%                              268  (26.80%)
+    DEF%                              263  (26.30%)
+    Elemental Mastery                  89  ( 8.90%)
+    Energy Recharge%                  110  (11.00%)
+    HP%                               270  (27.00%)
+
+  Goblet of Eonothem:
+    ATK%                              210  (21.00%)
+    Anemo DMG Bonus%                   70  ( 7.00%)
+    Cryo DMG Bonus%                    66  ( 6.60%)
+    DEF%                              188  (18.80%)
+    Dendro DMG Bonus%                  54  ( 5.40%)
+    Electro DMG Bonus%                 44  ( 4.40%)
+    Elemental Mastery                  26  ( 2.60%)
+    Geo DMG Bonus%                     42  ( 4.20%)
+    HP%                               165  (16.50%)
+    Hydro DMG Bonus%                   46  ( 4.60%)
+    Physical DMG Bonus%                42  ( 4.20%)
+    Pyro DMG Bonus%                    47  ( 4.70%)
+
+  Circlet of Logos:
+    ATK%                              240  (24.00%)
+    CRIT DMG%                          96  ( 9.60%)
+    CRIT Rate%                         89  ( 8.90%)
+    DEF%                              208  (20.80%)
+    Elemental Mastery                  41  ( 4.10%)
+    HP%                               226  (22.60%)
+    Healing Bonus%                    100  (10.00%)
+
+========================================================================
+  2 & 3. PER-PIECE FINAL ROLLS AT +20  (with starter type)
+========================================================================
+  Note: N=1000 > 100 — printing first 100 pieces per slot.
+  Aggregated statistics (sections 5 & 6) use all 1,000 pieces.
+
+  -- Flower of Life --
+  #1      Main: HP (flat)                     [3-substat start]
+           DEF                       16.2050
+           HP%                       4.0810
+           CRIT Rate%                9.3360
+           ATK                       52.5150
+  #2      Main: HP (flat)                     [3-substat start]
+           ATK%                      11.6600
+           Elemental Mastery         55.9440
+           ATK                       17.5050
+           HP%                       9.9110
+  #3      Main: HP (flat)                     [3-substat start]
+           Energy Recharge%          10.3680
+           ATK                       35.0100
+           CRIT DMG%                 14.7630
+           HP%                       9.9110
+  #4      Main: HP (flat)                     [3-substat start]
+           ATK                       44.7350
+           DEF                       23.1500
+           ATK%                      5.2470
+           HP%                       16.9070
+  #5      Main: HP (flat)                     [3-substat start]
+           DEF%                      7.2900
+           ATK%                      20.4050
+           Elemental Mastery         18.6480
+           Energy Recharge%          11.0160
+  #6      Main: HP (flat)                     [3-substat start]
+           HP%                       5.8300
+           Energy Recharge%          11.6640
+           DEF%                      12.3930
+           CRIT Rate%                9.7250
+  #7      Main: HP (flat)                     [3-substat start]
+           CRIT Rate%                3.8900
+           DEF                       57.8750
+           ATK                       36.9550
+           DEF%                      11.6640
+  #8      Main: HP (flat)                     [3-substat start]
+           ATK%                      4.0810
+           HP%                       13.9920
+           DEF%                      16.7670
+           Elemental Mastery         16.3170
+  #9      Main: HP (flat)                     [3-substat start]
+           CRIT DMG%                 20.9790
+           ATK                       42.7900
+           DEF%                      7.2900
+           Energy Recharge%          5.1840
+  #10     Main: HP (flat)                     [4-substat start]
+           ATK                       42.7900
+           HP%                       5.8300
+           DEF                       57.8750
+           DEF%                      14.5800
+  #11     Main: HP (flat)                     [4-substat start]
+           DEF%                      5.1030
+           DEF                       43.9850
+           HP%                       23.3200
+           CRIT DMG%                 10.8780
+  #12     Main: HP (flat)                     [3-substat start]
+           HP%                       8.7450
+           ATK                       19.4500
+           Elemental Mastery         83.9160
+           DEF                       20.8350
+  #13     Main: HP (flat)                     [3-substat start]
+           Energy Recharge%          16.2000
+           ATK%                      15.1580
+           HP%                       4.6640
+           ATK                       15.5600
+  #14     Main: HP (flat)                     [3-substat start]
+           Elemental Mastery         65.2680
+           Energy Recharge%          17.4960
+           ATK%                      5.8300
+           ATK                       15.5600
+  #15     Main: HP (flat)                     [3-substat start]
+           DEF                       34.7250
+           Elemental Mastery         16.3170
+           CRIT Rate%                11.6700
+           ATK                       17.5050
+  #16     Main: HP (flat)                     [3-substat start]
+           ATK%                      8.1620
+           Elemental Mastery         18.6480
+           ATK                       17.5050
+           CRIT DMG%                 25.6410
+  #17     Main: HP (flat)                     [3-substat start]
+           Energy Recharge%          23.9760
+           ATK                       13.6150
+           DEF                       46.3000
+           CRIT DMG%                 6.2160
+  #18     Main: HP (flat)                     [4-substat start]
+           Elemental Mastery         20.9790
+           HP%                       19.8220
+           CRIT DMG%                 12.4320
+           Energy Recharge%          12.3120
+  #19     Main: HP (flat)                     [3-substat start]
+           ATK                       54.4600
+           DEF                       23.1500
+           DEF%                      11.6640
+           Elemental Mastery         37.2960
+  #20     Main: HP (flat)                     [3-substat start]
+           DEF%                      25.5150
+           ATK%                      4.6640
+           DEF                       43.9850
+           Elemental Mastery         23.3100
+  #21     Main: HP (flat)                     [3-substat start]
+           Elemental Mastery         32.6340
+           DEF                       37.0400
+           ATK                       17.5050
+           CRIT DMG%                 22.5330
+  #22     Main: HP (flat)                     [3-substat start]
+           CRIT Rate%                3.5010
+           ATK%                      9.3280
+           CRIT DMG%                 20.2020
+           Energy Recharge%          9.7200
+  #23     Main: HP (flat)                     [3-substat start]
+           CRIT Rate%                10.1140
+           DEF%                      12.3930
+           ATK                       19.4500
+           ATK%                      11.0770
+  #24     Main: HP (flat)                     [3-substat start]
+           Elemental Mastery         34.9650
+           DEF                       32.4100
+           ATK                       33.0650
+           CRIT DMG%                 14.7630
+  #25     Main: HP (flat)                     [3-substat start]
+           Elemental Mastery         23.3100
+           Energy Recharge%          9.7200
+           CRIT DMG%                 10.8780
+           ATK                       48.6250
+  #26     Main: HP (flat)                     [3-substat start]
+           Elemental Mastery         72.2610
+           DEF%                      12.3930
+           CRIT Rate%                3.5010
+           HP%                       4.6640
+  #27     Main: HP (flat)                     [3-substat start]
+           ATK%                      8.7450
+           DEF                       64.8200
+           Energy Recharge%          9.7200
+           HP%                       5.2470
+  #28     Main: HP (flat)                     [3-substat start]
+           DEF%                      11.6640
+           HP%                       15.7410
+           Elemental Mastery         23.3100
+           ATK                       36.9550
+  #29     Main: HP (flat)                     [4-substat start]
+           ATK%                      11.0770
+           DEF%                      7.2900
+           Elemental Mastery         39.6270
+           Energy Recharge%          22.6800
+  #30     Main: HP (flat)                     [4-substat start]
+           DEF                       16.2050
+           HP%                       8.1620
+           Energy Recharge%          16.2000
+           ATK                       52.5150
+  #31     Main: HP (flat)                     [3-substat start]
+           CRIT Rate%                10.5030
+           ATK                       19.4500
+           DEF%                      6.5610
+           ATK%                      16.3240
+  #32     Main: HP (flat)                     [3-substat start]
+           ATK                       38.9000
+           Energy Recharge%          4.5360
+           DEF                       55.5600
+           DEF%                      10.9350
+  #33     Main: HP (flat)                     [3-substat start]
+           Energy Recharge%          5.1840
+           ATK%                      5.8300
+           CRIT DMG%                 18.6480
+           DEF%                      20.4120
+  #34     Main: HP (flat)                     [3-substat start]
+           ATK                       56.4050
+           Elemental Mastery         32.6340
+           HP%                       4.6640
+           DEF%                      13.8510
+  #35     Main: HP (flat)                     [3-substat start]
+           ATK%                      4.6640
+           DEF%                      14.5800
+           HP%                       9.3280
+           ATK                       46.6800
+  #36     Main: HP (flat)                     [3-substat start]
+           DEF                       53.2450
+           HP%                       5.8300
+           DEF%                      6.5610
+           Elemental Mastery         65.2680
+  #37     Main: HP (flat)                     [3-substat start]
+           Energy Recharge%          20.0880
+           DEF%                      5.1030
+           ATK%                      4.0810
+           CRIT Rate%                6.6130
+  #38     Main: HP (flat)                     [3-substat start]
+           CRIT Rate%                3.8900
+           DEF%                      12.3930
+           CRIT DMG%                 25.6410
+           ATK%                      4.6640
+  #39     Main: HP (flat)                     [3-substat start]
+           CRIT Rate%                6.2240
+           ATK                       29.1750
+           Elemental Mastery         55.9440
+           HP%                       5.8300
+  #40     Main: HP (flat)                     [3-substat start]
+           ATK%                      10.4940
+           Elemental Mastery         16.3170
+           DEF%                      6.5610
+           CRIT Rate%                13.2260
+  #41     Main: HP (flat)                     [3-substat start]
+           CRIT DMG%                 12.4320
+           ATK                       44.7350
+           Energy Recharge%          5.1840
+           ATK%                      9.9110
+  #42     Main: HP (flat)                     [3-substat start]
+           Elemental Mastery         23.3100
+           DEF                       41.6700
+           Energy Recharge%          11.6640
+           CRIT DMG%                 20.9790
+  #43     Main: HP (flat)                     [3-substat start]
+           ATK%                      5.8300
+           ATK                       40.8450
+           DEF%                      18.9540
+           HP%                       5.2470
+  #44     Main: HP (flat)                     [3-substat start]
+           DEF%                      5.1030
+           ATK                       52.5150
+           DEF                       18.5200
+           ATK%                      15.1580
+  #45     Main: HP (flat)                     [3-substat start]
+           HP%                       9.9110
+           Elemental Mastery         39.6270
+           ATK%                      9.3280
+           Energy Recharge%          11.0160
+  #46     Main: HP (flat)                     [3-substat start]
+           ATK                       35.0100
+           CRIT Rate%                3.8900
+           DEF                       16.2050
+           Energy Recharge%          23.3280
+  #47     Main: HP (flat)                     [3-substat start]
+           DEF                       57.8750
+           Elemental Mastery         18.6480
+           ATK%                      9.3280
+           Energy Recharge%          11.6640
+  #48     Main: HP (flat)                     [3-substat start]
+           DEF                       18.5200
+           ATK%                      15.1580
+           ATK                       36.9550
+           CRIT DMG%                 13.9860
+  #49     Main: HP (flat)                     [4-substat start]
+           ATK%                      9.3280
+           CRIT DMG%                 5.4390
+           Elemental Mastery         93.2400
+           CRIT Rate%                6.6130
+  #50     Main: HP (flat)                     [3-substat start]
+           CRIT Rate%                5.8350
+           ATK%                      9.9110
+           Elemental Mastery         58.2750
+           Energy Recharge%          5.8320
+  #51     Main: HP (flat)                     [3-substat start]
+           Energy Recharge%          9.0720
+           ATK                       29.1750
+           HP%                       8.7450
+           Elemental Mastery         44.2890
+  #52     Main: HP (flat)                     [3-substat start]
+           DEF                       64.8200
+           Elemental Mastery         44.2890
+           HP%                       4.0810
+           Energy Recharge%          11.0160
+  #53     Main: HP (flat)                     [4-substat start]
+           DEF                       60.1900
+           CRIT DMG%                 13.2090
+           Elemental Mastery         41.9580
+           ATK                       31.1200
+  #54     Main: HP (flat)                     [3-substat start]
+           Elemental Mastery         20.9790
+           CRIT DMG%                 14.7630
+           ATK%                      10.4940
+           HP%                       14.5750
+  #55     Main: HP (flat)                     [3-substat start]
+           ATK                       52.5150
+           HP%                       9.3280
+           ATK%                      5.2470
+           CRIT DMG%                 14.7630
+  #56     Main: HP (flat)                     [3-substat start]
+           CRIT DMG%                 11.6550
+           ATK                       33.0650
+           DEF%                      17.4960
+           ATK%                      4.6640
+  #57     Main: HP (flat)                     [3-substat start]
+           DEF                       60.1900
+           Energy Recharge%          5.8320
+           Elemental Mastery         58.2750
+           ATK                       13.6150
+  #58     Main: HP (flat)                     [3-substat start]
+           DEF                       39.3550
+           ATK%                      16.9070
+           DEF%                      7.2900
+           Elemental Mastery         41.9580
+  #59     Main: HP (flat)                     [3-substat start]
+           ATK                       17.5050
+           Elemental Mastery         18.6480
+           ATK%                      14.5750
+           Energy Recharge%          16.8480
+  #60     Main: HP (flat)                     [3-substat start]
+           DEF%                      13.8510
+           Elemental Mastery         16.3170
+           HP%                       10.4940
+           CRIT Rate%                10.1140
+  #61     Main: HP (flat)                     [3-substat start]
+           ATK%                      8.7450
+           CRIT DMG%                 24.8640
+           ATK                       17.5050
+           Energy Recharge%          4.5360
+  #62     Main: HP (flat)                     [3-substat start]
+           ATK                       15.5600
+           Elemental Mastery         39.6270
+           Energy Recharge%          21.3840
+           DEF                       23.1500
+  #63     Main: HP (flat)                     [4-substat start]
+           Elemental Mastery         62.9370
+           CRIT DMG%                 7.7700
+           DEF                       53.2450
+           ATK                       35.0100
+  #64     Main: HP (flat)                     [4-substat start]
+           ATK                       13.6150
+           DEF                       34.7250
+           HP%                       9.3280
+           Energy Recharge%          23.9760
+  #65     Main: HP (flat)                     [4-substat start]
+           ATK                       38.9000
+           DEF                       34.7250
+           Energy Recharge%          12.9600
+           ATK%                      14.5750
+  #66     Main: HP (flat)                     [4-substat start]
+           Energy Recharge%          11.0160
+           ATK%                      15.1580
+           HP%                       5.8300
+           ATK                       58.3500
+  #67     Main: HP (flat)                     [3-substat start]
+           Elemental Mastery         23.3100
+           ATK%                      5.2470
+           ATK                       31.1200
+           Energy Recharge%          24.6240
+  #68     Main: HP (flat)                     [3-substat start]
+           DEF                       62.5050
+           HP%                       11.0770
+           CRIT Rate%                7.0020
+           Elemental Mastery         20.9790
+  #69     Main: HP (flat)                     [3-substat start]
+           Elemental Mastery         72.2610
+           ATK%                      4.0810
+           CRIT Rate%                3.1120
+           CRIT DMG%                 13.9860
+  #70     Main: HP (flat)                     [3-substat start]
+           Energy Recharge%          9.0720
+           Elemental Mastery         58.2750
+           CRIT Rate%                6.6130
+           DEF                       18.5200
+  #71     Main: HP (flat)                     [3-substat start]
+           DEF%                      7.2900
+           Energy Recharge%          16.2000
+           ATK                       15.5600
+           CRIT Rate%                10.8920
+  #72     Main: HP (flat)                     [3-substat start]
+           DEF%                      19.6830
+           HP%                       9.9110
+           Elemental Mastery         20.9790
+           DEF                       37.0400
+  #73     Main: HP (flat)                     [3-substat start]
+           DEF%                      13.1220
+           DEF                       60.1900
+           Energy Recharge%          12.3120
+           CRIT Rate%                2.7230
+  #74     Main: HP (flat)                     [3-substat start]
+           DEF%                      13.1220
+           DEF                       62.5050
+           Energy Recharge%          9.0720
+           HP%                       4.0810
+  #75     Main: HP (flat)                     [3-substat start]
+           DEF                       37.0400
+           ATK                       38.9000
+           Elemental Mastery         37.2960
+           DEF%                      11.6640
+  #76     Main: HP (flat)                     [3-substat start]
+           HP%                       4.6640
+           Elemental Mastery         34.9650
+           DEF                       57.8750
+           DEF%                      12.3930
+  #77     Main: HP (flat)                     [4-substat start]
+           CRIT Rate%                7.0020
+           HP%                       4.6640
+           ATK                       35.0100
+           DEF                       81.0250
+  #78     Main: HP (flat)                     [3-substat start]
+           CRIT DMG%                 6.9930
+           DEF                       60.1900
+           CRIT Rate%                3.1120
+           HP%                       12.8260
+  #79     Main: HP (flat)                     [3-substat start]
+           Energy Recharge%          22.6800
+           CRIT Rate%                3.1120
+           ATK                       19.4500
+           Elemental Mastery         41.9580
+  #80     Main: HP (flat)                     [3-substat start]
+           DEF%                      7.2900
+           ATK%                      9.9110
+           ATK                       31.1200
+           DEF                       53.2450
+  #81     Main: HP (flat)                     [3-substat start]
+           DEF%                      6.5610
+           ATK                       33.0650
+           CRIT DMG%                 19.4250
+           ATK%                      9.3280
+  #82     Main: HP (flat)                     [3-substat start]
+           CRIT Rate%                6.6130
+           Elemental Mastery         72.2610
+           ATK                       17.5050
+           Energy Recharge%          5.8320
+  #83     Main: HP (flat)                     [3-substat start]
+           DEF                       20.8350
+           Elemental Mastery         39.6270
+           ATK%                      13.9920
+           CRIT DMG%                 10.8780
+  #84     Main: HP (flat)                     [3-substat start]
+           CRIT Rate%                11.2810
+           DEF%                      6.5610
+           ATK%                      16.3240
+           Elemental Mastery         23.3100
+  #85     Main: HP (flat)                     [3-substat start]
+           CRIT Rate%                3.5010
+           Elemental Mastery         39.6270
+           CRIT DMG%                 13.9860
+           DEF%                      17.4960
+  #86     Main: HP (flat)                     [3-substat start]
+           CRIT Rate%                2.7230
+           DEF                       20.8350
+           HP%                       22.7370
+           ATK%                      9.3280
+  #87     Main: HP (flat)                     [4-substat start]
+           ATK%                      15.1580
+           DEF%                      5.8320
+           DEF                       53.2450
+           Elemental Mastery         44.2890
+  #88     Main: HP (flat)                     [3-substat start]
+           CRIT DMG%                 13.2090
+           ATK%                      5.2470
+           DEF                       64.8200
+           CRIT Rate%                2.7230
+  #89     Main: HP (flat)                     [3-substat start]
+           ATK                       48.6250
+           DEF                       16.2050
+           Energy Recharge%          11.0160
+           DEF%                      11.6640
+  #90     Main: HP (flat)                     [3-substat start]
+           CRIT Rate%                7.0020
+           Energy Recharge%          11.0160
+           ATK                       19.4500
+           ATK%                      13.9920
+  #91     Main: HP (flat)                     [3-substat start]
+           HP%                       10.4940
+           DEF                       34.7250
+           CRIT DMG%                 20.2020
+           DEF%                      6.5610
+  #92     Main: HP (flat)                     [3-substat start]
+           ATK                       35.0100
+           ATK%                      14.5750
+           CRIT Rate%                7.0020
+           Elemental Mastery         20.9790
+  #93     Main: HP (flat)                     [3-substat start]
+           ATK%                      9.9110
+           ATK                       33.0650
+           DEF                       20.8350
+           HP%                       15.1580
+  #94     Main: HP (flat)                     [3-substat start]
+           DEF                       18.5200
+           Energy Recharge%          9.0720
+           ATK                       50.5700
+           CRIT Rate%                6.2240
+  #95     Main: HP (flat)                     [3-substat start]
+           Energy Recharge%          5.8320
+           DEF                       20.8350
+           CRIT DMG%                 14.7630
+           ATK                       64.1850
+  #96     Main: HP (flat)                     [4-substat start]
+           CRIT DMG%                 11.6550
+           DEF                       60.1900
+           HP%                       4.6640
+           Energy Recharge%          18.1440
+  #97     Main: HP (flat)                     [4-substat start]
+           DEF                       81.0250
+           Energy Recharge%          5.1840
+           Elemental Mastery         23.3100
+           ATK                       52.5150
+  #98     Main: HP (flat)                     [3-substat start]
+           HP%                       5.8300
+           ATK%                      14.5750
+           ATK                       31.1200
+           DEF                       39.3550
+  #99     Main: HP (flat)                     [3-substat start]
+           CRIT DMG%                 13.2090
+           Elemental Mastery         41.9580
+           Energy Recharge%          10.3680
+           HP%                       10.4940
+  #100    Main: HP (flat)                     [3-substat start]
+           CRIT DMG%                 7.7700
+           ATK%                      11.0770
+           CRIT Rate%                7.0020
+           HP%                       14.5750
+  ... (900 more pieces not shown)
+
+  -- Plume of Death --
+  #1      Main: ATK (flat)                    [3-substat start]
+           ATK%                      10.4940
+           DEF%                      12.3930
+           CRIT DMG%                 13.2090
+           CRIT Rate%                6.6130
+  #2      Main: ATK (flat)                    [3-substat start]
+           DEF                       20.8350
+           HP%                       9.3280
+           CRIT DMG%                 13.2090
+           CRIT Rate%                9.3360
+  #3      Main: ATK (flat)                    [3-substat start]
+           CRIT DMG%                 10.8780
+           HP%                       16.3240
+           CRIT Rate%                5.8350
+           HP                        268.8750
+  #4      Main: ATK (flat)                    [4-substat start]
+           CRIT Rate%                3.5010
+           HP%                       11.0770
+           HP                        806.6250
+           ATK%                      15.1580
+  #5      Main: ATK (flat)                    [3-substat start]
+           Energy Recharge%          5.1840
+           HP                        597.5000
+           DEF                       39.3550
+           Elemental Mastery         58.2750
+  #6      Main: ATK (flat)                    [3-substat start]
+           Elemental Mastery         16.3170
+           ATK%                      11.6600
+           HP%                       14.5750
+           DEF                       34.7250
+  #7      Main: ATK (flat)                    [3-substat start]
+           HP                        836.5000
+           HP%                       4.0810
+           DEF                       18.5200
+           CRIT DMG%                 17.0940
+  #8      Main: ATK (flat)                    [3-substat start]
+           Elemental Mastery         16.3170
+           CRIT DMG%                 14.7630
+           ATK%                      9.3280
+           HP                        687.1250
+  #9      Main: ATK (flat)                    [3-substat start]
+           DEF                       37.0400
+           HP                        507.8750
+           Elemental Mastery         39.6270
+           CRIT DMG%                 13.2090
+  #10     Main: ATK (flat)                    [3-substat start]
+           CRIT DMG%                 13.2090
+           Energy Recharge%          9.0720
+           DEF%                      6.5610
+           HP                        776.7500
+  #11     Main: ATK (flat)                    [3-substat start]
+           HP                        507.8750
+           HP%                       9.9110
+           CRIT Rate%                3.1120
+           Energy Recharge%          16.2000
+  #12     Main: ATK (flat)                    [3-substat start]
+           CRIT Rate%                17.5050
+           Energy Recharge%          5.1840
+           HP                        268.8750
+           CRIT DMG%                 6.2160
+  #13     Main: ATK (flat)                    [3-substat start]
+           HP                        1075.5000
+           HP%                       4.6640
+           DEF                       16.2050
+           Elemental Mastery         34.9650
+  #14     Main: ATK (flat)                    [3-substat start]
+           DEF%                      11.6640
+           Energy Recharge%          11.6640
+           Elemental Mastery         37.2960
+           ATK%                      11.0770
+  #15     Main: ATK (flat)                    [4-substat start]
+           ATK%                      11.6600
+           CRIT DMG%                 5.4390
+           DEF%                      13.1220
+           DEF                       76.3950
+  #16     Main: ATK (flat)                    [4-substat start]
+           ATK%                      10.4940
+           DEF%                      5.8320
+           Energy Recharge%          9.0720
+           CRIT Rate%                11.6700
+  #17     Main: ATK (flat)                    [4-substat start]
+           DEF%                      10.9350
+           DEF                       34.7250
+           HP                        687.1250
+           Energy Recharge%          11.0160
+  #18     Main: ATK (flat)                    [3-substat start]
+           Elemental Mastery         23.3100
+           ATK%                      4.6640
+           HP                        1015.7500
+           DEF                       32.4100
+  #19     Main: ATK (flat)                    [3-substat start]
+           DEF                       55.5600
+           HP%                       4.6640
+           ATK%                      15.7410
+           Elemental Mastery         20.9790
+  #20     Main: ATK (flat)                    [3-substat start]
+           HP%                       4.6640
+           DEF                       16.2050
+           Energy Recharge%          15.5520
+           ATK%                      15.1580
+  #21     Main: ATK (flat)                    [3-substat start]
+           DEF%                      18.9540
+           DEF                       23.1500
+           ATK%                      9.9110
+           HP                        507.8750
+  #22     Main: ATK (flat)                    [4-substat start]
+           Elemental Mastery         32.6340
+           Energy Recharge%          11.0160
+           CRIT Rate%                9.3360
+           HP                        537.7500
+  #23     Main: ATK (flat)                    [3-substat start]
+           CRIT Rate%                3.1120
+           ATK%                      9.9110
+           HP%                       9.9110
+           Energy Recharge%          14.9040
+  #24     Main: ATK (flat)                    [3-substat start]
+           HP%                       14.5750
+           DEF                       23.1500
+           CRIT DMG%                 17.8710
+           Energy Recharge%          5.8320
+  #25     Main: ATK (flat)                    [3-substat start]
+           Elemental Mastery         34.9650
+           HP                        268.8750
+           ATK%                      10.4940
+           DEF%                      19.6830
+  #26     Main: ATK (flat)                    [3-substat start]
+           Elemental Mastery         60.6060
+           CRIT Rate%                3.1120
+           DEF%                      12.3930
+           CRIT DMG%                 13.9860
+  #27     Main: ATK (flat)                    [3-substat start]
+           DEF                       20.8350
+           Elemental Mastery         81.5850
+           CRIT DMG%                 12.4320
+           HP%                       5.2470
+  #28     Main: ATK (flat)                    [3-substat start]
+           DEF                       23.1500
+           HP                        537.7500
+           DEF%                      13.1220
+           CRIT Rate%                10.1140
+  #29     Main: ATK (flat)                    [3-substat start]
+           HP%                       13.9920
+           CRIT DMG%                 11.6550
+           Elemental Mastery         32.6340
+           CRIT Rate%                3.8900
+  #30     Main: ATK (flat)                    [3-substat start]
+           ATK%                      4.6640
+           CRIT DMG%                 7.7700
+           DEF                       94.9150
+           HP%                       5.8300
+  #31     Main: ATK (flat)                    [3-substat start]
+           HP%                       15.7410
+           DEF%                      7.2900
+           CRIT DMG%                 20.2020
+           Elemental Mastery         23.3100
+  #32     Main: ATK (flat)                    [4-substat start]
+           ATK%                      9.9110
+           HP                        836.5000
+           Elemental Mastery         39.6270
+           HP%                       10.4940
+  #33     Main: ATK (flat)                    [3-substat start]
+           DEF%                      13.8510
+           Elemental Mastery         37.2960
+           HP                        268.8750
+           Energy Recharge%          15.5520
+  #34     Main: ATK (flat)                    [4-substat start]
+           HP                        746.8750
+           HP%                       9.3280
+           DEF%                      20.4120
+           DEF                       23.1500
+  #35     Main: ATK (flat)                    [3-substat start]
+           DEF                       39.3550
+           HP%                       9.9110
+           Energy Recharge%          9.0720
+           HP                        537.7500
+  #36     Main: ATK (flat)                    [3-substat start]
+           ATK%                      10.4940
+           DEF%                      10.2060
+           DEF                       55.5600
+           Energy Recharge%          6.4800
+  #37     Main: ATK (flat)                    [4-substat start]
+           DEF                       87.9700
+           CRIT DMG%                 6.2160
+           HP                        507.8750
+           ATK%                      4.0810
+  #38     Main: ATK (flat)                    [3-substat start]
+           DEF                       23.1500
+           HP                        1045.6250
+           Energy Recharge%          11.6640
+           CRIT DMG%                 6.2160
+  #39     Main: ATK (flat)                    [3-substat start]
+           Elemental Mastery         32.6340
+           DEF%                      5.1030
+           ATK%                      16.3240
+           CRIT DMG%                 13.2090
+  #40     Main: ATK (flat)                    [3-substat start]
+           Elemental Mastery         39.6270
+           ATK%                      9.9110
+           DEF                       41.6700
+           HP                        537.7500
+  #41     Main: ATK (flat)                    [3-substat start]
+           DEF%                      7.2900
+           Energy Recharge%          16.2000
+           Elemental Mastery         23.3100
+           DEF                       62.5050
+  #42     Main: ATK (flat)                    [3-substat start]
+           Elemental Mastery         16.3170
+           DEF                       34.7250
+           HP%                       8.1620
+           Energy Recharge%          15.5520
+  #43     Main: ATK (flat)                    [4-substat start]
+           CRIT DMG%                 13.9860
+           HP                        836.5000
+           Energy Recharge%          12.3120
+           Elemental Mastery         46.6200
+  #44     Main: ATK (flat)                    [3-substat start]
+           HP                        507.8750
+           Elemental Mastery         58.2750
+           ATK%                      4.0810
+           DEF                       37.0400
+  #45     Main: ATK (flat)                    [3-substat start]
+           DEF                       37.0400
+           HP%                       9.3280
+           Energy Recharge%          11.0160
+           Elemental Mastery         46.6200
+  #46     Main: ATK (flat)                    [4-substat start]
+           Energy Recharge%          9.7200
+           HP                        507.8750
+           HP%                       12.8260
+           Elemental Mastery         37.2960
+  #47     Main: ATK (flat)                    [3-substat start]
+           CRIT DMG%                 14.7630
+           HP                        298.7500
+           DEF                       64.8200
+           ATK%                      11.6600
+  #48     Main: ATK (flat)                    [3-substat start]
+           Energy Recharge%          5.8320
+           DEF%                      19.6830
+           CRIT DMG%                 19.4250
+           DEF                       20.8350
+  #49     Main: ATK (flat)                    [3-substat start]
+           ATK%                      8.1620
+           CRIT Rate%                3.1120
+           DEF                       37.0400
+           Energy Recharge%          15.5520
+  #50     Main: ATK (flat)                    [3-substat start]
+           DEF                       46.3000
+           HP%                       8.7450
+           DEF%                      13.1220
+           Energy Recharge%          12.3120
+  #51     Main: ATK (flat)                    [3-substat start]
+           HP                        239.0000
+           HP%                       9.3280
+           Energy Recharge%          22.0320
+           ATK%                      4.6640
+  #52     Main: ATK (flat)                    [4-substat start]
+           CRIT DMG%                 17.0940
+           Energy Recharge%          11.6640
+           CRIT Rate%                3.1120
+           DEF%                      18.9540
+  #53     Main: ATK (flat)                    [3-substat start]
+           DEF%                      18.9540
+           ATK%                      16.3240
+           HP                        239.0000
+           Elemental Mastery         16.3170
+  #54     Main: ATK (flat)                    [3-substat start]
+           CRIT Rate%                2.7230
+           Elemental Mastery         53.6130
+           HP%                       4.0810
+           CRIT DMG%                 20.2020
+  #55     Main: ATK (flat)                    [3-substat start]
+           Elemental Mastery         16.3170
+           ATK%                      10.4940
+           DEF                       55.5600
+           HP                        418.2500
+  #56     Main: ATK (flat)                    [3-substat start]
+           HP                        298.7500
+           Elemental Mastery         20.9790
+           DEF                       18.5200
+           CRIT DMG%                 30.3030
+  #57     Main: ATK (flat)                    [3-substat start]
+           DEF%                      17.4960
+           ATK%                      9.9110
+           HP%                       9.9110
+           HP                        239.0000
+  #58     Main: ATK (flat)                    [3-substat start]
+           HP                        478.0000
+           DEF                       39.3550
+           HP%                       4.0810
+           CRIT Rate%                9.7250
+  #59     Main: ATK (flat)                    [3-substat start]
+           HP                        507.8750
+           DEF%                      13.8510
+           Elemental Mastery         58.2750
+           CRIT Rate%                3.1120
+  #60     Main: ATK (flat)                    [4-substat start]
+           Energy Recharge%          23.9760
+           HP                        507.8750
+           CRIT DMG%                 11.6550
+           Elemental Mastery         23.3100
+  #61     Main: ATK (flat)                    [3-substat start]
+           Energy Recharge%          17.4960
+           CRIT DMG%                 5.4390
+           ATK%                      4.0810
+           Elemental Mastery         62.9370
+  #62     Main: ATK (flat)                    [3-substat start]
+           DEF                       46.3000
+           HP                        239.0000
+           HP%                       15.1580
+           ATK%                      10.4940
+  #63     Main: ATK (flat)                    [3-substat start]
+           Elemental Mastery         58.2750
+           HP%                       10.4940
+           HP                        298.7500
+           DEF                       32.4100
+  #64     Main: ATK (flat)                    [3-substat start]
+           DEF                       41.6700
+           HP                        926.1250
+           DEF%                      7.2900
+           HP%                       5.2470
+  #65     Main: ATK (flat)                    [3-substat start]
+           Elemental Mastery         46.6200
+           ATK%                      5.2470
+           HP                        956.0000
+           Energy Recharge%          4.5360
+  #66     Main: ATK (flat)                    [4-substat start]
+           Energy Recharge%          17.4960
+           Elemental Mastery         18.6480
+           ATK%                      9.9110
+           DEF                       60.1900
+  #67     Main: ATK (flat)                    [3-substat start]
+           CRIT DMG%                 5.4390
+           ATK%                      9.3280
+           DEF                       67.1350
+           HP%                       9.9110
+  #68     Main: ATK (flat)                    [3-substat start]
+           Energy Recharge%          5.8320
+           ATK%                      9.9110
+           Elemental Mastery         55.9440
+           DEF%                      12.3930
+  #69     Main: ATK (flat)                    [3-substat start]
+           HP                        717.0000
+           Energy Recharge%          10.3680
+           DEF                       20.8350
+           DEF%                      13.1220
+  #70     Main: ATK (flat)                    [3-substat start]
+           Elemental Mastery         55.9440
+           CRIT Rate%                3.8900
+           DEF%                      18.2250
+           ATK%                      5.8300
+  #71     Main: ATK (flat)                    [3-substat start]
+           CRIT DMG%                 12.4320
+           Elemental Mastery         20.9790
+           HP                        507.8750
+           ATK%                      15.7410
+  #72     Main: ATK (flat)                    [3-substat start]
+           HP%                       10.4940
+           DEF%                      13.1220
+           DEF                       39.3550
+           CRIT DMG%                 11.6550
+  #73     Main: ATK (flat)                    [3-substat start]
+           HP%                       10.4940
+           DEF                       23.1500
+           HP                        478.0000
+           CRIT Rate%                10.8920
+  #74     Main: ATK (flat)                    [3-substat start]
+           CRIT Rate%                2.7230
+           CRIT DMG%                 19.4250
+           HP%                       15.7410
+           DEF                       18.5200
+  #75     Main: ATK (flat)                    [3-substat start]
+           HP                        537.7500
+           HP%                       11.0770
+           ATK%                      10.4940
+           DEF                       39.3550
+  #76     Main: ATK (flat)                    [3-substat start]
+           Energy Recharge%          9.0720
+           HP%                       4.0810
+           DEF%                      5.1030
+           DEF                       81.0250
+  #77     Main: ATK (flat)                    [3-substat start]
+           Energy Recharge%          4.5360
+           HP                        478.0000
+           DEF%                      18.2250
+           DEF                       37.0400
+  #78     Main: ATK (flat)                    [3-substat start]
+           Elemental Mastery         58.2750
+           HP                        537.7500
+           Energy Recharge%          12.9600
+           CRIT Rate%                3.5010
+  #79     Main: ATK (flat)                    [3-substat start]
+           DEF                       20.8350
+           CRIT DMG%                 6.2160
+           Elemental Mastery         55.9440
+           DEF%                      17.4960
+  #80     Main: ATK (flat)                    [4-substat start]
+           ATK%                      8.7450
+           CRIT Rate%                6.6130
+           DEF%                      16.7670
+           Energy Recharge%          9.0720
+  #81     Main: ATK (flat)                    [4-substat start]
+           CRIT DMG%                 23.3100
+           CRIT Rate%                2.7230
+           HP%                       8.7450
+           ATK%                      15.7410
+  #82     Main: ATK (flat)                    [3-substat start]
+           HP                        478.0000
+           Energy Recharge%          5.1840
+           DEF                       34.7250
+           CRIT Rate%                9.3360
+  #83     Main: ATK (flat)                    [3-substat start]
+           DEF%                      7.2900
+           HP%                       13.9920
+           HP                        896.2500
+           Elemental Mastery         18.6480
+  #84     Main: ATK (flat)                    [3-substat start]
+           Energy Recharge%          18.7920
+           DEF                       46.3000
+           Elemental Mastery         39.6270
+           DEF%                      5.1030
+  #85     Main: ATK (flat)                    [3-substat start]
+           Elemental Mastery         18.6480
+           HP                        1045.6250
+           Energy Recharge%          9.0720
+           DEF                       23.1500
+  #86     Main: ATK (flat)                    [3-substat start]
+           DEF%                      14.5800
+           HP                        448.1250
+           CRIT Rate%                3.5010
+           Elemental Mastery         67.5990
+  #87     Main: ATK (flat)                    [4-substat start]
+           Elemental Mastery         39.6270
+           DEF                       55.5600
+           HP%                       8.7450
+           CRIT Rate%                6.2240
+  #88     Main: ATK (flat)                    [3-substat start]
+           HP%                       4.0810
+           Energy Recharge%          5.1840
+           DEF                       39.3550
+           DEF%                      24.7860
+  #89     Main: ATK (flat)                    [3-substat start]
+           DEF                       60.1900
+           HP%                       8.7450
+           HP                        209.1250
+           Energy Recharge%          11.0160
+  #90     Main: ATK (flat)                    [3-substat start]
+           Elemental Mastery         23.3100
+           CRIT Rate%                9.3360
+           HP                        298.7500
+           CRIT DMG%                 19.4250
+  #91     Main: ATK (flat)                    [3-substat start]
+           DEF                       23.1500
+           HP                        746.8750
+           HP%                       5.8300
+           ATK%                      13.4090
+  #92     Main: ATK (flat)                    [4-substat start]
+           HP%                       9.9110
+           Elemental Mastery         44.2890
+           DEF%                      11.6640
+           CRIT DMG%                 20.2020
+  #93     Main: ATK (flat)                    [3-substat start]
+           HP                        478.0000
+           ATK%                      9.3280
+           DEF                       57.8750
+           DEF%                      5.8320
+  #94     Main: ATK (flat)                    [4-substat start]
+           DEF                       16.2050
+           DEF%                      5.8320
+           HP                        806.6250
+           ATK%                      18.6560
+  #95     Main: ATK (flat)                    [4-substat start]
+           CRIT DMG%                 11.6550
+           DEF%                      19.6830
+           Elemental Mastery         37.2960
+           HP                        448.1250
+  #96     Main: ATK (flat)                    [4-substat start]
+           Energy Recharge%          6.4800
+           ATK%                      16.9070
+           HP                        717.0000
+           Elemental Mastery         37.2960
+  #97     Main: ATK (flat)                    [3-substat start]
+           CRIT DMG%                 6.2160
+           DEF                       39.3550
+           HP                        746.8750
+           Elemental Mastery         39.6270
+  #98     Main: ATK (flat)                    [4-substat start]
+           HP                        448.1250
+           DEF%                      20.4120
+           Elemental Mastery         34.9650
+           CRIT Rate%                7.0020
+  #99     Main: ATK (flat)                    [3-substat start]
+           DEF                       18.5200
+           HP                        537.7500
+           CRIT DMG%                 22.5330
+           DEF%                      13.8510
+  #100    Main: ATK (flat)                    [3-substat start]
+           CRIT DMG%                 20.2020
+           ATK%                      13.4090
+           Elemental Mastery         20.9790
+           HP%                       4.6640
+  ... (900 more pieces not shown)
+
+  -- Sands of Eon --
+  #1      Main: Energy Recharge%              [3-substat start]
+           DEF                       60.1900
+           CRIT Rate%                6.6130
+           HP                        567.6250
+           ATK                       19.4500
+  #2      Main: ATK%                          [3-substat start]
+           CRIT DMG%                 13.2090
+           CRIT Rate%                7.3910
+           ATK                       19.4500
+           HP%                       14.5750
+  #3      Main: ATK%                          [3-substat start]
+           CRIT Rate%                8.5580
+           CRIT DMG%                 5.4390
+           HP                        478.0000
+           DEF%                      13.1220
+  #4      Main: Energy Recharge%              [4-substat start]
+           HP%                       5.2470
+           ATK                       13.6150
+           ATK%                      23.9030
+           Elemental Mastery         39.6270
+  #5      Main: ATK%                          [3-substat start]
+           CRIT DMG%                 5.4390
+           ATK                       31.1200
+           DEF                       39.3550
+           Elemental Mastery         55.9440
+  #6      Main: HP%                           [3-substat start]
+           DEF                       46.3000
+           DEF%                      5.1030
+           ATK%                      9.9110
+           CRIT DMG%                 20.2020
+  #7      Main: ATK%                          [3-substat start]
+           CRIT DMG%                 15.5400
+           DEF                       37.0400
+           Elemental Mastery         20.9790
+           HP                        866.3750
+  #8      Main: Energy Recharge%              [3-substat start]
+           ATK                       31.1200
+           Elemental Mastery         18.6480
+           DEF                       53.2450
+           ATK%                      9.3280
+  #9      Main: HP%                           [3-substat start]
+           ATK%                      8.1620
+           DEF                       62.5050
+           Energy Recharge%          11.0160
+           ATK                       17.5050
+  #10     Main: DEF%                          [3-substat start]
+           DEF                       34.7250
+           Energy Recharge%          11.6640
+           HP                        239.0000
+           Elemental Mastery         53.6130
+  #11     Main: HP%                           [3-substat start]
+           DEF                       69.4500
+           ATK%                      5.2470
+           HP                        836.5000
+           CRIT Rate%                3.8900
+  #12     Main: Elemental Mastery             [3-substat start]
+           DEF                       23.1500
+           DEF%                      26.9730
+           Energy Recharge%          11.0160
+           ATK                       19.4500
+  #13     Main: ATK%                          [3-substat start]
+           DEF                       39.3550
+           ATK                       17.5050
+           Elemental Mastery         39.6270
+           CRIT DMG%                 18.6480
+  #14     Main: DEF%                          [3-substat start]
+           DEF                       55.5600
+           HP                        298.7500
+           ATK                       48.6250
+           Elemental Mastery         23.3100
+  #15     Main: ATK%                          [4-substat start]
+           Energy Recharge%          5.1840
+           HP%                       9.3280
+           HP                        1224.8750
+           CRIT DMG%                 6.9930
+  #16     Main: ATK%                          [3-substat start]
+           DEF                       18.5200
+           DEF%                      5.1030
+           Elemental Mastery         55.9440
+           CRIT Rate%                8.9470
+  #17     Main: ATK%                          [4-substat start]
+           Elemental Mastery         34.9650
+           Energy Recharge%          17.4960
+           DEF                       34.7250
+           HP                        478.0000
+  #18     Main: HP%                           [3-substat start]
+           HP                        507.8750
+           Energy Recharge%          11.6640
+           ATK%                      5.2470
+           CRIT DMG%                 20.2020
+  #19     Main: Elemental Mastery             [3-substat start]
+           Energy Recharge%          22.0320
+           CRIT DMG%                 6.9930
+           ATK                       36.9550
+           HP%                       5.8300
+  #20     Main: HP%                           [3-substat start]
+           Elemental Mastery         37.2960
+           DEF                       23.1500
+           ATK%                      15.1580
+           HP                        507.8750
+  #21     Main: DEF%                          [3-substat start]
+           Energy Recharge%          6.4800
+           CRIT Rate%                6.2240
+           HP%                       17.4900
+           ATK                       31.1200
+  #22     Main: DEF%                          [3-substat start]
+           Elemental Mastery         20.9790
+           CRIT DMG%                 18.6480
+           ATK                       31.1200
+           HP%                       8.1620
+  #23     Main: HP%                           [3-substat start]
+           ATK%                      4.0810
+           DEF%                      13.1220
+           ATK                       29.1750
+           HP                        717.0000
+  #24     Main: Energy Recharge%              [3-substat start]
+           Elemental Mastery         51.2820
+           CRIT DMG%                 14.7630
+           HP%                       11.0770
+           DEF                       23.1500
+  #25     Main: DEF%                          [3-substat start]
+           HP                        298.7500
+           Energy Recharge%          6.4800
+           ATK%                      13.9920
+           HP%                       14.5750
+  #26     Main: DEF%                          [3-substat start]
+           HP                        298.7500
+           ATK                       19.4500
+           DEF                       83.3400
+           ATK%                      9.9110
+  #27     Main: Energy Recharge%              [3-substat start]
+           Elemental Mastery         46.6200
+           DEF                       39.3550
+           HP                        209.1250
+           ATK                       52.5150
+  #28     Main: Elemental Mastery             [4-substat start]
+           DEF                       39.3550
+           ATK                       48.6250
+           Energy Recharge%          16.2000
+           CRIT DMG%                 5.4390
+  #29     Main: DEF%                          [3-substat start]
+           ATK                       56.4050
+           HP                        478.0000
+           HP%                       9.9110
+           Energy Recharge%          6.4800
+  #30     Main: DEF%                          [3-substat start]
+           Energy Recharge%          18.1440
+           CRIT Rate%                5.8350
+           HP                        268.8750
+           Elemental Mastery         34.9650
+  #31     Main: HP%                           [3-substat start]
+           DEF                       57.8750
+           HP                        268.8750
+           CRIT DMG%                 12.4320
+           Energy Recharge%          11.0160
+  #32     Main: DEF%                          [3-substat start]
+           ATK                       38.9000
+           HP                        507.8750
+           Energy Recharge%          9.0720
+           DEF                       37.0400
+  #33     Main: Elemental Mastery             [4-substat start]
+           HP%                       5.8300
+           HP                        776.7500
+           ATK%                      15.7410
+           ATK                       35.0100
+  #34     Main: Elemental Mastery             [3-substat start]
+           HP                        776.7500
+           Energy Recharge%          16.8480
+           ATK                       15.5600
+           ATK%                      4.6640
+  #35     Main: ATK%                          [3-substat start]
+           DEF                       62.5050
+           HP%                       5.8300
+           Energy Recharge%          17.4960
+           DEF%                      5.1030
+  #36     Main: DEF%                          [3-substat start]
+           DEF                       90.2850
+           HP                        209.1250
+           HP%                       9.9110
+           ATK                       13.6150
+  #37     Main: ATK%                          [4-substat start]
+           CRIT DMG%                 19.4250
+           ATK                       36.9550
+           DEF                       39.3550
+           HP%                       11.0770
+  #38     Main: Energy Recharge%              [3-substat start]
+           Elemental Mastery         20.9790
+           DEF%                      13.8510
+           CRIT Rate%                9.7250
+           CRIT DMG%                 12.4320
+  #39     Main: HP%                           [3-substat start]
+           ATK%                      5.2470
+           DEF                       41.6700
+           Elemental Mastery         18.6480
+           DEF%                      25.5150
+  #40     Main: Elemental Mastery             [3-substat start]
+           DEF                       57.8750
+           ATK                       15.5600
+           HP                        507.8750
+           CRIT Rate%                5.8350
+  #41     Main: Energy Recharge%              [3-substat start]
+           HP%                       13.9920
+           HP                        478.0000
+           ATK%                      5.2470
+           DEF                       39.3550
+  #42     Main: ATK%                          [3-substat start]
+           CRIT Rate%                5.8350
+           ATK                       35.0100
+           CRIT DMG%                 12.4320
+           HP%                       9.3280
+  #43     Main: DEF%                          [3-substat start]
+           DEF                       41.6700
+           HP%                       11.6600
+           ATK                       29.1750
+           HP                        478.0000
+  #44     Main: DEF%                          [3-substat start]
+           Energy Recharge%          4.5360
+           ATK                       38.9000
+           CRIT DMG%                 26.4180
+           DEF                       23.1500
+  #45     Main: ATK%                          [3-substat start]
+           DEF                       43.9850
+           HP                        657.2500
+           DEF%                      10.9350
+           Energy Recharge%          5.8320
+  #46     Main: DEF%                          [3-substat start]
+           HP%                       11.0770
+           ATK                       42.7900
+           HP                        507.8750
+           Energy Recharge%          4.5360
+  #47     Main: HP%                           [3-substat start]
+           DEF%                      18.2250
+           ATK%                      11.6600
+           Energy Recharge%          12.9600
+           ATK                       15.5600
+  #48     Main: Energy Recharge%              [3-substat start]
+           Elemental Mastery         46.6200
+           HP%                       4.6640
+           HP                        507.8750
+           DEF%                      20.4120
+  #49     Main: HP%                           [4-substat start]
+           DEF                       55.5600
+           Elemental Mastery         39.6270
+           CRIT Rate%                9.7250
+           HP                        239.0000
+  #50     Main: HP%                           [3-substat start]
+           DEF%                      13.8510
+           ATK%                      11.0770
+           CRIT DMG%                 15.5400
+           DEF                       37.0400
+  #51     Main: Elemental Mastery             [4-substat start]
+           ATK%                      8.1620
+           ATK                       44.7350
+           HP%                       9.3280
+           HP                        507.8750
+  #52     Main: Energy Recharge%              [3-substat start]
+           DEF                       83.3400
+           CRIT DMG%                 6.9930
+           DEF%                      7.2900
+           Elemental Mastery         37.2960
+  #53     Main: DEF%                          [4-substat start]
+           Elemental Mastery         41.9580
+           ATK%                      8.1620
+           CRIT Rate%                12.8370
+           ATK                       13.6150
+  #54     Main: HP%                           [3-substat start]
+           HP                        209.1250
+           Elemental Mastery         72.2610
+           ATK                       36.9550
+           Energy Recharge%          5.1840
+  #55     Main: ATK%                          [3-substat start]
+           DEF                       55.5600
+           ATK                       35.0100
+           HP                        478.0000
+           DEF%                      7.2900
+  #56     Main: ATK%                          [3-substat start]
+           DEF%                      14.5800
+           HP                        836.5000
+           DEF                       18.5200
+           Elemental Mastery         37.2960
+  #57     Main: Elemental Mastery             [3-substat start]
+           DEF                       37.0400
+           ATK                       35.0100
+           DEF%                      12.3930
+           HP                        448.1250
+  #58     Main: ATK%                          [3-substat start]
+           DEF%                      19.6830
+           ATK                       38.9000
+           HP                        239.0000
+           Energy Recharge%          11.6640
+  #59     Main: HP%                           [4-substat start]
+           Elemental Mastery         18.6480
+           CRIT DMG%                 13.9860
+           DEF%                      23.3280
+           ATK%                      10.4940
+  #60     Main: ATK%                          [3-substat start]
+           Energy Recharge%          4.5360
+           DEF                       67.1350
+           CRIT Rate%                8.9470
+           Elemental Mastery         20.9790
+  #61     Main: HP%                           [3-substat start]
+           HP                        746.8750
+           Energy Recharge%          11.6640
+           DEF%                      7.2900
+           ATK%                      8.7450
+  #62     Main: DEF%                          [4-substat start]
+           Elemental Mastery         16.3170
+           Energy Recharge%          12.3120
+           CRIT Rate%                12.8370
+           HP                        448.1250
+  #63     Main: ATK%                          [4-substat start]
+           ATK                       33.0650
+           HP                        776.7500
+           HP%                       8.7450
+           DEF                       34.7250
+  #64     Main: HP%                           [3-substat start]
+           DEF                       20.8350
+           ATK                       44.7350
+           CRIT DMG%                 7.7700
+           Elemental Mastery         60.6060
+  #65     Main: Energy Recharge%              [3-substat start]
+           ATK%                      19.2390
+           CRIT DMG%                 13.9860
+           HP                        298.7500
+           CRIT Rate%                3.8900
+  #66     Main: Elemental Mastery             [3-substat start]
+           CRIT Rate%                2.7230
+           Energy Recharge%          11.6640
+           CRIT DMG%                 13.9860
+           HP%                       13.9920
+  #67     Main: HP%                           [3-substat start]
+           ATK%                      9.3280
+           HP                        209.1250
+           Elemental Mastery         62.9370
+           DEF%                      13.8510
+  #68     Main: HP%                           [3-substat start]
+           CRIT Rate%                7.3910
+           DEF                       23.1500
+           ATK%                      15.1580
+           HP                        448.1250
+  #69     Main: Elemental Mastery             [3-substat start]
+           CRIT DMG%                 20.2020
+           CRIT Rate%                7.3910
+           DEF                       20.8350
+           HP                        537.7500
+  #70     Main: ATK%                          [3-substat start]
+           HP%                       9.3280
+           CRIT Rate%                10.1140
+           ATK                       15.5600
+           DEF                       34.7250
+  #71     Main: DEF%                          [3-substat start]
+           ATK                       36.9550
+           Energy Recharge%          4.5360
+           CRIT Rate%                14.3930
+           DEF                       18.5200
+  #72     Main: Energy Recharge%              [3-substat start]
+           CRIT Rate%                3.8900
+           DEF                       62.5050
+           Elemental Mastery         23.3100
+           DEF%                      19.6830
+  #73     Main: Energy Recharge%              [3-substat start]
+           HP                        537.7500
+           ATK                       19.4500
+           HP%                       15.7410
+           CRIT DMG%                 12.4320
+  #74     Main: Energy Recharge%              [3-substat start]
+           CRIT DMG%                 12.4320
+           ATK                       19.4500
+           DEF                       83.3400
+           Elemental Mastery         18.6480
+  #75     Main: DEF%                          [3-substat start]
+           HP                        537.7500
+           HP%                       13.4090
+           ATK                       17.5050
+           CRIT Rate%                7.7800
+  #76     Main: Elemental Mastery             [3-substat start]
+           ATK%                      15.7410
+           DEF                       20.8350
+           CRIT DMG%                 21.7560
+           ATK                       15.5600
+  #77     Main: ATK%                          [3-substat start]
+           CRIT DMG%                 19.4250
+           DEF                       41.6700
+           Energy Recharge%          4.5360
+           CRIT Rate%                6.6130
+  #78     Main: Energy Recharge%              [3-substat start]
+           ATK                       46.6800
+           DEF                       23.1500
+           HP%                       13.9920
+           DEF%                      7.2900
+  #79     Main: Elemental Mastery             [3-substat start]
+           DEF                       43.9850
+           ATK                       31.1200
+           HP%                       4.6640
+           Energy Recharge%          17.4960
+  #80     Main: DEF%                          [3-substat start]
+           CRIT Rate%                3.1120
+           ATK                       35.0100
+           Energy Recharge%          18.7920
+           Elemental Mastery         32.6340
+  #81     Main: DEF%                          [3-substat start]
+           ATK                       27.2300
+           DEF                       34.7250
+           ATK%                      9.9110
+           HP                        448.1250
+  #82     Main: Energy Recharge%              [3-substat start]
+           HP%                       5.2470
+           DEF                       50.9300
+           HP                        239.0000
+           ATK%                      15.1580
+  #83     Main: Energy Recharge%              [3-substat start]
+           ATK%                      9.9110
+           HP%                       4.6640
+           ATK                       46.6800
+           CRIT Rate%                7.0020
+  #84     Main: DEF%                          [3-substat start]
+           ATK%                      8.1620
+           HP                        268.8750
+           HP%                       11.0770
+           CRIT Rate%                10.5030
+  #85     Main: Energy Recharge%              [3-substat start]
+           ATK%                      20.4050
+           DEF                       43.9850
+           HP                        239.0000
+           HP%                       5.8300
+  #86     Main: HP%                           [3-substat start]
+           Energy Recharge%          11.0160
+           ATK%                      15.7410
+           DEF%                      10.9350
+           HP                        239.0000
+  #87     Main: DEF%                          [4-substat start]
+           HP                        657.2500
+           ATK%                      5.2470
+           CRIT DMG%                 17.0940
+           CRIT Rate%                7.0020
+  #88     Main: Elemental Mastery             [3-substat start]
+           DEF%                      7.2900
+           ATK                       29.1750
+           DEF                       23.1500
+           CRIT DMG%                 24.8640
+  #89     Main: DEF%                          [3-substat start]
+           CRIT DMG%                 15.5400
+           HP                        239.0000
+           HP%                       14.5750
+           Energy Recharge%          12.3120
+  #90     Main: ATK%                          [3-substat start]
+           HP%                       11.6600
+           Energy Recharge%          16.8480
+           Elemental Mastery         41.9580
+           ATK                       13.6150
+  #91     Main: DEF%                          [3-substat start]
+           ATK%                      9.3280
+           ATK                       36.9550
+           DEF                       23.1500
+           Energy Recharge%          15.5520
+  #92     Main: DEF%                          [3-substat start]
+           ATK                       15.5600
+           Elemental Mastery         37.2960
+           HP                        507.8750
+           Energy Recharge%          16.2000
+  #93     Main: HP%                           [3-substat start]
+           HP                        537.7500
+           DEF                       83.3400
+           Elemental Mastery         18.6480
+           CRIT DMG%                 6.9930
+  #94     Main: HP%                           [3-substat start]
+           Elemental Mastery         34.9650
+           ATK                       33.0650
+           HP                        597.5000
+           ATK%                      10.4940
+  #95     Main: DEF%                          [3-substat start]
+           DEF                       16.2050
+           ATK%                      4.0810
+           ATK                       33.0650
+           HP                        896.2500
+  #96     Main: Energy Recharge%              [3-substat start]
+           Elemental Mastery         32.6340
+           HP                        448.1250
+           DEF                       41.6700
+           ATK                       33.0650
+  #97     Main: DEF%                          [3-substat start]
+           HP%                       10.4940
+           CRIT DMG%                 6.2160
+           Elemental Mastery         76.9230
+           HP                        298.7500
+  #98     Main: DEF%                          [3-substat start]
+           DEF                       20.8350
+           HP                        597.5000
+           ATK%                      4.0810
+           CRIT Rate%                12.4480
+  #99     Main: Elemental Mastery             [3-substat start]
+           DEF                       39.3550
+           DEF%                      13.8510
+           ATK                       56.4050
+           CRIT Rate%                3.5010
+  #100    Main: ATK%                          [3-substat start]
+           DEF                       16.2050
+           HP                        478.0000
+           CRIT DMG%                 12.4320
+           DEF%                      20.4120
+  ... (900 more pieces not shown)
+
+  -- Goblet of Eonothem --
+  #1      Main: HP%                           [3-substat start]
+           CRIT DMG%                 10.8780
+           Elemental Mastery         20.9790
+           HP                        717.0000
+           ATK                       33.0650
+  #2      Main: HP%                           [3-substat start]
+           Energy Recharge%          5.8320
+           ATK                       17.5050
+           DEF                       83.3400
+           DEF%                      11.6640
+  #3      Main: DEF%                          [4-substat start]
+           CRIT DMG%                 32.6340
+           Energy Recharge%          5.8320
+           ATK%                      8.7450
+           ATK                       15.5600
+  #4      Main: HP%                           [3-substat start]
+           CRIT Rate%                5.8350
+           ATK                       13.6150
+           DEF%                      18.2250
+           Elemental Mastery         41.9580
+  #5      Main: ATK%                          [3-substat start]
+           HP%                       4.0810
+           ATK                       54.4600
+           CRIT Rate%                7.0020
+           Energy Recharge%          12.9600
+  #6      Main: Anemo DMG Bonus%              [3-substat start]
+           DEF                       43.9850
+           CRIT DMG%                 12.4320
+           CRIT Rate%                7.3910
+           ATK                       33.0650
+  #7      Main: Anemo DMG Bonus%              [3-substat start]
+           HP%                       11.0770
+           Energy Recharge%          10.3680
+           DEF                       39.3550
+           ATK                       29.1750
+  #8      Main: DEF%                          [3-substat start]
+           ATK                       46.6800
+           CRIT DMG%                 12.4320
+           DEF                       34.7250
+           HP                        209.1250
+  #9      Main: Hydro DMG Bonus%              [3-substat start]
+           ATK%                      11.6600
+           Energy Recharge%          12.9600
+           DEF%                      17.4960
+           HP%                       4.6640
+  #10     Main: Dendro DMG Bonus%             [3-substat start]
+           DEF                       18.5200
+           HP                        746.8750
+           ATK                       44.7350
+           CRIT DMG%                 5.4390
+  #11     Main: DEF%                          [3-substat start]
+           ATK%                      15.1580
+           Energy Recharge%          5.8320
+           CRIT Rate%                2.7230
+           Elemental Mastery         58.2750
+  #12     Main: HP%                           [4-substat start]
+           ATK                       19.4500
+           Energy Recharge%          20.7360
+           DEF                       20.8350
+           DEF%                      17.4960
+  #13     Main: Physical DMG Bonus%           [3-substat start]
+           HP                        776.7500
+           DEF                       18.5200
+           HP%                       15.1580
+           ATK%                      4.6640
+  #14     Main: Dendro DMG Bonus%             [3-substat start]
+           HP                        985.8750
+           Energy Recharge%          12.3120
+           CRIT DMG%                 6.9930
+           DEF                       18.5200
+  #15     Main: ATK%                          [3-substat start]
+           HP                        507.8750
+           Energy Recharge%          17.4960
+           HP%                       5.2470
+           DEF%                      13.1220
+  #16     Main: HP%                           [4-substat start]
+           ATK                       19.4500
+           DEF%                      21.8700
+           Energy Recharge%          5.8320
+           HP                        806.6250
+  #17     Main: DEF%                          [3-substat start]
+           CRIT Rate%                2.7230
+           ATK                       50.5700
+           HP%                       9.3280
+           DEF                       41.6700
+  #18     Main: Dendro DMG Bonus%             [4-substat start]
+           HP%                       16.3240
+           ATK                       19.4500
+           DEF                       55.5600
+           Energy Recharge%          11.0160
+  #19     Main: Elemental Mastery             [3-substat start]
+           ATK%                      4.0810
+           DEF                       41.6700
+           HP                        836.5000
+           Energy Recharge%          10.3680
+  #20     Main: DEF%                          [3-substat start]
+           Elemental Mastery         46.6200
+           HP                        956.0000
+           HP%                       5.2470
+           CRIT DMG%                 6.2160
+  #21     Main: ATK%                          [3-substat start]
+           Energy Recharge%          16.2000
+           HP                        418.2500
+           ATK                       13.6150
+           Elemental Mastery         39.6270
+  #22     Main: HP%                           [3-substat start]
+           Elemental Mastery         62.9370
+           CRIT Rate%                6.6130
+           Energy Recharge%          11.6640
+           DEF%                      7.2900
+  #23     Main: Electro DMG Bonus%            [3-substat start]
+           DEF%                      21.8700
+           DEF                       16.2050
+           ATK                       33.0650
+           HP%                       4.0810
+  #24     Main: ATK%                          [3-substat start]
+           HP%                       9.3280
+           HP                        478.0000
+           DEF                       39.3550
+           CRIT Rate%                5.8350
+  #25     Main: HP%                           [3-substat start]
+           HP                        537.7500
+           ATK%                      16.3240
+           DEF%                      5.1030
+           ATK                       35.0100
+  #26     Main: Electro DMG Bonus%            [3-substat start]
+           DEF%                      19.6830
+           HP%                       11.6600
+           Elemental Mastery         46.6200
+           CRIT DMG%                 6.9930
+  #27     Main: ATK%                          [3-substat start]
+           ATK                       19.4500
+           Energy Recharge%          11.6640
+           CRIT Rate%                12.4480
+           DEF                       18.5200
+  #28     Main: ATK%                          [3-substat start]
+           HP%                       4.0810
+           DEF                       37.0400
+           ATK                       36.9550
+           Elemental Mastery         60.6060
+  #29     Main: DEF%                          [3-substat start]
+           DEF                       37.0400
+           HP                        776.7500
+           ATK                       33.0650
+           ATK%                      5.2470
+  #30     Main: DEF%                          [3-substat start]
+           HP                        537.7500
+           DEF                       18.5200
+           ATK                       13.6150
+           ATK%                      18.0730
+  #31     Main: Anemo DMG Bonus%              [3-substat start]
+           CRIT DMG%                 14.7630
+           DEF                       55.5600
+           HP                        507.8750
+           Elemental Mastery         20.9790
+  #32     Main: ATK%                          [3-substat start]
+           HP                        239.0000
+           ATK                       75.8550
+           DEF%                      5.8320
+           CRIT DMG%                 7.7700
+  #33     Main: HP%                           [3-substat start]
+           Elemental Mastery         44.2890
+           ATK                       31.1200
+           DEF%                      13.8510
+           ATK%                      9.9110
+  #34     Main: DEF%                          [3-substat start]
+           DEF                       43.9850
+           ATK                       54.4600
+           CRIT DMG%                 5.4390
+           HP%                       9.3280
+  #35     Main: Cryo DMG Bonus%               [3-substat start]
+           ATK                       31.1200
+           CRIT Rate%                10.1140
+           HP                        239.0000
+           CRIT DMG%                 12.4320
+  #36     Main: HP%                           [3-substat start]
+           HP                        239.0000
+           Elemental Mastery         18.6480
+           Energy Recharge%          14.9040
+           ATK%                      12.8260
+  #37     Main: HP%                           [3-substat start]
+           HP                        239.0000
+           CRIT Rate%                6.6130
+           Energy Recharge%          18.1440
+           ATK%                      11.0770
+  #38     Main: Cryo DMG Bonus%               [4-substat start]
+           HP%                       9.9110
+           ATK                       77.8000
+           HP                        209.1250
+           DEF                       16.2050
+  #39     Main: ATK%                          [3-substat start]
+           DEF                       43.9850
+           CRIT DMG%                 7.7700
+           HP                        507.8750
+           CRIT Rate%                9.7250
+  #40     Main: HP%                           [4-substat start]
+           CRIT DMG%                 13.9860
+           Energy Recharge%          11.0160
+           CRIT Rate%                6.2240
+           ATK                       48.6250
+  #41     Main: ATK%                          [3-substat start]
+           DEF                       69.4500
+           CRIT DMG%                 12.4320
+           CRIT Rate%                3.5010
+           Energy Recharge%          11.0160
+  #42     Main: Cryo DMG Bonus%               [3-substat start]
+           ATK                       35.0100
+           DEF%                      10.9350
+           DEF                       57.8750
+           CRIT DMG%                 6.9930
+  #43     Main: Dendro DMG Bonus%             [3-substat start]
+           CRIT DMG%                 18.6480
+           Elemental Mastery         41.9580
+           HP                        209.1250
+           DEF%                      13.1220
+  #44     Main: ATK%                          [3-substat start]
+           Energy Recharge%          11.0160
+           HP                        478.0000
+           HP%                       9.9110
+           ATK                       36.9550
+  #45     Main: DEF%                          [3-substat start]
+           DEF                       62.5050
+           CRIT Rate%                3.8900
+           Energy Recharge%          6.4800
+           Elemental Mastery         62.9370
+  #46     Main: ATK%                          [3-substat start]
+           DEF                       34.7250
+           HP                        209.1250
+           CRIT Rate%                7.7800
+           ATK                       50.5700
+  #47     Main: HP%                           [3-substat start]
+           Energy Recharge%          11.0160
+           DEF%                      5.8320
+           ATK%                      4.6640
+           DEF                       83.3400
+  #48     Main: HP%                           [3-substat start]
+           CRIT Rate%                3.5010
+           DEF                       41.6700
+           CRIT DMG%                 17.0940
+           HP                        507.8750
+  #49     Main: DEF%                          [3-substat start]
+           CRIT Rate%                10.1140
+           Elemental Mastery         62.9370
+           DEF                       23.1500
+           HP                        298.7500
+  #50     Main: HP%                           [3-substat start]
+           DEF                       23.1500
+           ATK                       31.1200
+           Elemental Mastery         20.9790
+           CRIT DMG%                 26.4180
+  #51     Main: Hydro DMG Bonus%              [3-substat start]
+           Energy Recharge%          22.0320
+           DEF                       46.3000
+           HP%                       4.0810
+           ATK                       19.4500
+  #52     Main: DEF%                          [3-substat start]
+           CRIT Rate%                9.3360
+           DEF                       41.6700
+           ATK                       29.1750
+           HP%                       4.0810
+  #53     Main: Hydro DMG Bonus%              [3-substat start]
+           DEF%                      13.8510
+           CRIT DMG%                 13.9860
+           HP                        567.6250
+           ATK                       31.1200
+  #54     Main: DEF%                          [3-substat start]
+           ATK                       29.1750
+           DEF                       46.3000
+           HP%                       10.4940
+           Energy Recharge%          10.3680
+  #55     Main: Elemental Mastery             [3-substat start]
+           ATK%                      12.8260
+           HP%                       5.2470
+           DEF%                      16.0380
+           HP                        239.0000
+  #56     Main: Cryo DMG Bonus%               [3-substat start]
+           DEF                       18.5200
+           ATK%                      5.2470
+           HP%                       15.1580
+           Energy Recharge%          18.7920
+  #57     Main: HP%                           [4-substat start]
+           Energy Recharge%          5.8320
+           HP                        1254.7500
+           ATK                       33.0650
+           ATK%                      5.2470
+  #58     Main: Anemo DMG Bonus%              [3-substat start]
+           DEF                       32.4100
+           HP                        537.7500
+           Elemental Mastery         53.6130
+           Energy Recharge%          5.1840
+  #59     Main: Geo DMG Bonus%                [3-substat start]
+           Energy Recharge%          17.4960
+           HP%                       9.9110
+           Elemental Mastery         16.3170
+           DEF                       37.0400
+  #60     Main: DEF%                          [3-substat start]
+           Elemental Mastery         20.9790
+           DEF                       76.3950
+           Energy Recharge%          4.5360
+           CRIT DMG%                 10.8780
+  #61     Main: Dendro DMG Bonus%             [3-substat start]
+           ATK%                      5.8300
+           Elemental Mastery         60.6060
+           DEF                       41.6700
+           HP                        478.0000
+  #62     Main: ATK%                          [3-substat start]
+           ATK                       42.7900
+           DEF                       57.8750
+           HP%                       5.8300
+           HP                        239.0000
+  #63     Main: Elemental Mastery             [3-substat start]
+           HP%                       5.8300
+           ATK                       31.1200
+           HP                        537.7500
+           ATK%                      13.4090
+  #64     Main: DEF%                          [4-substat start]
+           DEF                       43.9850
+           ATK                       17.5050
+           Elemental Mastery         55.9440
+           ATK%                      15.1580
+  #65     Main: Elemental Mastery             [3-substat start]
+           DEF%                      18.2250
+           CRIT DMG%                 5.4390
+           ATK                       17.5050
+           DEF                       57.8750
+  #66     Main: ATK%                          [3-substat start]
+           HP%                       8.7450
+           DEF%                      11.6640
+           HP                        448.1250
+           Elemental Mastery         37.2960
+  #67     Main: HP%                           [3-substat start]
+           Elemental Mastery         18.6480
+           DEF                       41.6700
+           ATK%                      13.9920
+           CRIT DMG%                 11.6550
+  #68     Main: Dendro DMG Bonus%             [4-substat start]
+           ATK                       70.0200
+           ATK%                      4.6640
+           HP                        448.1250
+           CRIT DMG%                 12.4320
+  #69     Main: Hydro DMG Bonus%              [3-substat start]
+           CRIT DMG%                 5.4390
+           DEF                       32.4100
+           ATK%                      15.7410
+           HP%                       9.9110
+  #70     Main: ATK%                          [4-substat start]
+           DEF%                      18.2250
+           HP                        537.7500
+           Energy Recharge%          10.3680
+           CRIT DMG%                 13.9860
+  #71     Main: ATK%                          [4-substat start]
+           Energy Recharge%          11.6640
+           ATK                       46.6800
+           DEF                       41.6700
+           CRIT DMG%                 13.2090
+  #72     Main: ATK%                          [3-substat start]
+           HP                        448.1250
+           Energy Recharge%          11.6640
+           Elemental Mastery         39.6270
+           DEF                       43.9850
+  #73     Main: DEF%                          [3-substat start]
+           CRIT DMG%                 12.4320
+           ATK                       62.2400
+           Elemental Mastery         18.6480
+           Energy Recharge%          4.5360
+  #74     Main: HP%                           [4-substat start]
+           ATK%                      14.5750
+           Energy Recharge%          5.8320
+           DEF                       18.5200
+           DEF%                      24.7860
+  #75     Main: HP%                           [3-substat start]
+           DEF                       37.0400
+           ATK%                      10.4940
+           Energy Recharge%          18.7920
+           ATK                       15.5600
+  #76     Main: DEF%                          [3-substat start]
+           ATK                       33.0650
+           CRIT DMG%                 6.2160
+           Elemental Mastery         74.5920
+           ATK%                      4.0810
+  #77     Main: Physical DMG Bonus%           [3-substat start]
+           HP                        507.8750
+           ATK                       71.9650
+           CRIT Rate%                3.8900
+           DEF                       18.5200
+  #78     Main: ATK%                          [3-substat start]
+           Elemental Mastery         16.3170
+           DEF                       23.1500
+           CRIT Rate%                6.2240
+           DEF%                      27.7020
+  #79     Main: HP%                           [3-substat start]
+           Elemental Mastery         16.3170
+           DEF%                      32.0760
+           ATK                       17.5050
+           CRIT Rate%                2.7230
+  #80     Main: Anemo DMG Bonus%              [3-substat start]
+           DEF                       50.9300
+           HP%                       9.9110
+           Energy Recharge%          5.8320
+           DEF%                      13.8510
+  #81     Main: ATK%                          [3-substat start]
+           HP%                       4.0810
+           HP                        448.1250
+           CRIT Rate%                8.5580
+           CRIT DMG%                 12.4320
+  #82     Main: ATK%                          [3-substat start]
+           DEF%                      11.6640
+           ATK                       35.0100
+           Energy Recharge%          5.1840
+           CRIT DMG%                 19.4250
+  #83     Main: Electro DMG Bonus%            [3-substat start]
+           ATK                       13.6150
+           ATK%                      25.6520
+           Elemental Mastery         20.9790
+           HP                        298.7500
+  #84     Main: DEF%                          [3-substat start]
+           Energy Recharge%          11.0160
+           HP                        209.1250
+           ATK%                      17.4900
+           DEF                       34.7250
+  #85     Main: HP%                           [4-substat start]
+           Elemental Mastery         55.9440
+           ATK                       19.4500
+           DEF                       53.2450
+           Energy Recharge%          10.3680
+  #86     Main: DEF%                          [3-substat start]
+           ATK%                      4.6640
+           HP                        597.5000
+           Energy Recharge%          4.5360
+           ATK                       70.0200
+  #87     Main: DEF%                          [3-substat start]
+           ATK                       35.0100
+           CRIT Rate%                10.1140
+           CRIT DMG%                 6.2160
+           Energy Recharge%          10.3680
+  #88     Main: Physical DMG Bonus%           [3-substat start]
+           Energy Recharge%          5.1840
+           HP                        478.0000
+           ATK                       38.9000
+           HP%                       16.3240
+  #89     Main: Dendro DMG Bonus%             [3-substat start]
+           HP                        418.2500
+           CRIT Rate%                14.0040
+           ATK%                      5.2470
+           ATK                       17.5050
+  #90     Main: Anemo DMG Bonus%              [3-substat start]
+           CRIT DMG%                 20.2020
+           Elemental Mastery         16.3170
+           HP%                       11.0770
+           ATK                       31.1200
+  #91     Main: DEF%                          [3-substat start]
+           DEF                       39.3550
+           CRIT Rate%                3.1120
+           HP%                       14.5750
+           HP                        448.1250
+  #92     Main: DEF%                          [3-substat start]
+           ATK%                      5.8300
+           CRIT DMG%                 7.7700
+           DEF                       55.5600
+           Energy Recharge%          15.5520
+  #93     Main: DEF%                          [3-substat start]
+           ATK%                      9.3280
+           HP                        567.6250
+           Elemental Mastery         16.3170
+           DEF                       64.8200
+  #94     Main: Physical DMG Bonus%           [3-substat start]
+           Energy Recharge%          5.8320
+           DEF%                      29.1600
+           ATK                       15.5600
+           CRIT Rate%                2.7230
+  #95     Main: Geo DMG Bonus%                [3-substat start]
+           HP                        209.1250
+           CRIT Rate%                7.0020
+           ATK%                      8.7450
+           Elemental Mastery         55.9440
+  #96     Main: Physical DMG Bonus%           [3-substat start]
+           ATK%                      5.8300
+           Elemental Mastery         62.9370
+           HP                        209.1250
+           DEF%                      17.4960
+  #97     Main: Dendro DMG Bonus%             [3-substat start]
+           HP                        866.3750
+           Elemental Mastery         23.3100
+           DEF%                      18.9540
+           HP%                       5.8300
+  #98     Main: Geo DMG Bonus%                [3-substat start]
+           Energy Recharge%          11.0160
+           HP%                       12.8260
+           ATK                       29.1750
+           HP                        268.8750
+  #99     Main: ATK%                          [3-substat start]
+           CRIT DMG%                 20.9790
+           DEF                       43.9850
+           ATK                       19.4500
+           CRIT Rate%                7.0020
+  #100    Main: DEF%                          [3-substat start]
+           HP                        239.0000
+           ATK%                      15.7410
+           ATK                       52.5150
+           Elemental Mastery         16.3170
+  ... (900 more pieces not shown)
+
+  -- Circlet of Logos --
+  #1      Main: Healing Bonus%                [3-substat start]
+           Elemental Mastery         60.6060
+           CRIT Rate%                3.1120
+           ATK                       35.0100
+           DEF%                      12.3930
+  #2      Main: Healing Bonus%                [4-substat start]
+           CRIT Rate%                7.0020
+           Elemental Mastery         58.2750
+           HP%                       10.4940
+           HP                        448.1250
+  #3      Main: HP%                           [3-substat start]
+           HP                        209.1250
+           Elemental Mastery         20.9790
+           CRIT DMG%                 13.9860
+           ATK                       62.2400
+  #4      Main: HP%                           [3-substat start]
+           HP                        298.7500
+           DEF                       83.3400
+           DEF%                      13.8510
+           Energy Recharge%          5.1840
+  #5      Main: ATK%                          [3-substat start]
+           ATK                       27.2300
+           CRIT DMG%                 24.8640
+           Elemental Mastery         20.9790
+           DEF                       23.1500
+  #6      Main: CRIT Rate%                    [3-substat start]
+           Elemental Mastery         23.3100
+           Energy Recharge%          9.7200
+           HP%                       15.7410
+           HP                        567.6250
+  #7      Main: ATK%                          [3-substat start]
+           ATK                       31.1200
+           DEF%                      7.2900
+           CRIT Rate%                2.7230
+           HP%                       18.6560
+  #8      Main: Elemental Mastery             [3-substat start]
+           DEF                       39.3550
+           HP%                       13.4090
+           HP                        448.1250
+           ATK%                      4.0810
+  #9      Main: ATK%                          [4-substat start]
+           Energy Recharge%          22.6800
+           ATK                       17.5050
+           CRIT Rate%                10.8920
+           DEF                       18.5200
+  #10     Main: HP%                           [3-substat start]
+           ATK                       54.4600
+           DEF%                      5.1030
+           Elemental Mastery         51.2820
+           DEF                       23.1500
+  #11     Main: HP%                           [3-substat start]
+           ATK                       33.0650
+           ATK%                      10.4940
+           CRIT Rate%                5.8350
+           Energy Recharge%          11.6640
+  #12     Main: Healing Bonus%                [3-substat start]
+           HP                        537.7500
+           HP%                       4.0810
+           Energy Recharge%          21.3840
+           CRIT Rate%                3.1120
+  #13     Main: ATK%                          [3-substat start]
+           ATK                       19.4500
+           HP                        567.6250
+           HP%                       14.5750
+           Energy Recharge%          10.3680
+  #14     Main: DEF%                          [3-substat start]
+           HP                        507.8750
+           CRIT Rate%                6.6130
+           CRIT DMG%                 7.7700
+           DEF                       55.5600
+  #15     Main: ATK%                          [3-substat start]
+           DEF%                      12.3930
+           CRIT Rate%                3.5010
+           Elemental Mastery         23.3100
+           ATK                       70.0200
+  #16     Main: HP%                           [3-substat start]
+           HP                        537.7500
+           CRIT Rate%                5.8350
+           Energy Recharge%          9.0720
+           DEF                       43.9850
+  #17     Main: Healing Bonus%                [3-substat start]
+           HP                        507.8750
+           ATK                       17.5050
+           DEF                       41.6700
+           CRIT DMG%                 19.4250
+  #18     Main: ATK%                          [4-substat start]
+           DEF                       16.2050
+           CRIT Rate%                3.1120
+           CRIT DMG%                 24.0870
+           HP                        836.5000
+  #19     Main: ATK%                          [4-substat start]
+           Energy Recharge%          18.7920
+           ATK                       35.0100
+           HP                        687.1250
+           HP%                       4.0810
+  #20     Main: DEF%                          [3-substat start]
+           Energy Recharge%          5.8320
+           ATK%                      16.3240
+           Elemental Mastery         16.3170
+           HP%                       16.9070
+  #21     Main: HP%                           [3-substat start]
+           Elemental Mastery         18.6480
+           ATK                       68.0750
+           HP                        209.1250
+           DEF%                      11.6640
+  #22     Main: ATK%                          [3-substat start]
+           ATK                       35.0100
+           HP                        209.1250
+           DEF%                      16.7670
+           CRIT Rate%                6.6130
+  #23     Main: CRIT Rate%                    [3-substat start]
+           ATK%                      15.1580
+           Elemental Mastery         41.9580
+           DEF                       32.4100
+           Energy Recharge%          5.1840
+  #24     Main: HP%                           [3-substat start]
+           HP                        239.0000
+           ATK                       62.2400
+           CRIT DMG%                 14.7630
+           Elemental Mastery         18.6480
+  #25     Main: Healing Bonus%                [3-substat start]
+           HP%                       5.2470
+           CRIT DMG%                 25.6410
+           ATK                       29.1750
+           Energy Recharge%          5.1840
+  #26     Main: ATK%                          [3-substat start]
+           CRIT DMG%                 6.2160
+           ATK                       36.9550
+           DEF                       57.8750
+           DEF%                      12.3930
+  #27     Main: Elemental Mastery             [3-substat start]
+           CRIT DMG%                 17.0940
+           HP                        298.7500
+           Energy Recharge%          4.5360
+           ATK                       44.7350
+  #28     Main: DEF%                          [3-substat start]
+           DEF                       23.1500
+           HP                        448.1250
+           Energy Recharge%          14.9040
+           ATK%                      9.9110
+  #29     Main: CRIT Rate%                    [3-substat start]
+           HP                        776.7500
+           HP%                       5.8300
+           DEF%                      6.5610
+           ATK                       50.5700
+  #30     Main: HP%                           [3-substat start]
+           DEF%                      5.1030
+           ATK%                      15.7410
+           ATK                       19.4500
+           CRIT Rate%                10.1140
+  #31     Main: ATK%                          [3-substat start]
+           Elemental Mastery         16.3170
+           DEF                       60.1900
+           HP                        836.5000
+           Energy Recharge%          6.4800
+  #32     Main: ATK%                          [3-substat start]
+           DEF                       57.8750
+           DEF%                      7.2900
+           Elemental Mastery         32.6340
+           CRIT Rate%                5.8350
+  #33     Main: Healing Bonus%                [3-substat start]
+           CRIT DMG%                 20.2020
+           HP                        239.0000
+           HP%                       14.5750
+           DEF                       20.8350
+  #34     Main: DEF%                          [4-substat start]
+           CRIT Rate%                10.8920
+           ATK                       33.0650
+           HP%                       10.4940
+           CRIT DMG%                 12.4320
+  #35     Main: HP%                           [3-substat start]
+           ATK                       29.1750
+           Elemental Mastery         41.9580
+           DEF                       23.1500
+           DEF%                      18.9540
+  #36     Main: ATK%                          [4-substat start]
+           HP%                       9.9110
+           DEF                       41.6700
+           DEF%                      11.6640
+           ATK                       44.7350
+  #37     Main: DEF%                          [4-substat start]
+           Elemental Mastery         16.3170
+           DEF                       62.5050
+           CRIT DMG%                 19.4250
+           HP                        507.8750
+  #38     Main: HP%                           [3-substat start]
+           CRIT Rate%                10.1140
+           HP                        537.7500
+           Elemental Mastery         39.6270
+           CRIT DMG%                 6.9930
+  #39     Main: HP%                           [4-substat start]
+           Energy Recharge%          18.1440
+           ATK%                      10.4940
+           ATK                       31.1200
+           CRIT DMG%                 11.6550
+  #40     Main: CRIT DMG%                     [3-substat start]
+           ATK%                      4.6640
+           DEF%                      10.2060
+           HP                        478.0000
+           DEF                       67.1350
+  #41     Main: CRIT DMG%                     [4-substat start]
+           ATK                       35.0100
+           HP%                       5.2470
+           CRIT Rate%                10.5030
+           DEF%                      20.4120
+  #42     Main: Healing Bonus%                [4-substat start]
+           CRIT DMG%                 24.8640
+           ATK                       44.7350
+           ATK%                      5.8300
+           CRIT Rate%                3.8900
+  #43     Main: Healing Bonus%                [3-substat start]
+           Energy Recharge%          15.5520
+           ATK                       13.6150
+           HP                        448.1250
+           HP%                       9.3280
+  #44     Main: Healing Bonus%                [4-substat start]
+           CRIT DMG%                 6.9930
+           ATK                       66.1300
+           DEF                       64.8200
+           HP                        239.0000
+  #45     Main: HP%                           [4-substat start]
+           ATK                       29.1750
+           HP                        478.0000
+           ATK%                      16.3240
+           DEF%                      10.2060
+  #46     Main: CRIT DMG%                     [4-substat start]
+           CRIT Rate%                9.7250
+           DEF                       20.8350
+           Elemental Mastery         69.9300
+           HP%                       9.9110
+  #47     Main: CRIT Rate%                    [3-substat start]
+           ATK%                      9.3280
+           Elemental Mastery         39.6270
+           Energy Recharge%          5.8320
+           DEF                       62.5050
+  #48     Main: ATK%                          [3-substat start]
+           HP%                       5.8300
+           ATK                       52.5150
+           CRIT Rate%                10.1140
+           DEF                       23.1500
+  #49     Main: CRIT Rate%                    [3-substat start]
+           DEF                       41.6700
+           Energy Recharge%          10.3680
+           DEF%                      11.6640
+           HP                        507.8750
+  #50     Main: Healing Bonus%                [3-substat start]
+           DEF                       16.2050
+           HP%                       10.4940
+           CRIT Rate%                9.7250
+           HP                        507.8750
+  #51     Main: HP%                           [3-substat start]
+           CRIT Rate%                6.6130
+           ATK%                      5.8300
+           DEF%                      14.5800
+           ATK                       52.5150
+  #52     Main: CRIT Rate%                    [3-substat start]
+           CRIT DMG%                 7.7700
+           ATK%                      19.2390
+           HP%                       9.3280
+           ATK                       15.5600
+  #53     Main: DEF%                          [4-substat start]
+           DEF                       64.8200
+           ATK%                      4.6640
+           CRIT Rate%                11.6700
+           Energy Recharge%          11.0160
+  #54     Main: ATK%                          [3-substat start]
+           HP                        836.5000
+           HP%                       5.8300
+           DEF%                      5.1030
+           CRIT Rate%                6.2240
+  #55     Main: Healing Bonus%                [3-substat start]
+           HP%                       14.5750
+           Elemental Mastery         51.2820
+           CRIT Rate%                3.8900
+           Energy Recharge%          6.4800
+  #56     Main: ATK%                          [3-substat start]
+           DEF                       60.1900
+           ATK                       13.6150
+           Elemental Mastery         41.9580
+           CRIT Rate%                5.8350
+  #57     Main: HP%                           [3-substat start]
+           DEF                       37.0400
+           Elemental Mastery         32.6340
+           CRIT DMG%                 18.6480
+           CRIT Rate%                2.7230
+  #58     Main: DEF%                          [3-substat start]
+           DEF                       46.3000
+           HP                        268.8750
+           ATK                       15.5600
+           CRIT Rate%                11.6700
+  #59     Main: CRIT DMG%                     [3-substat start]
+           HP%                       11.6600
+           HP                        507.8750
+           Energy Recharge%          12.9600
+           DEF%                      10.9350
+  #60     Main: DEF%                          [3-substat start]
+           ATK                       56.4050
+           HP                        507.8750
+           DEF                       39.3550
+           ATK%                      5.8300
+  #61     Main: HP%                           [3-substat start]
+           CRIT DMG%                 18.6480
+           ATK%                      10.4940
+           DEF%                      6.5610
+           DEF                       37.0400
+  #62     Main: Healing Bonus%                [4-substat start]
+           DEF%                      27.7020
+           HP                        209.1250
+           ATK                       27.2300
+           Elemental Mastery         44.2890
+  #63     Main: DEF%                          [3-substat start]
+           HP                        507.8750
+           ATK%                      5.8300
+           CRIT DMG%                 14.7630
+           ATK                       56.4050
+  #64     Main: ATK%                          [3-substat start]
+           ATK                       38.9000
+           Energy Recharge%          15.5520
+           DEF                       43.9850
+           Elemental Mastery         20.9790
+  #65     Main: ATK%                          [3-substat start]
+           CRIT DMG%                 7.7700
+           DEF                       39.3550
+           ATK                       44.7350
+           HP                        478.0000
+  #66     Main: ATK%                          [4-substat start]
+           DEF%                      17.4960
+           CRIT Rate%                7.7800
+           Elemental Mastery         55.9440
+           HP%                       4.0810
+  #67     Main: DEF%                          [3-substat start]
+           DEF                       18.5200
+           ATK%                      5.2470
+           HP                        478.0000
+           CRIT Rate%                10.8920
+  #68     Main: Elemental Mastery             [3-substat start]
+           ATK%                      5.2470
+           CRIT Rate%                9.3360
+           HP                        836.5000
+           ATK                       15.5600
+  #69     Main: Healing Bonus%                [4-substat start]
+           HP                        806.6250
+           Energy Recharge%          18.1440
+           HP%                       5.8300
+           DEF                       37.0400
+  #70     Main: Healing Bonus%                [3-substat start]
+           ATK                       70.0200
+           HP                        298.7500
+           DEF                       23.1500
+           Energy Recharge%          11.0160
+  #71     Main: HP%                           [3-substat start]
+           HP                        268.8750
+           ATK%                      8.7450
+           DEF                       57.8750
+           CRIT Rate%                7.3910
+  #72     Main: CRIT Rate%                    [3-substat start]
+           DEF                       39.3550
+           DEF%                      12.3930
+           ATK                       36.9550
+           ATK%                      11.0770
+  #73     Main: DEF%                          [4-substat start]
+           CRIT Rate%                9.7250
+           HP                        448.1250
+           CRIT DMG%                 13.9860
+           ATK                       31.1200
+  #74     Main: DEF%                          [3-substat start]
+           ATK                       15.5600
+           HP%                       15.7410
+           CRIT DMG%                 6.2160
+           HP                        746.8750
+  #75     Main: HP%                           [3-substat start]
+           Energy Recharge%          5.8320
+           CRIT Rate%                7.0020
+           ATK                       33.0650
+           Elemental Mastery         58.2750
+  #76     Main: CRIT Rate%                    [3-substat start]
+           Energy Recharge%          12.3120
+           HP%                       4.6640
+           DEF%                      11.6640
+           Elemental Mastery         60.6060
+  #77     Main: ATK%                          [3-substat start]
+           Energy Recharge%          5.1840
+           HP                        209.1250
+           HP%                       26.2350
+           ATK                       17.5050
+  #78     Main: CRIT DMG%                     [3-substat start]
+           Elemental Mastery         83.9160
+           HP%                       4.0810
+           DEF                       46.3000
+           Energy Recharge%          6.4800
+  #79     Main: DEF%                          [3-substat start]
+           HP%                       4.6640
+           HP                        537.7500
+           DEF                       81.0250
+           Energy Recharge%          5.8320
+  #80     Main: HP%                           [4-substat start]
+           Energy Recharge%          11.6640
+           ATK%                      9.9110
+           DEF%                      16.0380
+           HP                        537.7500
+  #81     Main: ATK%                          [4-substat start]
+           Energy Recharge%          6.4800
+           HP                        239.0000
+           HP%                       13.9920
+           CRIT Rate%                12.8370
+  #82     Main: DEF%                          [3-substat start]
+           DEF                       41.6700
+           HP                        507.8750
+           CRIT Rate%                7.0020
+           ATK                       36.9550
+  #83     Main: Elemental Mastery             [3-substat start]
+           ATK                       42.7900
+           ATK%                      8.7450
+           DEF%                      13.1220
+           CRIT Rate%                3.8900
+  #84     Main: ATK%                          [3-substat start]
+           HP                        239.0000
+           DEF                       23.1500
+           ATK                       48.6250
+           CRIT Rate%                10.1140
+  #85     Main: DEF%                          [3-substat start]
+           ATK%                      9.3280
+           ATK                       29.1750
+           DEF                       64.8200
+           CRIT DMG%                 6.9930
+  #86     Main: HP%                           [3-substat start]
+           ATK                       48.6250
+           DEF%                      5.1030
+           DEF                       18.5200
+           Energy Recharge%          14.9040
+  #87     Main: CRIT DMG%                     [3-substat start]
+           DEF%                      24.0570
+           HP                        478.0000
+           ATK%                      5.2470
+           CRIT Rate%                3.5010
+  #88     Main: ATK%                          [3-substat start]
+           HP                        268.8750
+           DEF%                      26.9730
+           ATK                       13.6150
+           CRIT Rate%                7.3910
+  #89     Main: DEF%                          [4-substat start]
+           HP                        956.0000
+           DEF                       43.9850
+           Energy Recharge%          4.5360
+           Elemental Mastery         41.9580
+  #90     Main: HP%                           [3-substat start]
+           ATK%                      10.4940
+           HP                        507.8750
+           Energy Recharge%          4.5360
+           ATK                       54.4600
+  #91     Main: CRIT DMG%                     [3-substat start]
+           Elemental Mastery         60.6060
+           ATK                       15.5600
+           DEF%                      17.4960
+           Energy Recharge%          6.4800
+  #92     Main: CRIT DMG%                     [3-substat start]
+           ATK                       35.0100
+           HP                        209.1250
+           CRIT Rate%                3.5010
+           Elemental Mastery         67.5990
+  #93     Main: HP%                           [3-substat start]
+           HP                        209.1250
+           Energy Recharge%          9.7200
+           DEF                       50.9300
+           ATK%                      8.7450
+  #94     Main: CRIT Rate%                    [3-substat start]
+           HP%                       15.7410
+           HP                        298.7500
+           DEF%                      19.6830
+           CRIT DMG%                 5.4390
+  #95     Main: DEF%                          [3-substat start]
+           Energy Recharge%          5.1840
+           ATK                       33.0650
+           Elemental Mastery         72.2610
+           HP%                       5.2470
+  #96     Main: DEF%                          [3-substat start]
+           Elemental Mastery         41.9580
+           ATK                       17.5050
+           Energy Recharge%          22.6800
+           HP                        239.0000
+  #97     Main: HP%                           [3-substat start]
+           Energy Recharge%          10.3680
+           CRIT DMG%                 13.2090
+           DEF                       18.5200
+           CRIT Rate%                9.7250
+  #98     Main: CRIT DMG%                     [3-substat start]
+           Energy Recharge%          11.0160
+           Elemental Mastery         39.6270
+           HP%                       5.8300
+           HP                        746.8750
+  #99     Main: ATK%                          [3-substat start]
+           CRIT Rate%                6.6130
+           ATK                       19.4500
+           Energy Recharge%          9.7200
+           DEF                       62.5050
+  #100    Main: ATK%                          [4-substat start]
+           Energy Recharge%          11.0160
+           DEF%                      13.8510
+           DEF                       37.0400
+           HP%                       12.2430
+  ... (900 more pieces not shown)
+
+========================================================================
+  5. AVERAGE SUB-STAT VALUES PER SLOT TYPE  (all 1000 pieces)
+========================================================================
+
+  Flower of Life:
+    ATK                       avg(all N) =   20.8893   avg(holders only) =   34.8155   (600 / 1000 pieces,  60.0%)
+    DEF                       avg(all N) =   22.8213   avg(holders only) =   40.2492   (567 / 1000 pieces,  56.7%)
+    HP%                       avg(all N) =    4.3049   avg(holders only) =    9.9881   (431 / 1000 pieces,  43.1%)
+    ATK%                      avg(all N) =    4.2524   avg(holders only) =   10.0293   (424 / 1000 pieces,  42.4%)
+    DEF%                      avg(all N) =    5.7044   avg(holders only) =   12.9941   (439 / 1000 pieces,  43.9%)
+    Energy Recharge%          avg(all N) =    4.9177   avg(holders only) =   11.2020   (439 / 1000 pieces,  43.9%)
+    Elemental Mastery         avg(all N) =   16.8508   avg(holders only) =   40.3129   (418 / 1000 pieces,  41.8%)
+    CRIT Rate%                avg(all N) =    2.2655   avg(holders only) =    6.5859   (344 / 1000 pieces,  34.4%)
+    CRIT DMG%                 avg(all N) =    4.6783   avg(holders only) =   13.8412   (338 / 1000 pieces,  33.8%)
+    (2*CR%)+CD% crit value    avg(all N) =    9.2094
+
+  Plume of Death:
+    HP                        avg(all N) =  293.9103   avg(holders only) =  522.0431   (563 / 1000 pieces,  56.3%)
+    DEF                       avg(all N) =   24.2658   avg(holders only) =   41.7656   (581 / 1000 pieces,  58.1%)
+    HP%                       avg(all N) =    4.4360   avg(holders only) =    9.8143   (452 / 1000 pieces,  45.2%)
+    ATK%                      avg(all N) =    4.1171   avg(holders only) =    9.9208   (415 / 1000 pieces,  41.5%)
+    DEF%                      avg(all N) =    5.8714   avg(holders only) =   13.5285   (434 / 1000 pieces,  43.4%)
+    Energy Recharge%          avg(all N) =    4.8444   avg(holders only) =   10.9109   (444 / 1000 pieces,  44.4%)
+    Elemental Mastery         avg(all N) =   18.6060   avg(holders only) =   40.9825   (454 / 1000 pieces,  45.4%)
+    CRIT Rate%                avg(all N) =    2.0660   avg(holders only) =    6.2987   (328 / 1000 pieces,  32.8%)
+    CRIT DMG%                 avg(all N) =    4.4087   avg(holders only) =   13.4003   (329 / 1000 pieces,  32.9%)
+    (2*CR%)+CD% crit value    avg(all N) =    8.5407
+
+  Sands of Eon:
+    HP                        avg(all N) =  271.3248   avg(holders only) =  512.9012   (529 / 1000 pieces,  52.9%)
+    ATK                       avg(all N) =   19.1816   avg(holders only) =   34.8756   (550 / 1000 pieces,  55.0%)
+    DEF                       avg(all N) =   23.5760   avg(holders only) =   40.9305   (576 / 1000 pieces,  57.6%)
+    HP%                       avg(all N) =    3.0269   avg(holders only) =   10.3662   (292 / 1000 pieces,  29.2%)
+    ATK%                      avg(all N) =    3.2974   avg(holders only) =   10.2724   (321 / 1000 pieces,  32.1%)
+    DEF%                      avg(all N) =    3.9220   avg(holders only) =   12.9440   (303 / 1000 pieces,  30.3%)
+    Energy Recharge%          avg(all N) =    4.4466   avg(holders only) =   11.3433   (392 / 1000 pieces,  39.2%)
+    Elemental Mastery         avg(all N) =   15.7715   avg(holders only) =   40.0293   (394 / 1000 pieces,  39.4%)
+    CRIT Rate%                avg(all N) =    2.0142   avg(holders only) =    6.5610   (307 / 1000 pieces,  30.7%)
+    CRIT DMG%                 avg(all N) =    4.4514   avg(holders only) =   13.2483   (336 / 1000 pieces,  33.6%)
+    (2*CR%)+CD% crit value    avg(all N) =    8.4799
+
+  Goblet of Eonothem:
+    HP                        avg(all N) =  269.4128   avg(holders only) =  511.2196   (527 / 1000 pieces,  52.7%)
+    ATK                       avg(all N) =   18.5942   avg(holders only) =   33.3229   (558 / 1000 pieces,  55.8%)
+    DEF                       avg(all N) =   22.1175   avg(holders only) =   41.0343   (539 / 1000 pieces,  53.9%)
+    HP%                       avg(all N) =    3.4333   avg(holders only) =    9.8375   (349 / 1000 pieces,  34.9%)
+    ATK%                      avg(all N) =    3.1091   avg(holders only) =   10.0295   (310 / 1000 pieces,  31.0%)
+    DEF%                      avg(all N) =    4.4739   avg(holders only) =   13.6816   (327 / 1000 pieces,  32.7%)
+    Energy Recharge%          avg(all N) =    4.4790   avg(holders only) =   11.1141   (403 / 1000 pieces,  40.3%)
+    Elemental Mastery         avg(all N) =   15.5221   avg(holders only) =   40.4222   (384 / 1000 pieces,  38.4%)
+    CRIT Rate%                avg(all N) =    2.0539   avg(holders only) =    6.9624   (295 / 1000 pieces,  29.5%)
+    CRIT DMG%                 avg(all N) =    4.1841   avg(holders only) =   13.5849   (308 / 1000 pieces,  30.8%)
+    (2*CR%)+CD% crit value    avg(all N) =    8.2920
+
+  Circlet of Logos:
+    HP                        avg(all N) =  288.2639   avg(holders only) =  517.5294   (557 / 1000 pieces,  55.7%)
+    ATK                       avg(all N) =   18.8976   avg(holders only) =   33.5064   (564 / 1000 pieces,  56.4%)
+    DEF                       avg(all N) =   21.4763   avg(holders only) =   40.6747   (528 / 1000 pieces,  52.8%)
+    HP%                       avg(all N) =    3.0345   avg(holders only) =   10.4279   (291 / 1000 pieces,  29.1%)
+    ATK%                      avg(all N) =    3.2351   avg(holders only) =   10.2701   (315 / 1000 pieces,  31.5%)
+    DEF%                      avg(all N) =    4.3361   avg(holders only) =   12.6049   (344 / 1000 pieces,  34.4%)
+    Energy Recharge%          avg(all N) =    4.4628   avg(holders only) =   11.0739   (403 / 1000 pieces,  40.3%)
+    Elemental Mastery         avg(all N) =   16.3053   avg(holders only) =   41.5953   (392 / 1000 pieces,  39.2%)
+    CRIT Rate%                avg(all N) =    2.1119   avg(holders only) =    6.8346   (309 / 1000 pieces,  30.9%)
+    CRIT DMG%                 avg(all N) =    3.9891   avg(holders only) =   13.4314   (297 / 1000 pieces,  29.7%)
+    (2*CR%)+CD% crit value    avg(all N) =    8.2129
+
+========================================================================
+  6. CRIT SUB-STAT AVERAGES  (filter: pieces with >= 1 crit sub)
+========================================================================
+
+  Flower of Life              597 / 1000 pieces have >= 1 crit sub  (59.7%)
+    Avg CRIT Rate%  =  6.5859%   (344 of 597 crit-filtered pieces had CR sub)
+    Avg CRIT DMG%   = 13.8412%   (338 of 597 crit-filtered pieces had CD sub)
+    Avg (2*CR%)+CD% crit value (per crit-filtered piece) = 15.4261%
+
+  Plume of Death              565 / 1000 pieces have >= 1 crit sub  (56.5%)
+    Avg CRIT Rate%  =  6.2987%   (328 of 565 crit-filtered pieces had CR sub)
+    Avg CRIT DMG%   = 13.4003%   (329 of 565 crit-filtered pieces had CD sub)
+    Avg (2*CR%)+CD% crit value (per crit-filtered piece) = 15.1162%
+
+  Sands of Eon                567 / 1000 pieces have >= 1 crit sub  (56.7%)
+    Avg CRIT Rate%  =  6.5610%   (307 of 567 crit-filtered pieces had CR sub)
+    Avg CRIT DMG%   = 13.2483%   (336 of 567 crit-filtered pieces had CD sub)
+    Avg (2*CR%)+CD% crit value (per crit-filtered piece) = 14.9558%
+
+  Goblet of Eonothem          535 / 1000 pieces have >= 1 crit sub  (53.5%)
+    Avg CRIT Rate%  =  6.9624%   (295 of 535 crit-filtered pieces had CR sub)
+    Avg CRIT DMG%   = 13.5849%   (308 of 535 crit-filtered pieces had CD sub)
+    Avg (2*CR%)+CD% crit value (per crit-filtered piece) = 15.4990%
+
+  Circlet of Logos            533 / 1000 pieces have >= 1 crit sub  (53.3%)
+    Avg CRIT Rate%  =  6.8346%   (309 of 533 crit-filtered pieces had CR sub)
+    Avg CRIT DMG%   = 13.4314%   (297 of 533 crit-filtered pieces had CD sub)
+    Avg (2*CR%)+CD% crit value (per crit-filtered piece) = 15.4088%
+
+========================================================================
+  7. DOUBLE-CRIT / CRIT-MAIN ANALYSIS
+========================================================================
+  (Flower/Plume/Sands/Goblet: both CR% and CD% as subs)
+  (Circlet: crit main stat + >= 1 crit sub)
+
+  Flower of Life
+    Qualifying pieces : 85 / 1000  (8.50%)
+    Crit roll distribution (each row = only pieces with >= N crit rolls):
+      Threshold       Count / Total (%)   Avg CR% (sub)         Avg CD% (sub)         Avg (2*CR%)+CD%/piece
+      >= 1 crit roll      85 / 85 (100.00%)   CR% avg =  5.7664%   CD% avg = 13.7849%   (2*CR%)+CD% = 25.3176%
+      >= 2 crit rolls     85 / 85 (100.00%)   CR% avg =  5.7664%   CD% avg = 13.7849%   (2*CR%)+CD% = 25.3176%
+      >= 3 crit rolls     77 / 85 (90.59%)   CR% avg =  6.0472%   CD% avg = 14.5410%   (2*CR%)+CD% = 26.6354%
+      >= 4 crit rolls     47 / 85 (55.29%)   CR% avg =  7.0765%   CD% avg = 16.8791%   (2*CR%)+CD% = 31.0321%
+      >= 5 crit rolls     25 / 85 (29.41%)   CR% avg =  7.9200%   CD% avg = 19.3007%   (2*CR%)+CD% = 35.1408%
+
+  Plume of Death
+    Qualifying pieces : 92 / 1000  (9.20%)
+    Crit roll distribution (each row = only pieces with >= N crit rolls):
+      Threshold       Count / Total (%)   Avg CR% (sub)         Avg CD% (sub)         Avg (2*CR%)+CD%/piece
+      >= 1 crit roll      92 / 92 (100.00%)   CR% avg =  6.6299%   CD% avg = 13.6904%   (2*CR%)+CD% = 26.9502%
+      >= 2 crit rolls     92 / 92 (100.00%)   CR% avg =  6.6299%   CD% avg = 13.6904%   (2*CR%)+CD% = 26.9502%
+      >= 3 crit rolls     87 / 92 (94.57%)   CR% avg =  6.8366%   CD% avg = 14.0932%   (2*CR%)+CD% = 27.7663%
+      >= 4 crit rolls     66 / 92 (71.74%)   CR% avg =  7.5207%   CD% avg = 15.2339%   (2*CR%)+CD% = 30.2752%
+      >= 5 crit rolls     32 / 92 (34.78%)   CR% avg =  8.8498%   CD% avg = 16.8512%   (2*CR%)+CD% = 34.5507%
+
+  Sands of Eon
+    Qualifying pieces : 76 / 1000  (7.60%)
+    Crit roll distribution (each row = only pieces with >= N crit rolls):
+      Threshold       Count / Total (%)   Avg CR% (sub)         Avg CD% (sub)         Avg (2*CR%)+CD%/piece
+      >= 1 crit roll      76 / 76 (100.00%)   CR% avg =  6.2905%   CD% avg = 13.9553%   (2*CR%)+CD% = 26.5364%
+      >= 2 crit rolls     76 / 76 (100.00%)   CR% avg =  6.2905%   CD% avg = 13.9553%   (2*CR%)+CD% = 26.5364%
+      >= 3 crit rolls     70 / 76 (92.11%)   CR% avg =  6.5574%   CD% avg = 14.5965%   (2*CR%)+CD% = 27.7114%
+      >= 4 crit rolls     47 / 76 (61.84%)   CR% avg =  7.7221%   CD% avg = 15.9202%   (2*CR%)+CD% = 31.3644%
+      >= 5 crit rolls     30 / 76 (39.47%)   CR% avg =  8.4802%   CD% avg = 17.4048%   (2*CR%)+CD% = 34.3652%
+
+  Goblet of Eonothem
+    Qualifying pieces : 68 / 1000  (6.80%)
+    Crit roll distribution (each row = only pieces with >= N crit rolls):
+      Threshold       Count / Total (%)   Avg CR% (sub)         Avg CD% (sub)         Avg (2*CR%)+CD%/piece
+      >= 1 crit roll      68 / 68 (100.00%)   CR% avg =  6.9734%   CD% avg = 13.9060%   (2*CR%)+CD% = 27.8528%
+      >= 2 crit rolls     68 / 68 (100.00%)   CR% avg =  6.9734%   CD% avg = 13.9060%   (2*CR%)+CD% = 27.8528%
+      >= 3 crit rolls     67 / 68 (98.53%)   CR% avg =  7.0252%   CD% avg = 14.0208%   (2*CR%)+CD% = 28.0712%
+      >= 4 crit rolls     53 / 68 (77.94%)   CR% avg =  7.4717%   CD% avg = 15.2761%   (2*CR%)+CD% = 30.2196%
+      >= 5 crit rolls     24 / 68 (35.29%)   CR% avg =  7.8772%   CD% avg = 18.9070%   (2*CR%)+CD% = 34.6615%
+
+  Circlet of Logos
+    Qualifying pieces : 64 / 1000  (6.40%)
+    Crit roll distribution (each row = only pieces with >= N crit rolls):
+      Threshold       Count / Total (%)   Avg CR% (sub)         Avg CD% (sub)         Avg (2*CR%)+CD%/piece
+      >= 1 crit roll      64 / 64 (100.00%)   CR% avg =  6.9156%   CD% avg = 12.0712%   (2*CR%)+CD% = 13.0612%
+      >= 2 crit rolls     42 / 64 (65.63%)   CR% avg =  8.4646%   CD% avg = 15.6314%   (2*CR%)+CD% = 16.4040%
+      >= 3 crit rolls     18 / 64 (28.13%)   CR% avg = 10.2113%   CD% avg = 19.9430%   (2*CR%)+CD% = 20.2627%ccc
+      >= 4 crit rolls      2 / 64 ( 3.13%)   CR% avg = 13.6150%   CD% avg = 27.9720%   (2*CR%)+CD% = 27.6010%
+      >= 5 crit rolls      0 / 64 ( 0.00%)   (no pieces)
+
+========================================================================
+  Simulation complete.
+========================================================================
