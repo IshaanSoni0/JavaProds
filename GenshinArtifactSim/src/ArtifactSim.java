@@ -1,5 +1,12 @@
 import java.util.*;
 import java.io.*;
+import java.awt.Color;
+import java.awt.BasicStroke;
+import org.jfree.chart.*;
+import org.jfree.chart.plot.*;
+import org.jfree.chart.renderer.xy.*;
+import org.jfree.data.statistics.*;
+import org.jfree.data.xy.*;
 
 /**
  * Genshin Impact 5-Star Artifact Simulator
@@ -230,11 +237,175 @@ public class ArtifactSim {
 
     // ── Output helpers ────────────────────────────────────────────────────────
 
+    // ── Chart generation ─────────────────────────────────────────────────────
+
+    /**
+     * Generates 2 PNG charts per slot type into a "charts_N<N>" sub-folder:
+     *   [Slot]_histogram.png     — relative-frequency histogram of (2×CR%)+CD%
+     *                             across ALL N pieces (zeros for non-crit pieces
+     *                             form the spike on the left).
+     *   [Slot]_distribution.png — normal distribution curve fitted to
+     *                             crit-positive pieces only, with a mean marker.
+     */
+    @SuppressWarnings("unchecked")
+    static void generateCharts(List<Artifact>[] data, int N, String outputDir) {
+        try {
+            File chartDir = new File(outputDir, "charts_N" + N);
+            chartDir.mkdirs();
+            System.out.println("Generating charts → " + chartDir.getAbsolutePath());
+
+            for (int s = 0; s < 5; s++) {
+                String slot     = SLOT_NAMES[s];
+                String fileSafe = slot.replace(" ", "_");
+
+                // ── collect per-piece (2×CR%)+CD% values ─────────────────
+                double[] allVals = new double[N];
+                for (int i = 0; i < N; i++) {
+                    Artifact a = data[s].get(i);
+                    double cv = 0;
+                    for (int j = 0; j < 4; j++) {
+                        if (a.subIdx[j] == IDX_CRIT_R) cv += 2.0 * a.subVal[j];
+                        if (a.subIdx[j] == IDX_CRIT_D) cv +=       a.subVal[j];
+                    }
+                    allVals[i] = cv;
+                }
+
+                // stats on crit-positive subset for distribution fit
+                double[] critVals = Arrays.stream(allVals).filter(v -> v > 0).toArray();
+                double sumC = 0, sum2C = 0;
+                for (double v : critVals) { sumC += v; sum2C += v * v; }
+                double meanC   = sumC   / critVals.length;
+                double stddevC = Math.sqrt(sum2C / critVals.length - meanC * meanC);
+
+                // ── Chart 1: Histogram (all pieces) ──────────────────────
+                HistogramDataset hds = new HistogramDataset();
+                hds.setType(HistogramType.RELATIVE_FREQUENCY);
+                hds.addSeries("All pieces", allVals, 80);
+
+                JFreeChart histChart = ChartFactory.createHistogram(
+                    slot + "  ·  (2×CR%) + CD%  —  All " + N + " Pieces",
+                    "(2×CR%) + CD%  Crit Value", "Relative Frequency",
+                    hds, PlotOrientation.VERTICAL, false, false, false);
+
+                XYPlot hp = histChart.getXYPlot();
+                hp.setBackgroundPaint(Color.WHITE);
+                hp.setDomainGridlinePaint(Color.LIGHT_GRAY);
+                hp.setRangeGridlinePaint(Color.LIGHT_GRAY);
+                XYBarRenderer hr = (XYBarRenderer) hp.getRenderer();
+                hr.setShadowVisible(false);
+                hr.setSeriesPaint(0, new Color(65, 105, 225, 180));
+                hr.setDrawBarOutline(false);
+
+                ChartUtils.saveChartAsPNG(
+                    new File(chartDir, fileSafe + "_histogram.png"),
+                    histChart, 1000, 580);
+
+                // ── Chart 2: Normal distribution (crit-positive pieces) ───
+                XYSeries ns = new XYSeries(
+                    String.format("Normal fit  (\u03bc=%.2f, \u03c3=%.2f,  n=%,d crit pieces)",
+                        meanC, stddevC, critVals.length));
+                double lo = Math.max(0, meanC - 4.5 * stddevC);
+                double hi =             meanC + 4.5 * stddevC;
+                for (int k = 0; k <= 600; k++) {
+                    double x = lo + (hi - lo) * k / 600.0;
+                    double y = Math.exp(-0.5 * Math.pow((x - meanC) / stddevC, 2))
+                               / (stddevC * Math.sqrt(2.0 * Math.PI));
+                    ns.add(x, y);
+                }
+
+                JFreeChart distChart = ChartFactory.createXYLineChart(
+                    slot + "  ·  (2×CR%) + CD%  —  Distribution (crit pieces only)",
+                    "(2×CR%) + CD%  Crit Value", "Probability Density",
+                    new XYSeriesCollection(ns),
+                    PlotOrientation.VERTICAL, true, false, false);
+
+                XYPlot dp = distChart.getXYPlot();
+                dp.setBackgroundPaint(Color.WHITE);
+                dp.setDomainGridlinePaint(Color.LIGHT_GRAY);
+                dp.setRangeGridlinePaint(Color.LIGHT_GRAY);
+                XYLineAndShapeRenderer dr = (XYLineAndShapeRenderer) dp.getRenderer();
+                dr.setDefaultShapesVisible(false);
+                dr.setSeriesPaint(0, new Color(200, 40, 40));
+                dr.setSeriesStroke(0, new BasicStroke(2.5f));
+                // dashed vertical line at mean
+                dp.addDomainMarker(new ValueMarker(meanC,
+                    new Color(40, 160, 40),
+                    new BasicStroke(1.5f, BasicStroke.CAP_BUTT,
+                        BasicStroke.JOIN_MITER, 10f, new float[]{6f, 3f}, 0f)));
+
+                ChartUtils.saveChartAsPNG(
+                    new File(chartDir, fileSafe + "_distribution.png"),
+                    distChart, 1000, 580);
+
+                System.out.printf("  [%s]  histogram + distribution saved.%n", slot);
+            }
+        } catch (IOException e) {
+            System.err.println("Chart generation failed: " + e.getMessage());
+        }
+    }
+
     static void header(String title) {
         System.out.println();
         System.out.println("=".repeat(72));
         System.out.println("  " + title);
         System.out.println("=".repeat(72));
+    }
+
+    /**
+     * Prints the >= 1..5 crit-roll threshold table for a list of artifacts.
+     * @param pieces   the filtered artifact list to analyse
+     * @param totalN   the overall N for the slot (used for "% of all N" column)
+     */
+    static void printCritRollTable(List<Artifact> pieces, int totalN) {
+        if (pieces.isEmpty()) {
+            System.out.println("      (no qualifying pieces)");
+            return;
+        }
+        // Pre-compute total crit rolls per piece
+        int[] rollCounts = new int[pieces.size()];
+        for (int i = 0; i < pieces.size(); i++) {
+            Artifact a = pieces.get(i);
+            int tot = 0;
+            for (int j = 0; j < 4; j++)
+                if (a.subIdx[j] == IDX_CRIT_R || a.subIdx[j] == IDX_CRIT_D)
+                    tot += a.subRolls[j];
+            rollCounts[i] = tot;
+        }
+        System.out.printf("      %-16s  %-26s  %-22s  %-22s  %-24s  %s%n",
+            "Threshold",
+            "Count of qualifying (%qual)",
+            "% of all N pieces",
+            "Avg CR% (sub)",
+            "Avg CD% (sub)",
+            "Avg (2*CR%)+CD%/piece");
+        for (int thresh = 1; thresh <= 7; thresh++) {
+            double crT = 0.0, cdT = 0.0, combT = 0.0;
+            int crC = 0, cdC = 0, cnt = 0;
+            for (int i = 0; i < pieces.size(); i++) {
+                if (rollCounts[i] < thresh) continue;
+                cnt++;
+                Artifact a = pieces.get(i);
+                double pCR = 0.0, pCD = 0.0;
+                for (int j = 0; j < 4; j++) {
+                    if (a.subIdx[j] == IDX_CRIT_R) { pCR += a.subVal[j]; crT += a.subVal[j]; crC++; }
+                    if (a.subIdx[j] == IDX_CRIT_D) { pCD += a.subVal[j]; cdT += a.subVal[j]; cdC++; }
+                }
+                combT += (2.0 * pCR) + pCD;
+            }
+            String label = ">= " + thresh + " crit roll" + (thresh == 1 ? " " : "s");
+            if (cnt == 0) {
+                System.out.printf("      %-16s  %5d / %-8d (%6.2f%%)   (%5.2f%% of all N)   (no pieces)%n",
+                    label, cnt, pieces.size(), 0.0, 0.0);
+            } else {
+                System.out.printf("      %-16s  %5d / %-8d (%6.2f%%)   (%5.2f%% of all N)   CR%% avg = %7.4f%%   CD%% avg = %7.4f%%   (2*CR%%)+CD%% = %7.4f%%%n",
+                    label,
+                    cnt, pieces.size(), 100.0 * cnt / pieces.size(),
+                    100.0 * cnt / totalN,
+                    crC > 0 ? crT / crC : 0.0,
+                    cdC > 0 ? cdT / cdC : 0.0,
+                    combT / cnt);
+            }
+        }
     }
 
     // ── Main ─────────────────────────────────────────────────────────────────
@@ -433,35 +604,49 @@ public class ArtifactSim {
             // then averages computed ONLY from pieces with >= that many crit rolls.
             // averages will rise with threshold since low-roll pieces are excluded.
             System.out.println("    Crit roll distribution (each row = only pieces with >= N crit rolls):");
-            System.out.printf("      %-14s  %-18s  %-20s  %-20s  %s%n",
-                "Threshold", "Count / Total (%)", "Avg CR% (sub)", "Avg CD% (sub)", "Avg (2*CR%)+CD%/piece");
-            for (int thresh = 1; thresh <= 5; thresh++) {
-                // Collect pieces meeting this threshold
-                double crT = 0.0, cdT = 0.0, combT = 0.0;
-                int crC = 0, cdC = 0, cnt = 0;
-                for (int i = 0; i < filtered.size(); i++) {
-                    if (critRollCounts[i] < thresh) continue;
-                    cnt++;
-                    Artifact a = filtered.get(i);
-                    double pCR = 0.0, pCD = 0.0;
-                    for (int j = 0; j < 4; j++) {
-                        if (a.subIdx[j] == IDX_CRIT_R) { pCR += a.subVal[j]; crT += a.subVal[j]; crC++; }
-                        if (a.subIdx[j] == IDX_CRIT_D) { pCD += a.subVal[j]; cdT += a.subVal[j]; cdC++; }
-                    }
-                    combT += (2.0 * pCR) + pCD;
+            printCritRollTable(filtered, N);
+        }
+
+        // ==================================================================
+        // OUTPUT 8 — Same as section 7 but broken down by main stat per slot
+        // ==================================================================
+        header("8. DOUBLE-CRIT / CRIT-MAIN ANALYSIS  (broken down by main stat)");
+        System.out.println("  (Flower/Plume/Sands/Goblet: both CR% and CD% as subs)");
+        System.out.println("  (Circlet: crit main stat + >= 1 crit sub)");
+
+        for (int s = 0; s < 5; s++) {
+            System.out.printf("%n  %s%n", SLOT_NAMES[s]);
+
+            // Group qualifying pieces by main stat
+            Map<String, List<Artifact>> byMain = new TreeMap<>();
+            for (Artifact a : data[s]) {
+                boolean hasCR = false, hasCD = false;
+                for (int j = 0; j < 4; j++) {
+                    if (a.subIdx[j] == IDX_CRIT_R) hasCR = true;
+                    if (a.subIdx[j] == IDX_CRIT_D) hasCD = true;
                 }
-                if (cnt == 0) {
-                    System.out.printf("      >= %d crit roll%-1s  %5d / %d (%5.2f%%)   (no pieces)%n",
-                        thresh, thresh == 1 ? " " : "s", cnt, filtered.size(),
-                        100.0 * cnt / filtered.size());
+                boolean qualifies;
+                if (s == 4) {
+                    boolean critMain = a.mainExclude == IDX_CRIT_R || a.mainExclude == IDX_CRIT_D;
+                    qualifies = critMain && (hasCR || hasCD);
                 } else {
-                    System.out.printf("      >= %d crit roll%-1s  %5d / %d (%5.2f%%)   CR%% avg = %7.4f%%   CD%% avg = %7.4f%%   (2*CR%%)+CD%% = %7.4f%%%n",
-                        thresh, thresh == 1 ? " " : "s",
-                        cnt, filtered.size(), 100.0 * cnt / filtered.size(),
-                        crC > 0 ? crT / crC : 0.0,
-                        cdC > 0 ? cdT / cdC : 0.0,
-                        combT / cnt);
+                    qualifies = hasCR && hasCD;
                 }
+                if (qualifies)
+                    byMain.computeIfAbsent(a.mainStat, k -> new ArrayList<>()).add(a);
+            }
+
+            if (byMain.isEmpty()) {
+                System.out.println("    (no qualifying pieces)");
+                continue;
+            }
+
+            for (Map.Entry<String, List<Artifact>> entry : byMain.entrySet()) {
+                String mainName = entry.getKey();
+                List<Artifact> group = entry.getValue();
+                System.out.printf("    Main stat: %-28s  %d / %d qualifying  (%.2f%% of all N)%n",
+                    mainName, group.size(), N, 100.0 * group.size() / N);
+                printCritRollTable(group, N);
             }
         }
 
@@ -475,5 +660,10 @@ public class ArtifactSim {
         fos.close();
         System.setOut(originalOut);
         System.out.println("Saved to: " + new File(outFileName).getAbsolutePath());
+
+        // Generate charts (runs after file is closed so output goes to console only)
+        generateCharts(data, N, ".");
     }
 }
+//javac -d bin -cp "lib/*" src/ArtifactSim.java
+//java  -cp "bin;lib/*" ArtifactSim
