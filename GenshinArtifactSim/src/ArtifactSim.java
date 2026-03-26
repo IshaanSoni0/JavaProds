@@ -300,21 +300,38 @@ public class ArtifactSim {
                     new File(chartDir, fileSafe + "_histogram.png"),
                     histChart, 1000, 580);
 
-                // ── Chart 2: Normal distribution (crit-positive pieces) ───
-                XYSeries ns = new XYSeries(
-                    String.format("Normal fit  (\u03bc=%.2f, \u03c3=%.2f,  n=%,d crit pieces)",
-                        meanC, stddevC, critVals.length));
+                // ── Chart 2: KDE distribution (crit-positive pieces) ───
+                // Bandwidth via Silverman's rule of thumb: h = 1.06 * σ * n^(-1/5)
                 double lo = Math.max(0, meanC - 4.5 * stddevC);
                 double hi =             meanC + 4.5 * stddevC;
-                for (int k = 0; k <= 600; k++) {
-                    double x = lo + (hi - lo) * k / 600.0;
-                    double y = Math.exp(-0.5 * Math.pow((x - meanC) / stddevC, 2))
-                               / (stddevC * Math.sqrt(2.0 * Math.PI));
-                    ns.add(x, y);
+                double h  = 1.06 * stddevC * Math.pow(critVals.length, -0.2);
+
+                // Bin crit values into a fine grid for efficient O(BINS*GRID) KDE
+                final int KDE_BINS = 4000, KDE_GRID = 600;
+                long[] binCounts = new long[KDE_BINS];
+                double kdeRange = hi - lo;
+                for (double v : critVals) {
+                    int b = (int)((v - lo) / kdeRange * KDE_BINS);
+                    if (b >= 0 && b < KDE_BINS) binCounts[b]++;
+                }
+
+                XYSeries ns = new XYSeries(
+                    String.format("KDE  (h=%.3f,  \u03bc=%.2f, \u03c3=%.2f,  n=%,d crit pieces)",
+                        h, meanC, stddevC, critVals.length));
+                double kdeDenom = critVals.length * h * Math.sqrt(2.0 * Math.PI);
+                for (int k = 0; k <= KDE_GRID; k++) {
+                    double x = lo + kdeRange * k / KDE_GRID;
+                    double density = 0;
+                    for (int b = 0; b < KDE_BINS; b++) {
+                        if (binCounts[b] == 0) continue;
+                        double bc = lo + (b + 0.5) * kdeRange / KDE_BINS;
+                        density += binCounts[b] * Math.exp(-0.5 * Math.pow((x - bc) / h, 2));
+                    }
+                    ns.add(x, density / kdeDenom);
                 }
 
                 JFreeChart distChart = ChartFactory.createXYLineChart(
-                    slot + "  ·  (2×CR%) + CD%  —  Distribution (crit pieces only)",
+                    slot + "  ·  (2×CR%) + CD%  —  KDE Distribution (crit pieces only)",
                     "(2×CR%) + CD%  Crit Value", "Probability Density",
                     new XYSeriesCollection(ns),
                     PlotOrientation.VERTICAL, true, false, false);
@@ -337,7 +354,87 @@ public class ArtifactSim {
                     new File(chartDir, fileSafe + "_distribution.png"),
                     distChart, 1000, 580);
 
-                System.out.printf("  [%s]  histogram + distribution saved.%n", slot);
+                // ── Chart 3: Expected maximum CV vs. number of artifacts farmed ───
+                // E[max of n iid draws] = integral_0^inf (1 - F(x)^n) dx
+                // Computed via left Riemann sum over empirical CDF binned from simulation data.
+                double[] sortedAV = Arrays.copyOf(allVals, N);
+                Arrays.sort(sortedAV);
+                final int CDF_BINS = 2000, MAX_FARM = 500;
+                double avMax = sortedAV[N - 1];
+                double bw = avMax / CDF_BINS;
+
+                // Build empirical CDF at right edge of each bin via binary search
+                double[] cdfEdge = new double[CDF_BINS];
+                for (int b = 0; b < CDF_BINS; b++) {
+                    double edge = bw * (b + 1);
+                    int bLo = 0, bHi = N;
+                    while (bLo < bHi) {
+                        int m = (bLo + bHi) >>> 1;
+                        if (sortedAV[m] <= edge) bLo = m + 1; else bHi = m;
+                    }
+                    cdfEdge[b] = (double) bLo / N;
+                }
+
+                XYSeries maxSeries = new XYSeries("Expected best CV across n artifacts farmed");
+                for (int n = 1; n <= MAX_FARM; n++) {
+                    double eMax = 0, prevF = 0.0;
+                    for (int b = 0; b < CDF_BINS; b++) {
+                        eMax += bw * (1.0 - Math.pow(prevF, n));
+                        prevF = cdfEdge[b];
+                    }
+                    maxSeries.add(n, eMax);
+                }
+
+                JFreeChart maxChart = ChartFactory.createXYLineChart(
+                    slot + "  ·  Expected Best CV vs. Artifacts Farmed",
+                    "Number of Artifacts Farmed", "Expected Best (2×CR%) + CD%",
+                    new XYSeriesCollection(maxSeries),
+                    PlotOrientation.VERTICAL, true, false, false);
+
+                XYPlot mp = maxChart.getXYPlot();
+                mp.setBackgroundPaint(Color.WHITE);
+                mp.setDomainGridlinePaint(Color.LIGHT_GRAY);
+                mp.setRangeGridlinePaint(Color.LIGHT_GRAY);
+                XYLineAndShapeRenderer mr = (XYLineAndShapeRenderer) mp.getRenderer();
+                mr.setDefaultShapesVisible(false);
+                mr.setSeriesPaint(0, new Color(130, 60, 200));
+                mr.setSeriesStroke(0, new BasicStroke(2.5f));
+
+                ChartUtils.saveChartAsPNG(
+                    new File(chartDir, fileSafe + "_expected_max.png"),
+                    maxChart, 1000, 580);
+
+                // ── Chart 4: Inverse CDF / Quantile function ─────────────
+                // x = percentile (0–100), y = CV at that percentile
+                // Uses the already-sorted sortedAV array from chart 3.
+                final int QUANTILE_POINTS = 1000;
+                XYSeries qSeries = new XYSeries("CV by percentile (all pieces)");
+                for (int k = 0; k <= QUANTILE_POINTS; k++) {
+                    double pct = 100.0 * k / QUANTILE_POINTS;
+                    int idx = (int) Math.min((long) k * N / QUANTILE_POINTS, N - 1);
+                    qSeries.add(pct, sortedAV[idx]);
+                }
+
+                JFreeChart quantileChart = ChartFactory.createXYLineChart(
+                    slot + "  ·  Quantile Function  (CV by Percentile)",
+                    "Percentile", "(2×CR%) + CD%  Crit Value",
+                    new XYSeriesCollection(qSeries),
+                    PlotOrientation.VERTICAL, true, false, false);
+
+                XYPlot qp = quantileChart.getXYPlot();
+                qp.setBackgroundPaint(Color.WHITE);
+                qp.setDomainGridlinePaint(Color.LIGHT_GRAY);
+                qp.setRangeGridlinePaint(Color.LIGHT_GRAY);
+                XYLineAndShapeRenderer qr = (XYLineAndShapeRenderer) qp.getRenderer();
+                qr.setDefaultShapesVisible(false);
+                qr.setSeriesPaint(0, new Color(210, 120, 0));
+                qr.setSeriesStroke(0, new BasicStroke(2.5f));
+
+                ChartUtils.saveChartAsPNG(
+                    new File(chartDir, fileSafe + "_quantile.png"),
+                    quantileChart, 1000, 580);
+
+                System.out.printf("  [%s]  histogram + distribution + expected_max + quantile saved.%n", slot);
             }
         } catch (IOException e) {
             System.err.println("Chart generation failed: " + e.getMessage());
