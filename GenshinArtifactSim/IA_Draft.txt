@@ -1,0 +1,1034 @@
+================================================================================
+  MATH AI SL INTERNAL ASSESSMENT — WORKING DRAFT
+  Title: Optimising Neuvillette's Damage in Genshin Impact
+  Last edited: [DATE]
+================================================================================
+
+LEGEND:
+  [DRAFT]   — Section has been written, needs review/editing
+  [TODO]    — Section not yet written
+  [VERIFY]  — Specific fact or value needs checking against in-game data or wiki
+  [FLAG]    — Potential issue; needs discussion before writing
+
+================================================================================
+  FULL OUTLINE
+================================================================================
+
+1. INTRODUCTION                                              (~0.5–1 page)
+   [DRAFT — see Section 1 below — COMPLETE, ready for review]
+
+   1.1  Personal engagement
+        - 3 years of playing Genshin, actively doing damage optimisation
+          to clear Spiral Abyss, Imaginarium Theater, Stygian Onslaught
+        - Chose Neuvillette: main DPS, structured tick-based damage,
+          HP-dependent mechanics make him ideal for mathematical modelling
+
+   1.2  Aim statement
+        SINGLE-SENTENCE AIM (must appear as a labelled line in the prose):
+          "The aim of this exploration is to determine the optimal crit rate
+           to crit damage ratio, and the optimal goblet choice, for
+           Neuvillette in Genshin Impact, by constructing a damage model
+           from first principles and applying calculus-based optimisation."
+        [NOTE: Samples that scored 20/20 all had a single explicit 'Aim:'
+         sentence the marker could quote. Do not bury the aim in a paragraph.
+         Label it clearly: 'Aim:' on its own line.]
+
+        Supporting aim bullets (structure of the investigation):
+        - Construct a full damage model incorporating passive and artifact
+          set mechanics
+        - Compare HP% vs Hydro DMG% goblet using the model
+        - Model artifact substat probability distribution to establish
+          realistic crit stat constraints
+        - Optimise crit rate vs crit damage within those constraints
+        - [If page count permits] Evaluate selected teammates for optimal team
+          (not yet confirmed as IA section — decided after sections 2–4 drafted)
+
+--------------------------------------------------------------------------------
+
+2. BACKGROUND AND GAME MECHANICS                             (~1–1.5 pages)
+   [DRAFT — see Section 2 below; contains one VERIFY flag]
+
+   2.1  General damage formula
+        Source: Genshin Impact Wiki — genshin-impact.fandom.com/wiki/Damage
+        [DEFINITIONS NOTE: the IB checklist requires key terms to be defined,
+         both mathematical AND subject-specific. Game terms that a peer reader
+         would not know must be defined on first use. Minimum required:
+           Crit Rate (CR): probability a hit deals a critical strike
+           Crit Damage (CD): damage multiplier on a critical strike
+           DMG Bonus: additive percentage bonus to all damage
+           Substat: secondary stat on an artifact piece
+           Crit Value (CV): defined in Section 3.3
+         Define these in situ, not in a glossary, so the writing flows naturally.]
+        Formula:
+          DMG = Base DMG × (1 + DMG Bonus) × DEF Multiplier
+                         × RES Multiplier × CRIT Multiplier
+        - Base DMG: talent scaling % × relevant stat (Neuvillette uses Max HP)
+        - DMG Bonus: all additive % bonuses (elemental, passive, set effects)
+        - DEF Multiplier: (Lc + 100) / [(Le + 100) + (Lc + 100)]
+          Fixed at L_c=80, L_e=100 → (180) / (200 + 180) = 180/380 ≈ 0.474
+          absorbed into constant K
+          [NOTE: earlier drafts incorrectly stated 0.655 — corrected here]
+        - RES Multiplier: 1 − r for 0 ≤ r < 0.75; fixed at 0.90 (10% Hydro
+          RES enemy); absorbed into constant K
+        - Expected CRIT Multiplier: 1 + CR × CD (derived from expectation
+          of Bernoulli trial: non-crit with prob (1−CR), crit with prob CR)
+        - Full expected damage: E[DMG] = K × (1 + CR × CD)
+          where K = Base DMG × (1 + DMG Bonus) × DEF Mult × RES Mult
+
+   2.2  Neuvillette's talent mechanics and HP passive
+        - Primary damage: Charged Attack "Hydro Prayer" — sustained stream
+          of Hydro DMG at regular tick intervals, scaling with Max HP
+        - Talent multiplier M = 12.51% per tick at talent level 8  [CONFIRMED]
+        - ~10–11 ticks over ~3 seconds per full channel
+
+        HP Passive — "Discipline of the Supreme Arbitration" (Ascension Talent):
+          EXACT WORDING: "For each 1% of Neuvillette's current HP greater than
+          30% of Max HP, he will gain 0.6% Hydro DMG Bonus. A maximum bonus
+          of 30% can be obtained this way."  [CONFIRMED from in-game screenshot]
+
+        Passive bonus function:
+          PassiveBonus(h) = min(0.006 × (100h − 30),  0.30)  if h > 0.30
+                         = 0                                   if h ≤ 0.30
+          where h is current HP as a decimal (e.g. 0.75 = 75% HP)
+
+        Cap is reached at HP = 80%:
+          0.006 × (80 − 30) = 0.30 ✓
+        
+        During the attack HP drains from 100% to ≤50% [CONFIRMED endpoint]:
+          - 100% → 80% HP: bonus capped at 30% (constant phase)
+            Verification: 0.6 × (80 − 30) = 30% ✓
+          - 80% → 50% HP: bonus decreases continuously, from 30% → 12%
+            Verification at 50%: 0.6 × (50 − 30) = 12% ✓
+        
+        These two phases must be modelled separately in Section 4:
+        the constant phase contributes a fixed multiplier; only the
+        varying phase (80%→50%) requires integration.
+
+   2.3  Artifact system
+        Source: Genshin Wiki — Artifact/Distribution, Artifact/Stats pages
+        - 5 slots: Flower (HP flat), Plume (ATK flat), Sands, Goblet, Circlet
+        - Main stat for Sands/Goblet/Circlet is weighted-random (table in IA)
+        - Substat pool: 10 possible substats, weighted draw excluding main stat
+        Weights (from NGA Forum datamine, hosted on Genshin Wiki):
+          Flat HP / ATK / DEF: 6 each
+          HP% / ATK% / DEF% / ER% / EM: 4 each
+          CRIT Rate% / CRIT DMG%: 3 each
+        - 3-substat start: 80% chance (Domain drops)
+        - 4-substat start: 20% chance
+        - 5 upgrade events at +4, +8, +12, +16, +20
+        - For 3-sub start: event 1 unlocks 4th substat from remaining
+          weighted pool; events 2–5 upgrade existing subs
+        - For 4-sub start: all 5 events upgrade existing subs
+        - Each upgrade selects one of 4 subs uniformly at random (25% each)
+        - Each roll lands on one of 4 value tiers with equal 25% probability:
+          100%, 90%, 80%, 70% of the substat's max value
+        CRIT Rate%: 3.9 / 3.5 / 3.1 / 2.7 %
+        CRIT DMG%:  7.8 / 7.0 / 6.2 / 5.4 %
+        Source for roll values: datamined Google Doc via Genshin Wiki
+
+   2.4  Marechaussee Hunter set effect  [CONFIRMED from in-game screenshot]
+        2-piece bonus: Normal and Charged Attack DMG +15%
+        4-piece bonus EXACT WORDING:
+          "When current HP increases or decreases, CRIT Rate will be
+           increased by 12% for 5s. Max 3 stacks."
+        - HP drains on every tick of the Charged Attack → all 3 stacks
+          reliably maintained throughout the attack rotation
+        - Effective CRIT Rate = CR_artifacts + 0.12n, where n ∈ {0,1,2,3}
+        - This creates the piecewise CRIT Rate model in Section 4
+
+        Note: all formulas and data are sourced from the Genshin Impact Wiki
+        and in-game talent/ability descriptions. They are treated as given
+        assumptions; inaccuracies in game data would require model revision.
+
+--------------------------------------------------------------------------------
+
+3. ARTIFACT RNG MODELLING                                    (~2–3 pages)
+   [TODO]
+
+   3.1  Analytical probability of double-crit substats
+        - Explain the sequential weighted draw (hypergeometric-style)
+        - Derive P(both CR% and CD% appear among 4 substats) analytically
+          using the wiki's conditional probability formula:
+            P = [w1 / W_total] × [w2 / (W_total − w1)]
+                summed over all orderings where both appear
+          where w1, w2 = 3 (crit weights) and W_total varies by slot
+          (since main stat excludes a substat from the pool)
+        - Show results per slot type:
+            Flower / Plume: ~9.2%
+            Sands:          ~8.3%
+            Goblet (most):  ~8.3%  |  Goblet (DMG Bonus% main): ~6.7%
+            Circlet (most): ~8.3%  |  Circlet (crit main):       0%
+          [VERIFY: match these against your simulation output]
+        - Cross-validate analytical result with simulation:
+          simulation gave ~X.X% for each slot — confirm these match the
+          wiki's published figures within expected statistical margin
+
+   3.2  Distribution of crit upgrades (upgrade roll probability)
+        - Once 4 substats locked in, each upgrade hits any sub with 25% chance
+        - Over 5 upgrade events (4-sub starter) or 4 events (3-sub starter's
+          remaining upgrades), number of rolls hitting a specific sub follows
+          a Binomial distribution: X ~ Bin(n, 0.25)
+        - For a piece with 2 crit subs, total upgrades landing on crits
+          follow: sum of two independent Bin(n, 0.25) variables
+        - Show the distribution table from wiki (confirmed correct):
+            0 upgrades into a sub: 23.73%
+            1 upgrade:             39.55%
+            2 upgrades:            26.37%
+            3 upgrades:             8.79%
+            4 upgrades:             1.46%
+            5 upgrades:             0.10%
+        - Discuss what this implies: most substat roll events go into
+          non-crit substats, making high crit value on a single piece rare
+
+   3.3  Simulation and empirical CV distribution
+        - Describe the simulation: 5,000,000 artifacts per slot type,
+          implementing the exact game mechanics (verified against wiki)
+        - Crit Value (CV) metric defined as: CV = (2 × CR%) + CD%
+          Derivation of the weighting factor k (do NOT cite community — derive):
+            CR substat roll tiers (5-star): 2.72%, 3.11%, 3.50%, 3.89%
+            CD substat roll tiers (5-star): 5.44%, 6.22%, 7.00%, 7.77%
+            Each tier is equally probable (25% each), so:
+              r̄_CR = (2.72 + 3.11 + 3.50 + 3.89) / 4 = 3.305%
+              r̄_CD = (5.44 + 6.22 + 7.00 + 7.77) / 4 = 6.608%
+            k = r̄_CD / r̄_CR = 6.608 / 3.305 ≈ 2.000
+          Interpretation: one expected CD roll delivers exactly twice the
+          stat gain of one expected CR roll. The constraint k×CR + CD = CV
+          is therefore a conservation of roll investment — each unit of
+          "roll budget" buys either 1 unit of CD or 1/k = 0.5 units of CR.
+          CV counts roll budget in CD-equivalent units.
+        - Key findings from simulation (N = 5,000,000 per slot):
+
+          P(CV = 0) i.e. no crit substats at all:
+            Flower / Plume:  ~40.9%   (crit subs compete with 8 others in pool)
+            Sands / Goblet:  ~47.9%   (larger pool shifts odds slightly worse)
+            Circlet (crit main): ~68%  (one crit sub excluded from sub pool
+                                        since it is the main stat)
+          This means on average only about 1 in 2 pieces has any crit value
+          at all; for a Circlet with crit main, 2 in 3 pieces have no crit subs.
+
+          Mean CV across ALL pieces (substat CV only):
+            Flower / Plume:  ~9.26    Sands:  ~8.89    Goblet:  ~8.53
+            Circlet (with crit main): ~7.89   (lower because one crit sub
+                                               is the main stat, not a sub)
+
+          Mean CV for crit-positive pieces only (at least 1 crit sub):
+            Flower / Plume:  ~15.6    Sands:  ~15.5    Goblet:  ~15.4
+            Circlet (crit main): ~13.6  (only one crit sub type possible)
+
+          Double-crit probability (both CR% and CD% appear as substats):
+            Flower:  9.15%    Plume:  9.18%    Sands:  8.34%
+            Goblet:  7.69%    Circlet (non-crit main): 6.40%
+          Note: Circlet with crit main has 0% double-crit — one crit sub
+          is the main stat and cannot reappear in the sub pool.
+
+        - Reference histogram, KDE distribution, quantile, and expected-max
+          charts produced by the simulation (see Appendix B)
+
+   3.4  Establishing realistic crit constraints
+        - Rather than an arbitrary "good piece" threshold, use the
+          expected-max chart: states the expected best CV attainable
+          after farming N artifacts of one slot type
+        - Rationale: a competitive player farms a domain repeatedly;
+          the expected-max curve directly reads off the realistic CV
+          ceiling given a farming investment
+
+        Farming benchmark derivation:
+          14 days × 200 resin/day = 2,800 resin total
+          ~20 resin per 5-star artifact → ~140 pieces total
+          Distributed across 5 slot types → ~28 pieces each ≈ 30 per slot
+          (rounded to 30 as a clean benchmark)
+
+        Expected best CV per slot at N = 30 (from simulation expected-max chart,
+        substat CV only — does not include circlet main stat contribution):
+            Flower:        E[max@30] ≈ 32.5
+            Plume:         E[max@30] ≈ 32.5
+            Sands:         E[max@30] ≈ 31.2
+            Goblet:        E[max@30] ≈ 31.0
+            Circlet (CD% main, only CR sub possible): E[max@30] ≈ 23.4
+
+        Total substat CV budget across all 5 pieces:
+            32.5 + 32.5 + 31.2 + 31.0 + 23.4 = 150.6
+
+        Circlet main stat contribution (fixed at +20, 5-star):
+            CRIT DMG% main → +62.2% CD → contributes +62.2 to CV
+            This is fixed regardless of farming; it is not a substat roll.
+
+        Grand total CV budget (substats + Circlet main):
+            Total_CV = 150.6 + 62.2 = 212.8 ≈ 213
+
+        [NOTE on Circlet main choice: using CD% main is standard for Neuvillette
+         since it guarantees a large fixed CD contribution and frees the CR
+         substat slot to roll on the piece. CR% main is symmetric and gives
+         the same grand total CV by construction (k×CR + CD is preserved).
+         The IA uses CD% main as the reference case.]
+
+        [FLAG addressed: Circlet with crit main excludes that crit sub from
+         the pool entirely. This is modelled correctly above — Circlet
+         substat CV comes only from CR rolls (if CD% main) and is lower
+         on average (~23.4 vs ~31–32 for other slots). This is explicitly
+         noted as a model subtlety, not swept under the rug.]
+
+        - These values (Total_CV = 213, k = 2) feed directly into Section 4
+
+================================================================================
+  SECTION 3 — ARTIFACT RNG MODELLING  [DRAFT]
+================================================================================
+
+3.1  Probability of Double-Crit Substats
+─────────────────────────────────────────────────────────────────────────────
+
+An artifact's substats are drawn one at a time from the weighted pool,
+without replacement — once a substat is drawn it cannot appear again on
+that piece. To find the probability that both CR% and CD% appear among
+the four draws, apply the sequential probability rule.
+
+Take a Flower as a worked example. Flat HP is always the main stat, so it
+is excluded from the substat pool. The remaining nine substats have a
+total pool weight of W = 38, with w_CR = w_CD = 3.
+
+The probability that CR% is drawn first and CD% is drawn second is:
+
+  P(CR% 1st, CD% 2nd) = (w_CR / W) × (w_CD / (W − w_CR))
+                      = (3/38) × (3/35) = 9/1330 ≈ 0.68%
+
+Since w_CR = w_CD, the reverse order (CD% first, CR% second) gives the
+same value. Both orderings combined give ~1.35%.
+
+The two crit substats can also occupy any of the other C(4,2) − 1 = 5
+remaining position pairs in the four-draw sequence (positions 1&3, 1&4,
+2&3, 2&4, and 3&4). For each later pairing, a non-crit substat has been
+drawn at an intermediate position, which changes the pool weight before
+the second crit sub is drawn. Summing all six position-pair contributions
+with their respective sequential probabilities gives the full analytical
+result. For a Flower this equals approximately 9.2%, confirmed by
+simulation to 9.15%.
+
+Table 1 shows the results for each slot. The pool weight W varies because
+the main stat is excluded from the substat pool. Note that Hydro DMG
+Bonus% is only a main stat, not a substat, so a Goblet with Hydro DMG%
+main does not remove anything from the substat pool (W = 44).
+
+  Table 1: Double-crit probability by slot
+  ┌──────────────────────────────┬────┬──────────────────────┐
+  │ Slot / main stat             │  W │  P(double-crit)      │
+  ├──────────────────────────────┼────┼──────────────────────┤
+  │ Flower (flat HP)             │ 38 │   9.15%  (sim.)      │
+  │ Plume (flat ATK)             │ 38 │   9.18%  (sim.)      │
+  │ Sands (HP% main)             │ 40 │   8.34%  (sim.)      │
+  │ Goblet (Hydro DMG% main)     │ 44 │   7.69%  (sim.)      │
+  │ Circlet (non-crit main)      │ 40 │   6.40%  (sim.)      │
+  │ Circlet (CD% main)           │ 41 │   0%     (exact)     │
+  └──────────────────────────────┴────┴──────────────────────┘
+
+For Neuvillette's Circlet, CD% is the main stat. Because the main stat is
+excluded from the substat pool, CD% cannot appear as a substat on the
+same piece. P(double-crit | CD% main) = 0% exactly, for any number of
+pieces farmed.
+
+─────────────────────────────────────────────────────────────────────────────
+3.2  Upgrade Roll Distribution
+─────────────────────────────────────────────────────────────────────────────
+
+Once the four substats are set, the piece gains five upgrade events at
++4, +8, +12, +16, and +20. At each event, one of the four substats is
+selected uniformly at random (25% each) and receives one additional roll.
+
+The number of upgrades a specific substat receives over five events
+follows a Binomial distribution:
+
+  X ~ Bin(5, 0.25)
+
+Table 2 shows the full distribution (Genshin Impact Wiki,
+Artifact/Distribution):
+
+  Table 2: Upgrade count distribution for one substat  [X ~ Bin(5, 0.25)]
+  ┌───────────────────┬─────────────┐
+  │ Upgrades received │ Probability │
+  ├───────────────────┼─────────────┤
+  │        0          │   23.73%    │
+  │        1          │   39.55%    │
+  │        2          │   26.37%    │
+  │        3          │    8.79%    │
+  │        4          │    1.46%    │
+  │        5          │    0.10%    │
+  └───────────────────┴─────────────┘
+
+Getting 3 or more upgrades into a single substat — the typical standard
+for a strong substat — happens only about 10.4% of the time. For a
+double-crit piece, each crit substat still sees this distribution
+independently and competes against two non-crit substats for every
+upgrade. The probability that both CR% and CD% each receive at least
+2 upgrades is:
+
+  P(CR% ≥ 2 upgrades) × P(CD% ≥ 2 upgrades) = 0.357 × 0.357 ≈ 12.7%
+
+Combined with the ~9.2% chance of double-crit in the first place (for a
+Flower), this means a Flower with at least 2 upgrades in both crit
+substats occurs in about 9.2% × 12.7% ≈ 1.2% of pieces. This confirms
+that high CV on a single piece is genuinely rare.
+
+─────────────────────────────────────────────────────────────────────────────
+3.3  Simulation and CV Distribution
+─────────────────────────────────────────────────────────────────────────────
+
+A Java simulation (ArtifactSim.java) generated N = 5,000,000 artifacts
+per slot, implementing the game mechanics above: weighted draws without
+replacement, the 80%/20% three-stat/four-stat starting split, and the
+Binomial upgrade distribution. Only CR% and CD% substat values are
+recorded per piece; all other substats are discarded.
+
+Crit Value (CV) metric
+
+To combine CR% and CD% into a single score, define:
+
+  CV = k × CR% + CD%
+
+where k weights CR% relative to CD%. From Section 2, the average substat
+roll values are avrCR = 3.305% and avrCD = 6.608%, giving:
+
+  k = avrCD / avrCR = 6.608 / 3.305 = 2.000
+
+So CV = 2 × CR% + CD%. This metric counts crit budget in CD%-equivalent
+units: one expected CR roll is worth exactly half of one expected CD roll,
+and the constraint CV = 2 × CR + CD is a statement of roll investment —
+any two builds with the same CV represent the same total number of
+expected crit rolls.
+
+Key findings  (N = 5,000,000 per slot)
+
+P(CV = 0) — no crit substats at all:
+
+  Flower / Plume:      ~40.9%
+  Sands / Goblet:      ~47.9%
+  Circlet (CD% main):  ~68%
+
+On average, only about 1 in 2 pieces has any crit value. For a CD% main
+Circlet, 2 in 3 pieces have no crit substats at all, since the only
+available crit substat is CR%.
+
+Mean CV (substat CV only, all pieces including CV = 0):
+
+  Flower / Plume: ~9.26     Sands: ~8.89
+  Goblet: ~8.53             Circlet (CD% main): ~7.89
+
+These low means are largely driven by the ~40–68% of pieces with CV = 0.
+Among pieces with at least one crit substat, mean CV rises to ~15.2–15.6
+for Flower, Plume, Sands, and Goblet.
+
+Histogram and KDE distribution charts for each slot are included in
+Appendix B.
+
+─────────────────────────────────────────────────────────────────────────────
+3.4  Realistic Crit Constraint from Farming
+─────────────────────────────────────────────────────────────────────────────
+
+Rather than setting an arbitrary CV threshold for "a good piece", this
+section derives the expected best CV achievable with a fixed farming
+investment. The expected-maximum function E[max of N independent samples]
+reads directly off a simulation curve: given N attempts, it gives the
+expected highest CV found.
+
+Farming benchmark
+
+A typical two-week farming period yields:
+
+  14 days × 200 resin/day = 2,800 resin
+  ÷ 20 resin per 5-star artifact      ≈ 140 pieces total
+  ÷ 5 slot types                      ≈ 28 pieces per slot
+  → rounded to N = 30 per slot
+
+Table 3 shows the expected best substat-only CV per slot at N = 30,
+computed from the simulation's empirical CDF (see Appendix B):
+
+  Table 3: Expected best CV per slot at N = 30 pieces
+  ┌──────────────────────────────────────────┬──────────────────┐
+  │ Slot                                     │ E[max CV @ N=30] │
+  ├──────────────────────────────────────────┼──────────────────┤
+  │ Flower                                   │      32.5        │
+  │ Plume                                    │      32.5        │
+  │ Sands                                    │      31.2        │
+  │ Goblet                                   │      31.0        │
+  │ Circlet (CD% main; CR% substat only)     │      23.4        │
+  └──────────────────────────────────────────┴──────────────────┘
+
+The Circlet's lower expected maximum reflects the CD% main constraint:
+with only CR% available as a crit substat, the CV ceiling is lower.
+
+Total substat CV budget across all five pieces:
+
+  32.5 + 32.5 + 31.2 + 31.0 + 23.4 = 150.6
+
+The Circlet's CD% main stat contributes a fixed +62.2% to CD at +20 on a
+5-star piece. This is not a substat roll — it is guaranteed regardless of
+RNG. Its contribution to CV is:
+
+  1 × 62.2 = 62.2   (CD% adds directly to CV with coefficient 1)
+
+Grand total CV budget (substats + Circlet main stat):
+
+  Total_CV = 150.6 + 62.2 = 212.8 ≈ 213
+
+This value of Total_CV = 213, combined with k = 2 derived in Section 3.3,
+is the constraint fed into the optimisation in Section 4.
+
+--------------------------------------------------------------------------------
+
+4. DAMAGE FUNCTION AND CRIT OPTIMISATION                     (~4–5 pages)
+   [TODO]
+
+   4.1  Full expected damage function
+        - Write Neuvillette's expected damage per tick as:
+            E[D_tick] = M × HP × (1 + CR × CD) × (1 + DMG_bonus)
+                      × DEF_mult × RES_mult
+          where all terms except the crit factor and DMG_bonus vary or
+          are held constant as described in Section 2
+        - Lump fixed terms into K:
+            E[D_tick] = K × (1 + CR × CD) × (1 + DMG_bonus(h))
+          where K = M × HP × DEF_mult × RES_mult
+
+   4.2  HP passive integration — the continuously varying phase
+        - Model HP as a linear function of time t over the attack:
+            h(t) = h_0 − r × t
+          where h_0 ≈ 1.0 (100% HP at start), r = drain rate per second,
+          attack ends when h ≈ 0.50 (50% HP)
+          [VERIFY: confirm drain rate and endpoint from gameplay]
+        - Passive bonus in the varying phase (80% → 50% HP):
+            DB(t) = 0.006 × (100 × h(t) − 30)   for h(t) < 0.80
+        - Constant phase (100% → 80% HP): DB = 0.30
+        - Total damage from passive contribution across attack:
+            Integrate (1 + DB(t)) over the attack duration,
+            split at the time t* when h(t*) = 0.80
+        - Acknowledge: HP drains in discrete ticks in-game; modelling
+          as continuous linear function is an approximation. The error
+          is small (continuous vs discrete Riemann sum) and is noted
+          as a limitation.
+          [REFLECTION NOTE — Criterion D: do NOT just list this as a limitation.
+           Evaluate its impact: estimate the maximum error introduced by the
+           continuous approximation vs the discrete sum. If the error is <1%
+           of total damage, say so and justify it as negligible. If larger,
+           quantify it. The marker deducted marks from Sample 2 for stating
+           limitations without evaluating their significance.]
+        - State explicitly: this integration is justified because the
+          damage bonus is a continuous function of a continuously (in
+          our model) changing variable, not a fixed value.
+
+   4.3  Marechaussee Hunter piecewise crit rate model
+        - Three stack states during the rotation:
+            State 0: CR_eff = CR_base              (briefly at start)
+            State 1: CR_eff = CR_base + 0.12       (1 stack)
+            State 2: CR_eff = CR_base + 0.24       (2 stacks)
+            State 3: CR_eff = CR_base + 0.36       (3 stacks, maintained)
+        - In practice, stacks build quickly and state 3 dominates;
+          detail the transition timing explicitly
+        - [FLAG: Is modelling only state 3 a valid simplification, or
+          must you show all 4 states? Showing all 4 is more rigorous
+          and demonstrates understanding — recommend keeping all states
+          but noting state 3 dominates for the optimisation.]
+          [REFLECTION NOTE — Criterion D: when writing, evaluate the impact
+           of ignoring states 0–2. Estimate what fraction of total attack
+           duration is spent in states 0–2 vs state 3. If stack build-up
+           takes ~0.5s out of a ~3s channel, state 3 covers ~83% of ticks.
+           State this quantitatively; do not just say "state 3 dominates."]
+        - Combine piecewise crit rate with integrated damage bonus from
+          4.2 for the complete damage function across the rotation
+
+   4.4  Crit rate vs crit damage optimisation
+        - Constraint from Section 3: k × CR + CD = Total_CV
+          where k ≈ 2 (derived from roll sizes, not arbitrarily assigned)
+        - Rewrite: CD = Total_CV − k × CR
+        - Substitute into the crit factor:
+            f(CR) = 1 + CR × (Total_CV − k × CR)
+                  = 1 + Total_CV × CR − k × CR²
+        - Differentiate with respect to CR and set to zero:
+            f'(CR) = Total_CV − 2k × CR = 0
+            CR_opt = Total_CV / (2k)
+        - CD_opt = Total_CV − k × CR_opt = Total_CV / 2
+        - The optimal ratio is CR_opt : CD_opt = (1/2k) : (1/2)
+          For k = 2: CR_opt : CD_opt = 1 : 2
+        - Note: this result is derived from the model, not assumed from
+          the community. The derivation IS the IA contribution here.
+        - Verify with second derivative that this is a maximum:
+            f''(CR) = −2k < 0  ✓ (confirmed concave — unique global maximum)
+
+        Boundary constraint check (CRITICAL — must be in the IA):
+        - The feasible domain for CR is not all of ℝ; it is [0, 1] (0%–100%).
+          Additionally, Marechaussee Hunter at 3 stacks adds +0.36 to CR_eff,
+          so artifact CR must satisfy:
+            CR_artifacts ≤ 1.0 − CR_base − 0.36
+          where CR_base includes the character's base 5% + any fixed bonuses.
+          Call this upper bound CR_max. The feasible domain is [0, CR_max].
+        - Two cases to check after computing CR_opt = Total_CV / (2k):
+            Case 1 — Interior maximum: if CR_opt ≤ CR_max
+              → CR_opt is valid; use CR* = Total_CV / (2k)
+            Case 2 — Boundary maximum: if CR_opt > CR_max
+              → f(CR) is still increasing at CR_max (haven't passed vertex),
+                so f is maximised at the boundary: CR* = CR_max,
+                CD* = Total_CV − k × CR_max
+                (all remaining CV budget allocated to CD)
+          Justify Case 2 without KKT: "since f(CR) is a concave parabola
+          with vertex beyond the feasible domain, f is monotonically
+          increasing on [0, CR_max], so the constrained maximum is at
+          the right boundary."
+        - Plug in actual numbers from Section 3 to determine which case
+          applies and state the resulting CR*, CD* explicitly.
+
+        - Discuss how the optimal ratio shifts if k ≠ 2 exactly
+          (sensitivity analysis: what if crit tier distributions make
+          k slightly different?)
+
+   4.5  Goblet comparison: Hydro DMG% vs HP%
+        - With optimal CR and CD from 4.4, evaluate E[D] under two
+          goblet scenarios. In both cases, ONLY K changes (the constant)
+          because the crit factor is the same; the DMG Bonus term
+          and the Base DMG (HP) term differ between scenarios.
+        - Hydro Goblet: adds +46.6% Hydro DMG Bonus [CONFIRMED];
+          no change to HP
+        - HP% Goblet: adds +46.6% Max HP [CONFIRMED];
+          this feeds into:
+            (a) Base DMG (M × HP) — directly scales damage per tick
+            (b) Extra DMG bonus from passive is NOT affected — the passive
+                uses current HP as a percentage of Max HP, so scaling both
+                current HP and Max HP equally leaves the percentage unchanged.
+                HP% goblet does NOT boost the passive bonus.
+          [FLAG — CRITICAL: HP% goblet does NOT help the passive the way
+           initially assumed. The passive triggers on percentage HP, not
+           absolute HP. Switching from Hydro goblet to HP% goblet only
+           benefits channel (a): Base DMG scaling. This may mean Hydro
+           goblet wins. Work through the numbers carefully.]
+        - Known values for numerical comparison:
+            Base HP at level 80 (no artifacts): 12,965  [CONFIRMED]
+            HP% gain from HP% goblet: +46.6% of Base HP
+            = 12,965 × 0.466 ≈ 6,041 extra HP from goblet alone
+          [APPROACH for writing section 4.5:
+           Step 1 — Base-stats-only comparison: derive the analytical break-even
+             condition using only level 80 base HP (12,965). Clean and self-
+             contained; no arbitrary artifact values needed.
+           Step 2 (optional, ~1 paragraph) — plug in your actual in-game total
+             HP as a concrete numerical check. Provide that figure when writing
+             this section. Can be cut for space if needed.
+           Do NOT use artifact HP values until Step 2 — keep Step 1 general.]
+
+--------------------------------------------------------------------------------
+
+5. TEAMMATE ANALYSIS                                         (~3–4 pages)
+   [NOT YET CONFIRMED — section inclusion decided after sections 2–4 are
+    drafted and page count is assessed. Outline kept for planning purposes.]
+
+   5.1  Comparison metric
+        Total Team DMG = Neuvillette's buffed damage per rotation
+                       + Teammate's own damage per rotation
+        - Neuvillette's buffed damage uses the full model from Section 4
+          with teammate buffs incorporated into the relevant formula terms
+        - Teammate's own damage is calculated as a simpler linear sum
+          (their abilities scale straightforwardly with their own stats)
+        - Apply the same metric consistently to all three teammates so
+          results are directly comparable
+
+   5.2  Citlali
+        - Identify her buff contributions to Neuvillette
+          (elemental shred, DMG% bonus, any Hydro/Cryo interaction)
+          [VERIFY: pull exact values from in-game or wiki]
+        - Express each buff as an additive or multiplicative term in
+          Neuvillette's damage formula
+        - Calculate Neuvillette's buffed damage under Citlali
+        - Add Citlali's sub-DPS as a separate linear sum
+
+   5.3  Sucrose
+        - Primary contributions: Viridescent Venerer 4-piece RES shred
+          (−40% Hydro RES on enemy) applied via Swirl, plus any DMG Bonus%
+          share from her own kit
+        - Note: Sucrose's EM share does NOT boost Neuvillette's personal
+          Hydro damage since he does not rely on reactions. Her value
+          comes from RES shred only (plus sub-DPS).
+          This is acknowledged as a model simplification, not a weakness —
+          VV shred is a genuine and significant contribution.
+          [VERIFY when writing: exact VV shred value and Sucrose buff values]
+
+   5.4  Furina
+        - Furina's primary contribution is her Elemental Burst:
+          "Let the People Rejoice" — grants Fanfare stacks as HP fluctuates,
+          which converts to a large DMG Bonus% applied to all party members
+          [VERIFY: exact Fanfare cap and DMG Bonus% conversion rate from
+          in-game or wiki]
+        - This interacts directly with Neuvillette's own HP drain mechanic:
+          each HP loss tick from Neuvillette generates Fanfare stacks,
+          creating a mathematical link between the two characters' mechanics
+        - Model Fanfare accumulation over Neuvillette's rotation
+        - Apply resulting DMG Bonus% to Neuvillette's damage formula
+        - Furina's own personal damage is modest; include but note this
+        - [FLAG: Furina's Fanfare system will likely make her the strongest
+          teammate mathematically. Be careful not to pre-assume this in
+          your writing — derive it and let the numbers speak.]
+
+   5.5  Comparison and conclusion
+        - Table: Total Team DMG per rotation under each teammate
+        - Identify optimal teammate
+        - Explain mathematically why the winning teammate is superior
+          (is it raw damage? Multiplicative vs additive buff stacking?)
+
+--------------------------------------------------------------------------------
+
+6. COMPARISON TO COMMUNITY GUIDES                            (~1–1.5 pages)
+   [TODO]
+
+   6.1  Community recommendations
+        - State the community-recommended build for Neuvillette
+          (typical: ~70% CR / 140–160% CD, Hydro DMG goblet, Furina + X)
+        - Source: KQM Neuvillette guide
+          [VERIFY: check keqingmains.com for current Neuvillette guide]
+
+   6.2  Where results agree
+        - If the derived optimal crit ratio matches 1:2, note this as
+          model validation — the community rule of thumb emerges from the
+          mathematics
+        - If goblet recommendation matches, note this too
+
+   6.3  Where results differ
+        - If they differ on any point, analyse why — is it a modelling
+          simplification? A practical constraint the community accounts
+          for that the model does not? Or a genuine mathematical disagreement?
+        - Example: community may recommend slightly above 1:2 ratio in
+          practice because reaching exactly CR = Total_CV / (2k) requires
+          perfect substat control that RNG doesn't guarantee
+
+   6.4  Model limitations
+        [REFLECTION NOTE — Criterion D is the most commonly under-scored
+         criterion. The checklist asks THREE things that must ALL appear:
+           (1) Discuss the implications and significance of your results
+           (2) State any possible limitations and/or extensions
+           (3) Do you critically reflect on the PROCESSES you have used?
+         Item (3) is often missed. For each limitation below, you must:
+           - State the limitation
+           - Evaluate its quantitative or qualitative impact on results
+           - State whether the conclusion would change if the assumption
+             were relaxed, and in which direction
+         This section is where Sample 2 lost marks: it listed limitations
+         without evaluating their significance.]
+        - Continuous approximation of HP drain (discrete in reality)
+          → evaluate: compare continuous integral result to discrete tick sum;
+            estimate % error; justify why conclusion is robust
+        - Assumed fixed enemy stats (real content varies)
+          → evaluate: DEF and RES vary by enemy; state how optimal CR* shifts
+            if enemy RES changes (RES only scales K, not the optimal ratio,
+            so the crit optimisation result is RES-independent)
+        - Teammate damage calculated approximately (exact rotations complex)
+          → evaluate: note this only affects Section 5 (if included); core
+            crit optimisation in Section 4 is unaffected
+        - Model assumes maximum Marechaussee Hunter stacks maintained;
+          in practice there is a brief ramp-up period
+          → evaluate: quantify — ~0.5s ramp-up out of ~3s channel ≈ 17%
+            of ticks at sub-optimal CR; state effect on expected damage
+        - Critically reflect on the process itself:
+          "The approach of separating fixed constants into K allowed the
+           optimisation to focus cleanly on the crit factor. However, this
+           assumes the two are multiplicatively independent, which is only
+           valid if DMG Bonus and the crit factor are not correlated across
+           artifact choices — in this model they are not, since goblet main
+           stat determines DMG Bonus independently of the 4 substat pieces."
+
+--------------------------------------------------------------------------------
+
+7. CONCLUSION                                                (~0.5–1 page)
+   [TODO]
+
+   7.1  Summary of findings
+        [NOTE: The IB checklist asks "does your conclusion refer back to
+         the introduction and the aim?" This section must explicitly address
+         every aim bullet stated in Section 1.2, in the same order.]
+        - Aim 1 (damage model): summarise the model structure and key result
+        - Aim 2 (goblet comparison): state which goblet wins and by what margin
+        - Aim 3 (artifact probability): state the realistic CV budget derived
+          from the simulation and expected-max analysis
+        - Aim 4 (crit optimisation): state CR*, CD*, and the 1:2 ratio result
+        - [Aim 5 (teammates): only if section 5 confirmed]
+        Placeholder values (fill when writing):
+        - Optimal crit ratio: [derived value — to be filled from section 4.4]
+        - Optimal goblet: [Hydro or HP%, with margin — to be filled from 4.5]
+        - Optimal teammate: [only if section 5 confirmed; otherwise omit]
+
+   7.2  Implications
+        - Does this suggest Genshin's damage system is well-designed around
+          a natural mathematical optimum?
+        - Are community heuristics (1:2 ratio) mathematically justified, or
+          are they approximations of a more complex truth?
+        - What does the artifact RNG modelling tell us about the realistic
+          accessibility of the optimal build?
+
+   7.3  Extensions
+        - Could this framework apply to other HP-scaling characters?
+        - Could the RNG model be refined with empirical personal farming data?
+        - Could team rotation (multiple characters dealing damage in sequence)
+          be modelled more rigorously?
+
+================================================================================
+  VERIFY CHECKLIST  (must be completed before final draft)
+================================================================================
+
+  [X] Neuvillette passive exact wording — CONFIRMED: "Discipline of the Supreme
+      Arbitration": 0.6% Hydro DMG Bonus per 1% HP above 30%, max 30%.
+      Cap reached at 80% HP. Varying phase: 80%→50% HP.
+  [X] Neuvillette talent multiplier — CONFIRMED: M = 12.51% per tick at level 8
+  [X] HP drain endpoint — CONFIRMED: drains to ≤50% HP
+  [X] Marechaussee Hunter — CONFIRMED exact wording from in-game screenshot:
+      4pc: +12% CR per HP change, max 3 stacks, 5s duration
+  [X] HP% goblet: CONFIRMED +46.6% HP
+  [X] Hydro DMG% goblet: CONFIRMED +46.6% Hydro DMG Bonus
+  [X] Neuvillette base HP: CONFIRMED 12,965 at level 80 (no artifacts)
+  [ ] Total HP from full artifact set — optional for section 4.5 Step 2
+      (real-build numerical check); not needed for Step 1 analytical derivation
+  [ ] Citlali kit — confirm exact buff values (if teammate section confirmed)
+  [ ] Sucrose VV shred value — confirm −40% Hydro RES (if teammate section confirmed)
+  [ ] Furina Fanfare — exact DMG Bonus% cap and conversion (if teammate section confirmed)
+  [ ] KQM Neuvillette guide — current recommended build for comparison section
+
+================================================================================
+  SECTION 1 — INTRODUCTION  [DRAFT]
+================================================================================
+
+Genshin Impact is a third person action game where players build teams of
+characters progress through the games story and clear combat challenges.
+Over my three years of playing, I have spent a lot of time trying to make
+my characters deal as much damage as possible to clear the hardest game
+modes: Spiral Abyss, Imaginarium Theater, and Stygian Onslaught. This
+process, typicaly called build optimisation, involves choosing the right
+equipment for each character.
+
+My main damage dealer is Neuvillette. What makes him interesting to
+analyse is that his damage depends on several mechanics at once: a passive
+ability that changes his damage bonus as his HP drops during an attack, an
+artifact set that changes his critical hit rate as his HP fluctuates, and
+a damage formula that scales directly with his maximum HP. Together, these
+create a system where these mechanics interact, and all affect the final
+damage.
+
+Aim: The aim of this exploration has two parts: to model the probability
+distribution of artifact substat rolls and determine what CRIT stats are
+realistically achievable, and to use a mathematical damage model to find
+the optimal CRIT Rate to CRIT DMG ratio and goblet main stat for
+Neuvillette.
+
+================================================================================
+  SECTION 2 — GAME MECHANICS OVERVIEW  [DRAFT]
+================================================================================
+
+Every hit in Genshin Impact follows the same general formula
+(Genshin Impact Wiki, Damage):
+
+  DMG = Base DMG × (1 + DMG Bonus) × DEF Multiplier
+                 × RES Multiplier × CRIT Multiplier
+
+Base DMG is the raw damage before any modifiers. For Neuvillette, his main
+attack scales with his maximum HP, so:
+
+  Base DMG = M × HP_max     (M = 12.51% per tick at talent level 8)
+
+where M is the talent multiplier and HP_max is his total maximum HP.
+
+DMG Bonus is the sum of all percentage damage bonuses from equipment and
+passive abilities, expressed as a decimal (for example, +30% DMG Bonus
+adds 0.30). These bonuses add together before being multiplied into the
+formula.
+
+DEF Multiplier accounts for the enemy's defence. The formula is
+(Genshin Impact Wiki, Damage):
+
+             Lc + 100
+  DEF Mult = ─────────────────────────────
+             (Le + 100) + (Lc + 100)
+
+where Lc is the character's level and Le is the enemy's level.
+For Neuvillette at level 80 fighting a level 100 enemy (standard for
+endgame content like Spiral Abyss):
+
+         180        180
+  DEF = ─────── = ─────── ≈ 0.474
+        200+180     380
+
+RES Multiplier accounts for the enemy's elemental resistance. For a
+typical enemy with 10% Hydro RES:
+
+  RES Mult = 1 − 0.10 = 0.90
+
+CRIT Multiplier is where CRIT Rate (CR) and CRIT DMG (CD) come in.
+CRIT Rate is the probability that a hit deals a critical strike. CRIT DMG
+is the percentage bonus to damage when a critical strike occurs. A
+non-critical hit has a multiplier of 1; a critical hit has a multiplier
+of (1 + CD). Since each hit is an independent event with success
+probability CR, the expected value of the CRIT Multiplier is:
+
+  E[CRIT Mult] = (1 − CR) × 1 + CR × (1 + CD) = 1 + CR × CD
+
+Putting it all together, the expected damage per tick is:
+
+  E[D_tick] = K × (1 + CR × CD)
+
+  where  K = M × HP_max × (1 + DMG Bonus) × DEF Mult × RES Mult
+
+K consists of every term that is fixed for a given build: the talent
+scaling, the max HP, all additive damage bonuses, and both defensive
+multipliers. Since these variables are not easly changeable, K is a
+constant, and Optimising the artifact substats therefore reduces entirely
+to maximising the crit multiplier.
+
+The goblet comparison (Section 4.5) changes which goblet main stat is
+used, which changes K since different goblets change either max HP or DMG
+Bonus. But the CRIT optimisation that uses substats is unchanged
+regardless of which goblet is equipped since the optimal CR and CD ratio
+depends only on the substat budget, not on K. The two questions can
+therefore be answered independently and combined at the end.
+
+Neuvilette's passive talent, "Discipline of the Supreme Arbitration",
+adds a Hydro DMG Bonus that depends on his current HP percentage. The
+exact in-game text reads:
+
+    "For each 1% of Neuvillette's current HP greater than 30% of Max HP,
+     he will gain 0.6% Hydro DMG Bonus. A maximum bonus of 30% can be
+     obtained this way."
+    (Genshin Impact, in-game passive description)
+
+Expressing this as a function of h, where h is the current percent of HP:
+
+  PassiveBonus(h) = 0.006 × (100h − 30)   for 0.30 < h < 0.80
+  PassiveBonus(h) = 0                      for h ≤ 0.30
+
+The cap of 30% is reached at h = 0.80 (exactly 80% HP):
+
+  0.006 × (80 − 30) = 0.30  ✓
+
+During a full Charged Attack, HP drains from 100% down to approximately
+50%. This creates two distinct phases for the passive:
+
+  Phase 1 (100% → 80% HP):  Bonus is at its maximum of 30% throughout.
+  Phase 2  (80% → 50% HP):  Bonus falls continuously from 30% to 12%.
+
+Phase 2 will require integration over the attack duration to find the
+average damage bonus.
+
+Artifacts are the main equipment system in Genshin Impact. There are five
+slots: Flower (always gives flat HP as its main stat), Plume (always gives
+flat ATK), Sands, Goblet, and Circlet. Each piece also has up to four
+substats chosen from a shared pool.
+
+The Sands, Goblet, and Circlet have randomly assigned main stats, and
+substats drawn from a weighted pool specific to each slot. Substats are
+drawn sequentially from a pool of ten possible stats, excluding whichever
+stat is already the main stat. Each substat has a weight that controls
+the probability of being chosen (Genshin Impact Wiki, Artifact/Distribution):
+
+  ┌──────────────────────┬────────┐
+  │ Substat              │ Weight │
+  ├──────────────────────┼────────┤
+  │ Flat HP              │   6    │
+  │ Flat ATK             │   6    │
+  │ Flat DEF             │   6    │
+  │ HP%                  │   4    │
+  │ ATK%                 │   4    │
+  │ DEF%                 │   4    │
+  │ Energy Recharge%     │   4    │
+  │ Elemental Mastery    │   4    │
+  │ CRIT Rate%           │   3    │
+  │ CRIT DMG%            │   3    │
+  └──────────────────────┴────────┘
+
+CRIT Rate% and CRIT DMG% each have the lowest weight in the pool. On a
+Flower, for example, the total pool weight is 3+3+6+4+4+4+4+4+6+6 = 44
+(flat HP excluded as main stat). The chance of any one draw being a
+specific crit stat is only 3/44 ≈ 6.8%. Because only 4 substats are
+chosen, most artifact pieces will not have both CRIT Rate and CRIT DMG
+as substats.
+
+The four substat draws happen without replacement. Once a substat is
+chosen, it is removed from the pool for that piece. Each time a substat
+is rolled (either at the start or during an upgrade), it lands on one of
+four value tiers with equal probability (25% each). For CRIT Rate% and
+CRIT DMG%, the tiers are (Genshin Impact Wiki, Artifact/Stats):
+
+  ┌────────┬────────────┬────────────┐
+  │  Tier  │ CRIT Rate% │ CRIT DMG%  │
+  ├────────┼────────────┼────────────┤
+  │   1    │   3.89%    │   7.77%    │
+  │   2    │   3.50%    │   7.00%    │
+  │   3    │   3.11%    │   6.22%    │
+  │   4    │   2.72%    │   5.44%    │
+  └────────┴────────────┴────────────┘
+
+Every CRIT DMG% tier value is exactly twice the corresponding CRIT Rate%
+tier value. The average roll for each stat is:
+
+  avrCR = (3.89 + 3.50 + 3.11 + 2.72) / 4 = 13.22 / 4 = 3.305%
+  avrCD = (7.77 + 7.00 + 6.22 + 5.44) / 4 = 26.43 / 4 = 6.608%
+
+So avrCD = 2 × avrCR exactly. This ratio is how the CRIT Value metric
+is defined.
+
+An artifact starts with either 3 substats (80% of pieces) or 4 substats
+(20%) and is upgraded 5 events total. At each event, one existing substat
+is selected at random (each substat has a 25% chance) and receives one
+additional roll at a random tier. For pieces that start with 3 substats,
+the first event instead adds the fourth substat from the remaining
+weighted pool.
+
+Because each upgrade picks uniformly from 4 substats, the number of times
+any given substat gets upgraded follows a Binomial distribution:
+BinomPDF(5, 0.25, X). This makes hitting a high CRIT value on any single
+piece unlikly, which is exactly what the simulation in Section 3 shows.
+
+Marechaussee Hunter is the recommended artifact set for Neuvillette. Its
+bonuses are (Genshin Impact, in-game set description):
+
+  2-piece: Normal and Charged Attack DMG +15%
+  4-piece: "When current HP increases or decreases, CRIT Rate will be
+            increased by 12% for 5s. Max 3 stacks."
+
+The 4-piece bonus interacts with Neuvillette's HP drain mechanic. Each
+hit of his Charged Attack reduces his current HP, which counts as an HP
+change event. This means all three stacks are made and maintained
+throughout the attack, adding +36% CRIT Rate to his effective total, and
+This +0.36 contribution from the set is accounted for in the optimisation
+in Section 4.
+
+--------------------------------------------------------------------------------
+
+8. BIBLIOGRAPHY                                              (not counted in page limit)
+   [TODO — REQUIRED; checklist explicitly asks for this]
+
+   Format: cite all sources inline (brief reference in text) AND in full here.
+   Sources already identified:
+   - Genshin Impact Wiki — Damage formula:
+       https://genshin-impact.fandom.com/wiki/Damage
+   - Genshin Impact Wiki — Artifact substat distribution / weights:
+       https://genshin-impact.fandom.com/wiki/Artifact/Stats
+   - Genshin Impact Wiki — Artifact upgrade probability table:
+       https://genshin-impact.fandom.com/wiki/Artifact/Distribution
+   - In-game talent and ability descriptions (Neuvillette, Marechaussee Hunter)
+       Cited as: Genshin Impact (miHoYo/HoYoverse), version [X.X], accessed [date]
+   - [If used] KQM Neuvillette guide — keqingmains.com
+   [NOTE: checklist says references must appear briefly IN the exploration text
+    as well as in the bibliography. A bibliography-only citation is insufficient.
+    Each source used in a section should have a brief inline note, e.g.
+    "(Genshin Impact Wiki, Damage)" or a footnote.]
+
+--------------------------------------------------------------------------------
+
+9. APPENDIX                                                  (not counted in page limit)
+   [TODO — include if simulation output or code is referenced but too long
+    for the main body]
+
+   Appendix A — Simulation code summary
+        - Brief description of ArtifactSim.java: language, method, N=5,000,000
+        - Note: full code available on request; only summary included here
+        - [FLAG: IB does not require code to be reproduced in full, but the
+          methodology must be explainable to a peer reader. Section 3.3 should
+          be self-contained; appendix is supplementary only.]
+
+   Appendix B — Simulation output charts (if not embedded in Section 3)
+        - Histogram, KDE distribution, expected-max, quantile charts
+        - Label each chart with: slot type, N, what the axes represent
+        - [IB checklist: all graphs must be correctly labelled and titled,
+          and placed appropriately — NOT all attached at the end if they
+          are directly referenced. Embed charts in Section 3 text if possible;
+          use appendix only for supplementary charts.]
+
+================================================================================
+  END OF DOCUMENT
+================================================================================
