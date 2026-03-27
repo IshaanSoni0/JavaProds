@@ -277,53 +277,140 @@ LEGEND:
 3.1  Probability of Double-Crit Substats
 ─────────────────────────────────────────────────────────────────────────────
 
-An artifact's substats are drawn one at a time from the weighted pool,
-without replacement — once a substat is drawn it cannot appear again on
-that piece. To find the probability that both CR% and CD% appear among
-the four draws, apply the sequential probability rule.
+Each substat is drawn one at a time from the weighted pool, without
+replacement. The probability of drawing a specific stat on a given draw
+equals its weight divided by the total remaining weight at that moment.
 
-Take a Flower as a worked example. Flat HP is always the main stat, so it
-is excluded from the substat pool. The remaining nine substats have a
-total pool weight of W = 38, with w_CR = w_CD = 3.
+Step 1: probability of one specific ordering
 
-The probability that CR% is drawn first and CD% is drawn second is:
+Take a Flower as a worked example. Flat HP is always the main stat and is
+excluded from the pool, leaving nine substats with total weight W = 38.
+Both CR% and CD% have weight 3.
 
-  P(CR% 1st, CD% 2nd) = (w_CR / W) × (w_CD / (W − w_CR))
-                      = (3/38) × (3/35) = 9/1330 ≈ 0.68%
+What is the probability that CR% is drawn first and CD% is drawn second?
 
-Since w_CR = w_CD, the reverse order (CD% first, CR% second) gives the
-same value. Both orderings combined give ~1.35%.
+  P(CR% 1st) = 3/38
 
-The two crit substats can also occupy any of the other C(4,2) − 1 = 5
-remaining position pairs in the four-draw sequence (positions 1&3, 1&4,
-2&3, 2&4, and 3&4). For each later pairing, a non-crit substat has been
-drawn at an intermediate position, which changes the pool weight before
-the second crit sub is drawn. Summing all six position-pair contributions
-with their respective sequential probabilities gives the full analytical
-result. For a Flower this equals approximately 9.2%, confirmed by
-simulation to 9.15%.
+After CR% is drawn, its weight of 3 is removed from the pool.
+The remaining pool weight is 38 − 3 = 35.
 
-Table 1 shows the results for each slot. The pool weight W varies because
-the main stat is excluded from the substat pool. Note that Hydro DMG
-Bonus% is only a main stat, not a substat, so a Goblet with Hydro DMG%
-main does not remove anything from the substat pool (W = 44).
+  P(CD% 2nd | CR% already drawn) = 3/35
+
+  P(CR% 1st AND CD% 2nd) = 3/38 × 3/35 = 9/1330 ≈ 0.68%
+
+This covers only one specific ordering of the four draws. In reality CR%
+and CD% can land in any two of the four substat slots, with any two other
+stats filling the remaining slots. The two "filler" substats are drawn
+from the seven non-crit stats: flat ATK and flat DEF (weight 6 each) and
+HP%, ATK%, DEF%, ER%, EM (weight 4 each).
+
+Step 2: summing over all valid orderings
+
+A piece has 4 substat slots filled one at a time. Once we fix which 4
+stats appear — say {CR%, CD%, flat ATK, HP%} — those 4 stats can arrive
+in any order across the 4 draws. The number of ways to arrange 4 distinct
+items in a sequence is 4 × 3 × 2 × 1 = 4! = 24 orderings.
+
+For every set of four substats that includes both CR% and CD%, each of
+those 24 orderings must be evaluated using the same sequential probability
+method as Step 1, and their probabilities summed. When the crits appear
+in later positions, a filler stat has been drawn first, so the denominator
+at the crit's draw is smaller (the pool has already shrunk). This is what
+makes the sum non-trivial.
+
+The next question is: which sets of 4 substats can contain both CR% and
+CD%? The other 2 slots must be filled by 2 of the 7 non-crit stats. The
+number of ways to choose 2 stats from 7 (where only the pair matters, not
+which comes first) is:
+
+  C(7,2) = 7! / (2! × 5!) = (7 × 6) / 2 = 21 possible filler pairs
+
+The 7 non-crit stats fall into two weight tiers:
+
+  Weight 6: flat ATK, flat DEF                  (2 stats)
+  Weight 4: HP%, ATK%, DEF%, ER%, EM            (5 stats)
+
+A filler pair can be drawn from these tiers in three distinct ways:
+
+  Class (6,6): both fillers from the weight-6 tier
+               C(2,2) = 1 pair:  {flat ATK, flat DEF}
+
+  Class (6,4): one filler from each tier
+               2 × 5 = 10 pairs:  e.g. {flat ATK, HP%}, {flat DEF, ER%}, ...
+
+  Class (4,4): both fillers from the weight-4 tier
+               C(5,2) = (5 × 4) / 2 = 10 pairs:  e.g. {HP%, ATK%}, {ER%, EM}, ...
+
+  Total: 1 + 10 + 10 = 21 pairs ✓
+
+Why group by weight class? In the sequential draw formula, the probability
+of a given ordering depends only on the weights drawn at each step, not on
+which specific stat was chosen. For example, the ordering where CR% comes
+2nd and HP% comes 1st gives the same probability as CR% 2nd and DEF% 1st,
+because HP% and DEF% share the same weight of 4. Every pair within a class
+therefore produces the same total probability when you sum its 24 orderings,
+so:
+
+  class contribution = (pairs in class) × (24-ordering sum for one pair)
+
+For class (6,6) — 1 pair {flat ATK, flat DEF}:
+Two of the 24 orderings, to show why the denominators differ:
+
+  CR% 1st, CD% 2nd, flat ATK 3rd, flat DEF 4th:
+    P = 3/38 × 3/35 × 6/32 × 6/26
+
+  flat ATK 1st, CR% 2nd, CD% 3rd, flat DEF 4th:
+    P = 6/38 × 3/32 × 3/29 × 6/26
+
+Drawing a weight-6 stat first removes 6 from the pool and shifts all
+subsequent denominators down. Summing all 24 orderings for this one pair
+gives 0.8718%. With only 1 pair in the class:
+
+  Class (6,6) contribution = 1 × 0.8718% = 0.8718%
+
+For class (6,4) — 10 pairs:
+Summing all 24 orderings for one representative pair (e.g. {flat ATK, HP%})
+gives 0.5188%. The same sum holds for all 10 pairs in this class:
+
+  Class (6,4) contribution = 10 × 0.5188% = 5.1881%
+
+For class (4,4) — 10 pairs:
+One representative pair (e.g. {HP%, ATK%}) contributes 0.3096%:
+
+  Class (4,4) contribution = 10 × 0.3096% = 3.0964%
+
+Total double-crit probability for a Flower:
+
+  P = 0.8718% + 5.1881% + 3.0964% = 9.1562%
+
+Because evaluating all 21 × 24 = 504 ordered sequences by hand would be
+prone to arithmetic error, these sums were verified exhaustively using a
+Python script (see Appendix A). The analytical result of 9.1562% matches
+the simulation to within 0.01%.
+
+The Plume has an identical pool (W = 38, same non-crit weight
+distribution), giving the same analytical result; the simulation's 9.18%
+differs only by sampling noise. For other slot types, removing a
+different main stat changes the pool, so probabilities differ.
+Hydro DMG Bonus% does not exist as a substat, so a Goblet with that main
+excludes nothing extra — its pool has W = 44, every fractional weight is
+smaller, and the double-crit probability falls to 7.69%.
 
   Table 1: Double-crit probability by slot
-  ┌──────────────────────────────┬────┬──────────────────────┐
-  │ Slot / main stat             │  W │  P(double-crit)      │
-  ├──────────────────────────────┼────┼──────────────────────┤
-  │ Flower (flat HP)             │ 38 │   9.15%  (sim.)      │
-  │ Plume (flat ATK)             │ 38 │   9.18%  (sim.)      │
-  │ Sands (HP% main)             │ 40 │   8.34%  (sim.)      │
-  │ Goblet (Hydro DMG% main)     │ 44 │   7.69%  (sim.)      │
-  │ Circlet (non-crit main)      │ 40 │   6.40%  (sim.)      │
-  │ Circlet (CD% main)           │ 41 │   0%     (exact)     │
-  └──────────────────────────────┴────┴──────────────────────┘
+  ┌──────────────────────────────┬────┬────────────────────────────────┐
+  │ Slot / main stat             │  W │  P(double-crit)                │
+  ├──────────────────────────────┼────┼────────────────────────────────┤
+  │ Flower (flat HP main)        │ 38 │   9.16%                        │
+  │ Plume (flat ATK main)        │ 38 │   9.16%                        │
+  │ Sands (HP% main)             │ 40 │   8.34%                        │
+  │ Goblet (Hydro DMG% main)     │ 44 │   6.69%                        │
+  │ Circlet (CD% main)           │ 41 │   0%                           │
+  └──────────────────────────────┴────┴────────────────────────────────┘
 
-For Neuvillette's Circlet, CD% is the main stat. Because the main stat is
-excluded from the substat pool, CD% cannot appear as a substat on the
-same piece. P(double-crit | CD% main) = 0% exactly, for any number of
-pieces farmed.
+For Neuvillette's Circlet, CD% is the main stat and is excluded from the
+substat pool entirely. Only CR% remains as a possible crit substat, so
+P(double-crit | CD% main) = 0% exactly regardless of how many pieces
+are farmed.
 
 ─────────────────────────────────────────────────────────────────────────────
 3.2  Upgrade Roll Distribution
@@ -334,12 +421,9 @@ Once the four substats are set, the piece gains five upgrade events at
 selected uniformly at random (25% each) and receives one additional roll.
 
 The number of upgrades a specific substat receives over five events
-follows a Binomial distribution:
+follows a Binomial distribution which is shown in table 2:
 
   X ~ Bin(5, 0.25)
-
-Table 2 shows the full distribution (Genshin Impact Wiki,
-Artifact/Distribution):
 
   Table 2: Upgrade count distribution for one substat  [X ~ Bin(5, 0.25)]
   ┌───────────────────┬─────────────┐
@@ -353,31 +437,27 @@ Artifact/Distribution):
   │        5          │    0.10%    │
   └───────────────────┴─────────────┘
 
-Getting 3 or more upgrades into a single substat — the typical standard
-for a strong substat — happens only about 10.4% of the time. For a
-double-crit piece, each crit substat still sees this distribution
-independently and competes against two non-crit substats for every
-upgrade. The probability that both CR% and CD% each receive at least
-2 upgrades is:
+therefore, if an artifact has 2 crit substats, on any given roll there is a 50%
+chance that a crit stat is upgraded. the probability of Getting 3 or more upgrades
+into crit Substats which is the typical standard for a strong artifact happens
+50% of the time as shown by adding up the chances of rolling into crit 3, 4 and 5 times
 
-  P(CR% ≥ 2 upgrades) × P(CD% ≥ 2 upgrades) = 0.357 × 0.357 ≈ 12.7%
+BinomPDF(5,0.5,3) + BinomPDF(5,0.5,4) + BinomPDF(5,0.5,5) = 0.5
 
 Combined with the ~9.2% chance of double-crit in the first place (for a
-Flower), this means a Flower with at least 2 upgrades in both crit
-substats occurs in about 9.2% × 12.7% ≈ 1.2% of pieces. This confirms
+Flower), this means a Flower with at least 3 upgrades in crit
+substats occurs in about 9.2% × 50% ≈ 4.6% of pieces. This shows
 that high CV on a single piece is genuinely rare.
 
 ─────────────────────────────────────────────────────────────────────────────
 3.3  Simulation and CV Distribution
 ─────────────────────────────────────────────────────────────────────────────
 
-A Java simulation (ArtifactSim.java) generated N = 5,000,000 artifacts
-per slot, implementing the game mechanics above: weighted draws without
-replacement, the 80%/20% three-stat/four-stat starting split, and the
-Binomial upgrade distribution. Only CR% and CD% substat values are
-recorded per piece; all other substats are discarded.
+Based on all the game mechanichs previously mentioned I made a program to simulate any number of artifacts
+and to record their stats. in the simulation, CR% and CD% substat values are recorded per piece in order to 
+confirm the mathamatical model of artifact rolling.
 
-Crit Value (CV) metric
+Crit Value (CV) metric:
 
 To combine CR% and CD% into a single score, define:
 
@@ -390,11 +470,10 @@ roll values are avrCR = 3.305% and avrCD = 6.608%, giving:
 
 So CV = 2 × CR% + CD%. This metric counts crit budget in CD%-equivalent
 units: one expected CR roll is worth exactly half of one expected CD roll,
-and the constraint CV = 2 × CR + CD is a statement of roll investment —
-any two builds with the same CV represent the same total number of
-expected crit rolls.
+and the constraint CV = 2 × CR + CD represents the roll investment. 
+any two builds with the same CV represent the same total number of crit substat value.
 
-Key findings  (N = 5,000,000 per slot)
+Key findings  (5,000,000 artifact simultion per peice)
 
 P(CV = 0) — no crit substats at all:
 
@@ -414,6 +493,21 @@ Mean CV (substat CV only, all pieces including CV = 0):
 These low means are largely driven by the ~40–68% of pieces with CV = 0.
 Among pieces with at least one crit substat, mean CV rises to ~15.2–15.6
 for Flower, Plume, Sands, and Goblet.
+
+Along with this, the probability for a peice to have 2 crit substats was empericly recorded.
+
+  ┌──────────────────────────────┬────┬────────────────────────────────┐
+  │ Slot / main stat             │  W │  P(double-crit) from simulation│
+  ├──────────────────────────────┼────┼────────────────────────────────┤
+  │ Flower (flat HP main)        │ 38 │   9.15%                        │
+  │ Plume (flat ATK main)        │ 38 │   9.18%                        │
+  │ Sands (HP% main)             │ 40 │   8.36%                        │
+  │ Goblet (Hydro DMG% main)     │ 44 │   6.64%                        │
+  │ Circlet (CD% main)           │ 41 │   0%                           │
+  └──────────────────────────────┴────┴────────────────────────────────┘
+
+As we can see, when compared with the mathamaticly calculated probabilitys, the simulation
+falls well within less than 1% of error, confirming the probabilitys calculated mathamaticly, and empiricaly
 
 Histogram and KDE distribution charts for each slot are included in
 Appendix B.
@@ -446,8 +540,8 @@ computed from the simulation's empirical CDF (see Appendix B):
   ├──────────────────────────────────────────┼──────────────────┤
   │ Flower                                   │      32.5        │
   │ Plume                                    │      32.5        │
-  │ Sands                                    │      31.2        │
-  │ Goblet                                   │      31.0        │
+  │ Sands                                    │      32.0        │
+  │ Goblet                                   │      32.0        │
   │ Circlet (CD% main; CR% substat only)     │      23.4        │
   └──────────────────────────────────────────┴──────────────────┘
 
@@ -456,20 +550,16 @@ with only CR% available as a crit substat, the CV ceiling is lower.
 
 Total substat CV budget across all five pieces:
 
-  32.5 + 32.5 + 31.2 + 31.0 + 23.4 = 150.6
+  32.5 + 32.5 + 32.0 + 32.0 + 23.4 = 150.6
 
 The Circlet's CD% main stat contributes a fixed +62.2% to CD at +20 on a
 5-star piece. This is not a substat roll — it is guaranteed regardless of
-RNG. Its contribution to CV is:
+RNG.
 
-  1 × 62.2 = 62.2   (CD% adds directly to CV with coefficient 1)
+  Total_CV = 150.6
 
-Grand total CV budget (substats + Circlet main stat):
-
-  Total_CV = 150.6 + 62.2 = 212.8 ≈ 213
-
-This value of Total_CV = 213, combined with k = 2 derived in Section 3.3,
-is the constraint fed into the optimisation in Section 4.
+This value of Total_CV = 150.6, combined with k = 2 derived in Section 3.3,
+is the constraint fed used in the optimisation in Section 4.
 
 --------------------------------------------------------------------------------
 
@@ -1032,3 +1122,99 @@ in Section 4.
 ================================================================================
   END OF DOCUMENT
 ================================================================================
+
+
+python3 << 'EOF'
+from itertools import permutations
+
+def compute_double_crit(pool, label):
+    """Exhaustively enumerate all ordered 4-substat sequences and sum
+    probabilities for those containing both CR and CD."""
+    total_weight = sum(pool.values())
+    stats = list(pool.keys())
+    weights = {s: pool[s] for s in stats}
+
+    p_double_crit = 0.0
+    p_total = 0.0
+
+    for perm in permutations(stats, 4):
+        remaining_weight = total_weight
+        p = 1.0
+        for stat in perm:
+            p *= weights[stat] / remaining_weight
+            remaining_weight -= weights[stat]
+        p_total += p
+        if 'CR' in perm and 'CD' in perm:
+            p_double_crit += p
+
+    # Break down by filler weight class
+    p_66 = p_64 = p_44 = 0.0
+    for perm in permutations(stats, 4):
+        if 'CR' not in perm or 'CD' not in perm:
+            continue
+        remaining_weight = total_weight
+        p = 1.0
+        for stat in perm:
+            p *= weights[stat] / remaining_weight
+            remaining_weight -= weights[stat]
+        fillers = [s for s in perm if s not in ('CR', 'CD')]
+        fw = tuple(sorted([weights[f] for f in fillers], reverse=True))
+        if fw == (6, 6):   p_66 += p
+        elif fw == (6, 4): p_64 += p
+        elif fw == (4, 4): p_44 += p
+
+    print(f"--- {label} ---")
+    print(f"  Pool weight W = {total_weight}")
+    print(f"  P(double-crit)   = {p_double_crit*100:.4f}%  (seq. sum check: {p_total:.6f})")
+    print(f"  Class (6,6) contribution: {p_66*100:.4f}%")
+    print(f"  Class (6,4) contribution: {p_64*100:.4f}%")
+    print(f"  Class (4,4) contribution: {p_44*100:.4f}%")
+    print()
+
+# ── Flower: flat HP excluded (weight 6) ──────────────────────────────────────
+flower_pool = {
+    'ATK': 6, 'DEF': 6,
+    'HP%': 4, 'ATK%': 4, 'DEF%': 4, 'ER%': 4, 'EM': 4,
+    'CR': 3, 'CD': 3,
+}
+compute_double_crit(flower_pool, "Flower (flat HP main, W=38)")
+
+# ── Sands: HP% excluded (weight 4) ───────────────────────────────────────────
+sands_pool = {
+    'HP': 6, 'ATK': 6, 'DEF': 6,
+    'ATK%': 4, 'DEF%': 4, 'ER%': 4, 'EM': 4,
+    'CR': 3, 'CD': 3,
+}
+compute_double_crit(sands_pool, "Sands (HP% main excluded, W=40)")
+
+# ── Goblet: Hydro DMG% is main stat but does NOT exist as a substat,
+#    so nothing is excluded — full 10-stat pool ────────────────────────────────
+goblet_pool = {
+    'HP': 6, 'ATK': 6, 'DEF': 6,
+    'HP%': 4, 'ATK%': 4, 'DEF%': 4, 'ER%': 4, 'EM': 4,
+    'CR': 3, 'CD': 3,
+}
+compute_double_crit(goblet_pool, "Goblet (Hydro DMG% main — not a substat, W=44)")
+
+EOF
+Output:
+--- Flower (flat HP main, W=38) ---
+  Pool weight W = 38
+  P(double-crit)   = 9.1562%  (seq. sum check: 1.000000)
+  Class (6,6) contribution: 0.8718%
+  Class (6,4) contribution: 5.1881%
+  Class (4,4) contribution: 3.0964%
+
+--- Sands (HP% main excluded, W=40) ---
+  Pool weight W = 40
+  P(double-crit)   = 8.3424%  (seq. sum check: 1.000000)
+  Class (6,6) contribution: 2.0242%
+  Class (6,4) contribution: 4.8575%
+  Class (4,4) contribution: 1.4606%
+
+--- Goblet (Hydro DMG% main — not a substat, W=44) ---
+  Pool weight W = 44
+  P(double-crit)   = 6.6932%  (seq. sum check: 1.000000)
+  Class (6,6) contribution: 1.2693%
+  Class (6,4) contribution: 3.8578%
+  Class (4,4) contribution: 1.5661%
